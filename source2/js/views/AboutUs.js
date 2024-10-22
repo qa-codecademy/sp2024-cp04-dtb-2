@@ -1,8 +1,8 @@
 import AbstractView from "./AbstractView.js";
 
 export default class AboutUs extends AbstractView {
-  constructor() {
-    super();
+  constructor(params) {
+    super(params);
     this.setTitle("About Us");
   }
 
@@ -10,7 +10,7 @@ export default class AboutUs extends AbstractView {
     return `
       <div id='aboutMainDiv'>
         <div id='aboutHeadDiv'>
-          <img src="../../data/logoImg/logo.png" width="150px""> 
+          <img src="/data/logoImg/logo.png" width="150px""> 
           <span><h1>About us</h1></span>
         </div>
         <hr>

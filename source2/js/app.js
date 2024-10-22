@@ -1,42 +1,64 @@
 import AboutUs from "./views/AboutUs.js";
+import Post from "./views/Post.js";
 
 console.log("CONNECTED");
 
+const getParams = match => {
+    if (!match.result) return {};
+
+    const values = match.result.slice(1);
+    const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(result => result[1]);
+
+    console.log(Array.from(match.route.path.matchAll(/:(\w+)/g)));
+    
+    return Object.fromEntries(keys.map((key, i) => {
+        return [key, values[i]];
+    }));
+}
+
+const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
 const naviageteTo = url => {
-    history.pushState(null,null,url);
+    history.pushState(null, null, url);
     router();
 };
 
-
-const router = async ()=> {
+const router = async () => {
+    
     const routes = [
-        {path: "/", view: ()=> console.log("Viewing Posts")},
-        {path: "/post", view: ()=> console.log("Viewing PostDetails")},
-        {path: "/aboutus", view: AboutUs },
-    ]
-   // tEst
-   const potenitalMatches = routes.map(route => {
-    return {
-        route: route,
-        isMatch: location.pathname === route.path
+        { path: "/", view: () => console.log("Viewing Posts") },
+        { path: "/posts/:id", view: Post },
+        { path: "/aboutus", view: AboutUs }
+    ];
+
+    const potentialMatches = routes.map(route => {
+        return {
+            route: route,
+            result: location.pathname.match(pathToRegex(route.path))
+        };
+    });
+
+    let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
+    if (!match) {
+        match = {
+            route: routes[0],
+            result: [location.pathname]
+        };
     }
-   });
 
-   let match = potenitalMatches.find(potenitalMatch => potenitalMatch.isMatch);
-   if(!match) {
-    match = {
-        route: routes[0],
-        isMatch: true
+    let view;
+
+    if (typeof match.route.view === "function" && /^\s*class\s+/.test(match.route.view.toString())) {
+        view = new match.route.view(getParams(match));  // Instantiate if it's a class
+    } else {
+        view = match.route.view();  // Call if it's a regular function
     }
-   }
 
-   const view = new match.route.view();
+    if (view && view.getHtml) {
+        document.querySelector("#contentPart").innerHTML = await view.getHtml();
+    }
 
-   document.querySelector("#contentPart").innerHTML = await view.getHtml();
-
-   console.log(match.route.view());
-
+    console.log(view);
 };
 
 window.addEventListener("popstate", router);

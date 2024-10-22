@@ -1,6 +1,9 @@
 export default class AbstractView {
-    constructor() {
-        this.title = null;
+    constructor(params) {
+        this.params = params;
+
+        console.log(this.params);
+        
     }
 
     setTitle(title) {
