@@ -1,4 +1,7 @@
+import AboutUs from "./views/AboutUs.js";
+
 console.log("CONNECTED");
+
 
 const naviageteTo = url => {
     history.pushState(null,null,url);
@@ -10,7 +13,7 @@ const router = async ()=> {
     const routes = [
         {path: "/", view: ()=> console.log("Viewing Posts")},
         {path: "/post", view: ()=> console.log("Viewing PostDetails")},
-        {path: "/aboutus", view: ()=> console.log("Viewing Aboutus")},
+        {path: "/aboutus", view: AboutUs },
     ]
    // tEst
    const potenitalMatches = routes.map(route => {
@@ -28,20 +31,24 @@ const router = async ()=> {
     }
    }
 
+   const view = new match.route.view();
+
+   document.querySelector("#contentPart").innerHTML = await view.getHtml();
+
    console.log(match.route.view());
 
 };
 
 window.addEventListener("popstate", router);
 
-document.addEventListener("DOMContentLoaded", ()=> {
-
-
+document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
-        if(e.target.matches("[data-link]")) {
+        const link = e.target.closest("[data-link]");
+        if (link) {
             e.preventDefault();
-            naviageteTo(e.target.href);
+            console.log('Link clicked:', link.href);
+            naviageteTo(link.href);
         }
-    })
+    });
     router();
-})
+});
