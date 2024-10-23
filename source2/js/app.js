@@ -29,11 +29,12 @@ const router = async () => {
     const routes = [
         { path: "/", view: Posts },
         { path: "/posts/:id", view: Post },
-        { path: "/aboutus", view: AboutUs }
-        
-    ];
-
-    const potentialMatches = routes.map(route => {
+        { path: "/aboutus", view: AboutUs },
+        // {path: "/filterbyold", action: console.log("oldposts") },
+        // {path: "/filterbynew"},
+        // {path: "/filterbymostpopular"}
+        ]
+            const potentialMatches = routes.map(route => {
         return {
             route: route,
             result: location.pathname.match(pathToRegex(route.path))
@@ -75,4 +76,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
     router();
+});
+document.body.addEventListener("click", e => {
+    const link = e.target.closest("[data-link]");
+    if (link) {
+        e.preventDefault();
+        const url = new URL(link.href);
+        
+        // Example: Modify the params based on the link clicked
+        if (url.pathname === "/filterbymostpopular") {
+            params.sortBy = "popular";
+        }
+
+        naviageteTo(link.href);
+    }
 });

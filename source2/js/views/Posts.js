@@ -12,14 +12,11 @@ export default class Posts extends AbstractView {
         this.setTitle("Posts");
 
     }
-    async getHtml() {
+    async getHtml(body = {pageIndex: 1, sortBy: "new" }) {
         
         btnService.loadMoreBtn.style.display = "block";
 
-        let result = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", {
-            pageIndex: 1,
-            sortBy: "new",
-        });
+        let result = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", body);
         
         let resultHtml = "";
         result.posts.forEach(element => {
@@ -29,7 +26,7 @@ export default class Posts extends AbstractView {
                             <div class="card" style="width: 25vw" id="card-${element.id}">
                                 <img class="card-img-top img-fluid imgLink" src="${imgSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here" value="${element.id}">
                                 <div class="card-body title">
-                                    <a class="post-link"  href="posts/${element.id}" data-link"><h5 class="card-title">${element.title}</h5></a>
+                                    <a class="post-link"  href="posts/${element.id}" data-link><h5 class="card-title" >${element.title}</h5></a>
                                     <p class="card-text">${element.description}</p>
                                 </div>
                                 <div class="card-body icons">
