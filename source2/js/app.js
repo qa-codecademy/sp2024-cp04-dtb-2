@@ -1,5 +1,6 @@
 import AboutUs from "./views/AboutUs.js";
 import Post from "./views/Post.js";
+import Posts from "./views/Posts.js";
 
 console.log("CONNECTED");
 
@@ -26,9 +27,10 @@ const naviageteTo = url => {
 const router = async () => {
     
     const routes = [
-        { path: "/", view: () => console.log("Viewing Posts") },
+        { path: "/", view: Posts },
         { path: "/posts/:id", view: Post },
         { path: "/aboutus", view: AboutUs }
+        
     ];
 
     const potentialMatches = routes.map(route => {
