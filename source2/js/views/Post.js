@@ -1,8 +1,10 @@
 import AbstractView from "./AbstractView.js";
 import { ApiCaller } from "../modules/ApiCaller.js";
+import { ButtonService } from "../modules/ButtonService.js";
 
+const apiCaller = new ApiCaller();
+const btnService = new ButtonService();
 
-let apiCaller = new ApiCaller();
 export default class Post extends AbstractView {
 
   constructor(params) {
@@ -11,10 +13,11 @@ export default class Post extends AbstractView {
   }
 
   async getHtml() {
+    
+    btnService.loadMoreBtn.style.display = "none";
+
     let post = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/${this.params.id}`, "GET");
-    console.log(post);
-    let imgSrc = `data:image/png;base64,${post.image}`
-    console.log(this.params.id);
+    let imgSrc = `data:image/png;base64,${post.image}`;
 
     return `<div class="singleCard mb-3" id="singlePostId">
               <div class="row g-0">
@@ -34,7 +37,7 @@ export default class Post extends AbstractView {
                     <br>
                     <div id='addStarContainer'>
                       <p>Did you like this post? 
-                        <span  id='addStartOnPost'> Add -> <img id='starPostImg' src="./source/data/icons/star.svg" alt="Star Icon" class="starsIcon">${post.rating}</span>
+                        <span  id='addStartOnPost'> Add -> <img id='starPostImg' src="/data/icons/star.svg" alt="Star Icon" class="starsIcon">${post.rating}</span>
                       </p>
                     </div>
                   </div>

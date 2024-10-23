@@ -1,12 +1,19 @@
 import AbstractView from "./AbstractView.js";
+import { ButtonService } from "../modules/ButtonService.js";
+
+const btnService = new ButtonService();
 
 export default class AboutUs extends AbstractView {
+
   constructor(params) {
     super(params);
     this.setTitle("About Us");
   }
 
   async getHtml() {
+    
+    btnService.loadMoreBtn.style.display = "none";
+
     return `
       <div id='aboutMainDiv'>
         <div id='aboutHeadDiv'>
