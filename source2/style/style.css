@@ -15,7 +15,7 @@ nav {
     
 }
 .card {
-    /* background-color: #f0efef; */
+    background-color: #f0efef;
     border: none;
 }
 .card:hover {
@@ -438,4 +438,3 @@ a:hover {
     justify-content: center;
   }
 
-  

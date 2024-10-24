@@ -666,7 +666,7 @@ document.getElementById('newPostBtn').addEventListener('click',()=>{
     hideModal('createPostModal');
     newPostsLoader(posts.storage);
     }
-})
+});
 
 
 //closing open modals when clinked on the background

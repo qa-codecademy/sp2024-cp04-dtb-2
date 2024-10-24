@@ -3,6 +3,8 @@ import Post from "./views/Post.js";
 import Posts from "./views/Posts.js";
 import postFilterService from "./modules/PostFilterService.js";
 import eventService from "./modules/EventService.js";
+import ModalService from "./modules/ModalService.js";
+import modalService from "./modules/ModalService.js";
 
 console.log("CONNECTED");
 
@@ -51,7 +53,8 @@ const router = async () => {
         { path: "/filterbyold", view: () => new Posts(postFilterService.filters)},
         { path: "/filterbynew", view: () => new Posts(postFilterService.filters)},
         { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters)}
-        ]
+    ]
+
             const potentialMatches = routes.map(route => {
         return {
             route: route,

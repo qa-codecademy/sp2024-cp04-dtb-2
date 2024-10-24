@@ -1,6 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { ButtonService } from "../modules/ButtonService.js";
-
+import ButtonService from "../modules/ButtonService.js";
 const btnService = new ButtonService();
 
 export default class AboutUs extends AbstractView {

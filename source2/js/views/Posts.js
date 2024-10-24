@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { ApiCaller } from "../modules/ApiCaller.js";
-import { ButtonService } from "../modules/ButtonService.js";
+import  ButtonService  from "../modules/ButtonService.js";
 import postFilterService from "../modules/PostFilterService.js";
 import eventService from "../modules/EventService.js";
 

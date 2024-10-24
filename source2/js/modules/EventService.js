@@ -1,13 +1,20 @@
 import postFilterService from "./PostFilterService.js";
 import { ApiCaller } from "./ApiCaller.js";
+import ButtonService from "./ButtonService.js"
+// import modalService from "./ModalService.js";
+import ModalService from "./ModalService.js";
 
+const buttonService = new ButtonService();
 const apiCaller = new ApiCaller();
+const modalService = new ModalService();
 
 class EventService {
     constructor() {
         this.isScrollActive = true;
         this.firstScrollReached = false;
         this.initScrollListener();
+        this.newsLetterListener();
+        this.newsLetterSubListener();
     }
 
     canFetchNextPage() {
@@ -84,6 +91,22 @@ class EventService {
 
     toggleScroll() {
         this.isScrollActive = !this.isScrollActive;
+    }
+    newsLetterListener () {
+
+        buttonService.newsLetterBtn.addEventListener('click', () => {
+            
+            modalService.showModal("subscribeModal");
+        });
+    }
+    newsLetterSubListener (){
+        document.getElementById('newsletterForm').addEventListener('submit', async(e) => {
+            e.preventDefault();
+            let subedEmail = document.getElementById("newsletterEmail")
+            let valueOfSubedEmail = subedEmail.value;
+            const url = `https://localhost:7073/api/NewsLetters?email=${valueOfSubedEmail}`;
+            let result = await apiCaller.fetchFromDB(url, "POST", {});        
+        })
     }
 }
 
