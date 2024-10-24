@@ -1,9 +1,5 @@
 export class ApiCaller {
     async fetchFromDB(url, method, body ) {
-      
-
-     // Optional: Logging filter before sending
-
         try {
             let response = null;
             if (body !== null ) {
@@ -14,7 +10,7 @@ export class ApiCaller {
                         "Content-Type": "application/json",
                     },
                     
-                    body: JSON.stringify(body), // Removed unnecessary wrapping object
+                    body: JSON.stringify(body),
                 });
             } else {
                 response = await fetch(url, {

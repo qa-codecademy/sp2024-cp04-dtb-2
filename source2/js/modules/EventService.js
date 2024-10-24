@@ -1,22 +1,91 @@
-export class EventService {
-    isScrollActive;
+import postFilterService from "./PostFilterService.js";
+import { ApiCaller } from "./ApiCaller.js";
 
-    scrollEvent = window.addEventListener('scroll', function (){
-        if (isScrollActive) {
-            if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 0.9) {
-                if (!this.firstScrollReached) {
-                    // First scroll to the bottom
-                    this.firstScrollReached = true;
-                } else {
-                    // Second scroll to the bottom
-                    this.firstScrollReached = false;
-                    
+const apiCaller = new ApiCaller();
+
+class EventService {
+    constructor() {
+        this.isScrollActive = true;
+        this.firstScrollReached = false;
+        this.initScrollListener();
+    }
+
+    canFetchNextPage() {
+        const { pageIndex, totalPages } = postFilterService.getFilters();
+        return pageIndex < totalPages;  
+    }
+
+    async fetchNextPage() {
+        console.log("starting to fetch next page");
+        console.log(postFilterService.filters);
+        const filters = postFilterService.getFilters();
+        console.log(filters);
+        
+        if (postFilterService.filters.pageIndex < postFilterService.filters.totalPages) {
+            postFilterService.updateFilter({ pageIndex: filters.pageIndex + 1 });
+            
+            const newPosts = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", filters);
+            console.log(newPosts);
+
+            this.appendPostsToView(newPosts.posts);
+        }
+    }
+
+    appendPostsToView(posts) {
+        const contentPart = document.querySelector("#contentPart");
+        let resultHtml = "";
+        
+        posts.forEach(element => {
+            let imgSrc = `data:image/png;base64,${element.image}`;
+            resultHtml += `
+                <div class="card" style="width: 25vw" id="card-${element.id}">
+                    <img class="card-img-top img-fluid imgLink" src="${imgSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here" value="${element.id}">
+                    <div class="card-body title">
+                        <a class="post-link" href="posts/${element.id}" data-link><h5 class="card-title">${element.title}</h5></a>
+                        <p class="card-text">${element.description}</p>
+                    </div>
+                    <div class="card-body icons">
+                        <div> 
+                            <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon">
+                            <p>${element.rating} Stars</p>
+                        </div>
+                        <div>
+                            <img src="/data/icons/chat-right.svg" alt="Comment Icon" class="commentsIcon">
+                            <p>${element.comments} Comments</p>
+                        </div>
+                        <br>
+                        <div class="tags">
+                            <p><small>Tags: ${element.tags}</small></p>
+                        </div>  
+                    </div>
+                </div>
+            `;
+        });
+
+        contentPart.insertAdjacentHTML('beforeend', resultHtml);
+    }
+
+
+    // && this.canFetchNextPage()   - removed from if 1
+    initScrollListener() {
+        window.addEventListener('scroll', async () => {
+            if (this.isScrollActive) {
+                if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 0.9) {
+                    if (!this.firstScrollReached) {
+                        this.firstScrollReached = true;
+                    } else {
+                        this.firstScrollReached = false;
+                        await this.fetchNextPage();
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 
-    toggleScroll () {
+    toggleScroll() {
         this.isScrollActive = !this.isScrollActive;
-    };
+    }
 }
+
+const eventService = new EventService();
+export default eventService;

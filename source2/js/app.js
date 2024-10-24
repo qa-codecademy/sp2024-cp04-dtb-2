@@ -1,6 +1,8 @@
 import AboutUs from "./views/AboutUs.js";
 import Post from "./views/Post.js";
 import Posts from "./views/Posts.js";
+import postFilterService from "./modules/PostFilterService.js";
+import eventService from "./modules/EventService.js";
 
 console.log("CONNECTED");
 
@@ -26,13 +28,29 @@ const naviageteTo = url => {
 
 const router = async () => {
     
+    switch(location.pathname){
+        case "/filterbyold":
+            postFilterService.updateFilter({ sortBy: "old" });
+            break;
+        
+        case "/filterbynew":
+            postFilterService.updateFilter({ sortBy: "new" });
+            break;
+        
+        case "/filterbymostpopular":
+            postFilterService.updateFilter({ sortBy: "popular" });
+            break;
+
+        default: break;
+    }
+
     const routes = [
-        { path: "/", view: Posts },
+        { path: "/", view: () => new Posts(postFilterService.filters) },
         { path: "/posts/:id", view: Post },
         { path: "/aboutus", view: AboutUs },
-        // {path: "/filterbyold", action: console.log("oldposts") },
-        // {path: "/filterbynew"},
-        // {path: "/filterbymostpopular"}
+        { path: "/filterbyold", view: () => new Posts(postFilterService.filters)},
+        { path: "/filterbynew", view: () => new Posts(postFilterService.filters)},
+        { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters)}
         ]
             const potentialMatches = routes.map(route => {
         return {
@@ -52,16 +70,14 @@ const router = async () => {
     let view;
 
     if (typeof match.route.view === "function" && /^\s*class\s+/.test(match.route.view.toString())) {
-        view = new match.route.view(getParams(match));  // Instantiate if it's a class
+        view = new match.route.view(getParams(match));
     } else {
-        view = match.route.view();  // Call if it's a regular function
+        view = match.route.view();  
     }
 
     if (view && view.getHtml) {
         document.querySelector("#contentPart").innerHTML = await view.getHtml();
     }
-
-    console.log(view);
 };
 
 window.addEventListener("popstate", router);
@@ -76,18 +92,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
     router();
-});
-document.body.addEventListener("click", e => {
-    const link = e.target.closest("[data-link]");
-    if (link) {
-        e.preventDefault();
-        const url = new URL(link.href);
-        
-        // Example: Modify the params based on the link clicked
-        if (url.pathname === "/filterbymostpopular") {
-            params.sortBy = "popular";
-        }
-
-        naviageteTo(link.href);
-    }
 });

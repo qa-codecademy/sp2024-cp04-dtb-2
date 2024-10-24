@@ -13,7 +13,7 @@ export default class AboutUs extends AbstractView {
   async getHtml() {
     
     btnService.loadMoreBtn.style.display = "none";
-
+    // <li><h4>Petar Dimiskovski - Developer</h4></li>  Not anymore
     return `
       <div id='aboutMainDiv'>
         <div id='aboutHeadDiv'>
@@ -22,12 +22,11 @@ export default class AboutUs extends AbstractView {
         </div>
         <hr>
         <div>
-          <h3>Our team consists of 4 developers and 2 QA engineers:</h3>
+          <h3>Our team consists of 3 developers and 2 QA engineers:</h3>
           <ul>
             <li><h4>Daniel Petrov - Developer</h4></li>
             <li><h4>Boris Krstovski - Developer</h4></li>
             <li><h4>Sasho Popovski - Developer</h4></li>
-            <li><h4>Petar Dimiskovski - Developer</h4></li>
             <li><h4>Elena Josifovska - QA engineer</h4></li>
             <li><h4>Marina Nikolovska - QA engineer</h4></li>
           </ul>
