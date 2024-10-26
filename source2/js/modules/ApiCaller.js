@@ -21,10 +21,16 @@ export class ApiCaller {
                 });
             }
             if (response !== null) {
-
-                let result = await response.json();
-                console.log(result);
-                return result;
+                const contentType = response.headers.get("Content-Type");
+                if (contentType && contentType.includes("application/json")){
+                    let result = await response.json();
+                    console.log(result);
+                    return result;
+                } else {
+                    console.log(response);
+                    return response;
+                }
+                
             }
 
         } catch (error) {

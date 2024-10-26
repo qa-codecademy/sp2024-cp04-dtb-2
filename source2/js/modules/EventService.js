@@ -15,6 +15,8 @@ class EventService {
         this.initScrollListener();
         this.newsLetterListener();
         this.newsLetterSubListener();
+        this.buttonClickListener();
+        this.newsLetterUnsubListener();
     }
 
     canFetchNextPage() {
@@ -89,6 +91,19 @@ class EventService {
         });
     }
 
+    buttonClickListener() {
+        buttonService.loadMoreBtn.addEventListener('click', async () => {
+            console.log("loadmore button")
+            await this.fetchNextPage();
+        });
+        // buttonService.newsLetterModalSubBtn.addEventListener('click', async () => {
+        //     let newsLetterEmail = document.querySelector('#newsLetterEmail').value;
+        //     console.log(newsLetterEmail);
+            
+            
+        // });
+    }
+
     toggleScroll() {
         this.isScrollActive = !this.isScrollActive;
     }
@@ -98,15 +113,38 @@ class EventService {
             
             modalService.showModal("subscribeModal");
         });
+        buttonService.showUnsubBtn.addEventListener('click', () => {
+            modalService.hideModal("subscribeModal");
+            modalService.showModal("unsubscribeModal");
+        } )
     }
     newsLetterSubListener (){
         document.getElementById('newsletterForm').addEventListener('submit', async(e) => {
             e.preventDefault();
-            let subedEmail = document.getElementById("newsletterEmail")
-            let valueOfSubedEmail = subedEmail.value;
-            const url = `https://localhost:7073/api/NewsLetters?email=${valueOfSubedEmail}`;
-            let result = await apiCaller.fetchFromDB(url, "POST", {});        
-        })
+            let subedEmail = document.getElementById("newsletterEmail").value;
+            const url = `https://localhost:7073/api/NewsLetters?email=${subedEmail}`;
+            console.log(subedEmail);
+            
+            let result = await apiCaller.fetchFromDB(url, "POST");        
+            console.log(result);
+            
+        });
+        buttonService.newsLetterSubCloseBtn.addEventListener('click', () => {
+            modalService.hideModal("subscribeModal");
+        } );
+    }
+    newsLetterUnsubListener (){
+        document.getElementById('newsletterUnsubscribeForm').addEventListener('submit', async(e)=> {
+            e.preventDefault();
+            let unsubedEmail = document.getElementById("unsubNewsletterEmail").value;
+            const url = `https://localhost:7073/api/NewsLetters?email=${unsubedEmail}`;
+            let result = await apiCaller.fetchFromDB(url, "DELETE");
+            console.log(result);
+        });
+        buttonService.newsLetterUnsubCloseBtn.addEventListener('click', ()=> {
+            modalService.hideModal("unsubscribeModal");
+        });
+
     }
 }
 
