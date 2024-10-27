@@ -16,7 +16,7 @@
         <div class="alert alert-fixed alert-warning" role="alert" id="warningAlert"></div>    
     <header>
 
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary" id ="navbar">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
@@ -55,9 +55,9 @@
                             <li class="nav-item">
                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createPostModal" id="createPostBtn" style="display: none;">Create Post</button>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <button type="button" class="btn btn-danger" id="logoutBtn" style="display: none;">Log Out</button>
-                            </li>
+                            </li> -->
                             <li class="nav-item">
                                 <button type="button" class="btn btn-dark" id="loginBtn">Log in</button>
                             </li>
@@ -156,7 +156,7 @@
     </main>
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close" id="logginClose">&times;</span>
             <h2>Log In</h2>
             <form id="loginForm">
                 <div class="form-group">
@@ -326,11 +326,13 @@
                         <output id="rangeValue"></output>
                         <input type="range" class="form-control-range" min="1" max="30" value="15" id="imgRange" oninput="rangeValue.value=imgRange.value" >
                         <div class="form-group" >
-                            <label for="uploadImage">Upload image - <small>Coming soon...</small></label>
-                            <input type="file" class="form-control-file" id="uploadImage" disabled>
+                            <!-- <label for="uploadImage">Upload image - <small>Coming soon...</small></label> -->
+                            <div id = "drop-area">
+                                <input type="file" class="form-control-file" id="uploadImage">
+                            </div>
                         </div>
                     </form>
-                </div>
+                </div>  
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="close" id="closeCreatePostModal">Close</button>
                     <button type="button" class="btn btn-success" id="newPostBtn">Create post</button>

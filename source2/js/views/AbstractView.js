@@ -2,7 +2,7 @@ export default class AbstractView {
     constructor(params) {
         this.params = params;
 
-        console.log(this.params);
+        // console.log(this.params);
         
     }
 

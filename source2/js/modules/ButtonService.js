@@ -8,6 +8,8 @@
         this.newsLetterUnsubCloseBtn = document.querySelector("#unsubClose");
         this.filterBtn = document.querySelector("#filterDiv");
         this.loginBtn = document.querySelector('#loginBtn');
+        this.logginCloseBtn = document.querySelector('#logginClose');
+        this.logoutBtn = document.getElementById('logoutBtn');
 
     }
 }

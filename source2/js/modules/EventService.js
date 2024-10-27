@@ -3,7 +3,14 @@ import { ApiCaller } from "./ApiCaller.js";
 import ButtonService from "./ButtonService.js"
 // import modalService from "./ModalService.js";
 import ModalService from "./ModalService.js";
+import SessionService from "./SessionService.js";
+import NavbarService from "./NavbarService.js";
+import ThemeService from "./ThemeService.js";
 
+
+const themeService = new ThemeService();
+const navbarService = new NavbarService();
+const sessionService = new SessionService();
 const buttonService = new ButtonService();
 const apiCaller = new ApiCaller();
 const modalService = new ModalService();
@@ -19,6 +26,8 @@ class EventService {
         this.newsLetterUnsubListener();
         this.loginListener();
         this.loginModalListener();
+        this.themeListener();
+        // this.logoutListener(); 
     }
 
     canFetchNextPage() {
@@ -148,9 +157,10 @@ class EventService {
 
     }
     loginListener(){
-        buttonService.loginBtn.addEventListener('click', ()=>{            
+        document.getElementById("loginBtn").addEventListener('click', ()=>{            
             modalService.showModal("loginModal");
         });
+
     }
     loginModalListener(){
         document.getElementById('loginForm').addEventListener('submit', async(e)=> {
@@ -163,11 +173,40 @@ class EventService {
             }
             const url = `https://localhost:7073/api/User/login`;
             let result = await apiCaller.fetchFromDB(url, "POST", body);
-            console.log(result);
-        });
-        buttonService.newsLetterUnsubCloseBtn.addEventListener('click', ()=> {
+            if (result != undefined) {
+                sessionService.Set(result);
+                navbarService.loggedInNavbar();
+                this.logoutListener();        
+                this.themeListener();
+                this.createPostListener();
+        
+            }
             modalService.hideModal("loginModal");
         });
+        buttonService.logginCloseBtn.addEventListener('click', ()=> {
+            modalService.hideModal("loginModal");
+        });
+    }
+    logoutListener() {
+        document.getElementById('logoutBtn').addEventListener('click', ()=> {           
+            sessionService.Remove();
+            navbarService.defaultNavbar();
+            this.loginListener();
+            this.loginModalListener();
+            this.themeListener();
+
+        });
+    }
+    themeListener (){
+        document.getElementById("lightDarkToggle").addEventListener('click',()=>{
+            themeService.lightDarkChek();
+        })
+    }
+
+    createPostListener() {
+        document.getElementById("createPostBtn").addEventListener('click', ()=> {
+            modalService.showModal("createPostModal");
+        })
     }
 }
 
