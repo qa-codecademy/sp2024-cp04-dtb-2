@@ -17,6 +17,8 @@ class EventService {
         this.newsLetterSubListener();
         this.buttonClickListener();
         this.newsLetterUnsubListener();
+        this.loginListener();
+        this.loginModalListener();
     }
 
     canFetchNextPage() {
@@ -78,7 +80,7 @@ class EventService {
     // && this.canFetchNextPage()   - removed from if 1
     initScrollListener() {
         window.addEventListener('scroll', async () => {
-            if (this.isScrollActive) {
+            if (this.isScrollActive && !this.isSinglePostView()) {
                 if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 0.9) {
                     if (!this.firstScrollReached) {
                         this.firstScrollReached = true;
@@ -96,17 +98,16 @@ class EventService {
             console.log("loadmore button")
             await this.fetchNextPage();
         });
-        // buttonService.newsLetterModalSubBtn.addEventListener('click', async () => {
-        //     let newsLetterEmail = document.querySelector('#newsLetterEmail').value;
-        //     console.log(newsLetterEmail);
-            
-            
-        // });
     }
 
     toggleScroll() {
         this.isScrollActive = !this.isScrollActive;
     }
+
+    isSinglePostView() {
+        return location.pathname.startsWith("/posts/"); // or another condition if necessary
+    }
+
     newsLetterListener () {
 
         buttonService.newsLetterBtn.addEventListener('click', () => {
@@ -145,6 +146,28 @@ class EventService {
             modalService.hideModal("unsubscribeModal");
         });
 
+    }
+    loginListener(){
+        buttonService.loginBtn.addEventListener('click', ()=>{            
+            modalService.showModal("loginModal");
+        });
+    }
+    loginModalListener(){
+        document.getElementById('loginForm').addEventListener('submit', async(e)=> {
+            e.preventDefault();
+            let loginEmail = document.getElementById("loginEmail").value;
+            let loginPass = document.getElementById("loginPassword").value;
+            let body = {
+                email: loginEmail ,
+                password: loginPass
+            }
+            const url = `https://localhost:7073/api/User/login`;
+            let result = await apiCaller.fetchFromDB(url, "POST", body);
+            console.log(result);
+        });
+        buttonService.newsLetterUnsubCloseBtn.addEventListener('click', ()=> {
+            modalService.hideModal("loginModal");
+        });
     }
 }
 

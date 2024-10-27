@@ -6,6 +6,8 @@
         this.showUnsubBtn = document.querySelector("#showUnsubscribeBtn");
         this.newsLetterSubCloseBtn = document.querySelector("#subClose");
         this.newsLetterUnsubCloseBtn = document.querySelector("#unsubClose");
+        this.filterBtn = document.querySelector("#filterDiv");
+        this.loginBtn = document.querySelector('#loginBtn');
 
     }
 }

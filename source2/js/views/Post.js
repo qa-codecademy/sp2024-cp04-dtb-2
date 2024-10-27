@@ -12,7 +12,7 @@ export default class Post extends AbstractView {
   }
 
   async getHtml() {
-    
+    btnService.filterBtn.style.display = "none";
     btnService.loadMoreBtn.style.display = "none";
 
     let post = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/${this.params.id}`, "GET");

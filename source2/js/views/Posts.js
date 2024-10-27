@@ -34,6 +34,8 @@ export default class Posts extends AbstractView {
     }
 
     renderPosts(posts) {
+        btnService.filterBtn.style.display = "block";
+        btnService.loadMoreBtn.style.display = "block";
         let resultHtml = "";
         posts.forEach(element => {
             let imgSrc = `data:image/png;base64,${element.image}`;

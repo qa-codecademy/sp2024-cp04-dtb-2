@@ -10,7 +10,7 @@ export default class AboutUs extends AbstractView {
   }
 
   async getHtml() {
-    
+    btnService.filterBtn.style.display = "none";
     btnService.loadMoreBtn.style.display = "none";
     // <li><h4>Petar Dimiskovski - Developer</h4></li>  Not anymore
     return `
