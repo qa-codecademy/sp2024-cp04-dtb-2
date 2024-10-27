@@ -1,11 +1,8 @@
 export default class UploadImgService {
-    /**
-     *
-     */
     constructor() {
         
         
-        allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
+        this.allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
         this.dropArea = document.getElementById("drop-area");
     }
 
@@ -21,7 +18,7 @@ export default class UploadImgService {
         });
         this.dropArea.addEventListener('drop',e =>{
             console.log(e.dataTransfer.files);
-             
+            let image = e.dataTransfer.files
             e.preventDefault();
         });
     }

@@ -6,8 +6,10 @@ import ModalService from "./ModalService.js";
 import SessionService from "./SessionService.js";
 import NavbarService from "./NavbarService.js";
 import ThemeService from "./ThemeService.js";
+import UploadImgService from "./UploadImgService.js";
 
 
+const uploadImgService = new UploadImgService();
 const themeService = new ThemeService();
 const navbarService = new NavbarService();
 const sessionService = new SessionService();
@@ -27,6 +29,7 @@ class EventService {
         this.loginListener();
         this.loginModalListener();
         this.themeListener();
+        this.createPostListener();
         // this.logoutListener(); 
     }
 
@@ -206,6 +209,16 @@ class EventService {
     createPostListener() {
         document.getElementById("createPostBtn").addEventListener('click', ()=> {
             modalService.showModal("createPostModal");
+        });
+        this.createPostModalListener();
+        uploadImgService.UploadListener();
+    }
+    createPostModalListener () {
+        document.getElementById("newPostBtn").addEventListener('click', ()=>{
+
+            uploadImgService.UploadListener();
+
+            modalService.hideModal("createPostModal");
         })
     }
 }
