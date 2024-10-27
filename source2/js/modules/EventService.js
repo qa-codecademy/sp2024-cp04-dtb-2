@@ -211,12 +211,9 @@ class EventService {
             modalService.showModal("createPostModal");
         });
         this.createPostModalListener();
-        uploadImgService.UploadListener();
     }
     createPostModalListener () {
         document.getElementById("newPostBtn").addEventListener('click', ()=>{
-
-            uploadImgService.UploadListener();
 
             modalService.hideModal("createPostModal");
         })
