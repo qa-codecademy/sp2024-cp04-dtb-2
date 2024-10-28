@@ -1,21 +1,19 @@
-export default class UploadImgService {
+class UploadImgService {
     constructor() {
+        this.uploadedImage;
         this.allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
         this.dropArea = document.getElementById("drop-area");
         this.dropAreaPreview = document.getElementById("drop-preview");
         
-        // Initialize the event listener
         this.UploadListener();
     }
 
     UploadListener() {
-        // Remove any existing drop listeners to prevent duplicate handlers
         this.dropArea.removeEventListener('dragenter', this.preventDefaults);
         this.dropArea.removeEventListener('dragleave', this.preventDefaults);
         this.dropArea.removeEventListener('dragover', this.preventDefaults);
         this.dropArea.removeEventListener('drop', this.handleDrop.bind(this));
 
-        // Add listeners again
         this.dropArea.addEventListener('dragenter', this.preventDefaults);
         this.dropArea.addEventListener('dragleave', this.preventDefaults);
         this.dropArea.addEventListener('dragover', this.preventDefaults);
@@ -28,7 +26,7 @@ export default class UploadImgService {
     }
 
     handleDrop(e) {
-        this.preventDefaults(e); // Prevent default behavior
+        this.preventDefaults(e);
 
         const image = e.dataTransfer.files[0];
         if (image) {
@@ -40,8 +38,6 @@ export default class UploadImgService {
         if (!this.allowedImageTypes.includes(file.type)) {
             return;
         }
-
-        // Clear any existing previews
         this.dropAreaPreview.innerHTML = '';
 
         const reader = new FileReader();
@@ -58,9 +54,13 @@ export default class UploadImgService {
             imageName.innerHTML = file.name;
             imageContainer.appendChild(imageName);
 
+            this.uploadedImage = imageContainer;
             this.dropAreaPreview.appendChild(imageContainer);
         };
 
         reader.readAsDataURL(file);
     }
 }
+
+const uploadImageService = new UploadImgService();
+export default uploadImageService;

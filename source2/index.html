@@ -239,15 +239,16 @@
             </form>
         </div>
     </div>
+    <!-- aria-hidden="true" -->
     <!-- design for creating post modal -->
-    <div class="modal fade" id="createPostModal" tabindex="-1" role="dialog" aria-labelledby="createPostModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createPostModal" tabindex="-1" role="dialog" aria-labelledby="createPostModalLabel" style="display: none ;" >
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header" style="justify-content: center;">
                 <h5 class="modal-title">Create a new post</h5>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="createNewPostForm">
                         <div class="form-group" style="justify-content: center;">
                             <label for="newPostTitle" style="text-align: center;">Post Title</label>
                             <input type="text" class="form-check" id="newPostTitle" placeholder="Enter post title here!" required>
@@ -256,6 +257,12 @@
                         <div class="mb-3">
                             <label for="newPostText">Post text</label>
                             <textarea class="form-control" id="newPostText" placeholder="Please enter the post text here" required></textarea>
+                        </div>
+                        <hr>
+                        <hr>
+                        <div class="mb-3">
+                            <label for="newPostDescription">Post description</label>
+                            <textarea class="form-control" id="newPostDescription" placeholder="Please enter the post description here" required></textarea>
                         </div>
                         <hr>
                         <div id="addTagToPost" class="custom-control custom-checkbox" required>

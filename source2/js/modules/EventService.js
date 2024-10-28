@@ -6,10 +6,9 @@ import ModalService from "./ModalService.js";
 import SessionService from "./SessionService.js";
 import NavbarService from "./NavbarService.js";
 import ThemeService from "./ThemeService.js";
-import UploadImgService from "./UploadImgService.js";
+import uploadImageService from "./UploadImgService.js";
 
 
-const uploadImgService = new UploadImgService();
 const themeService = new ThemeService();
 const navbarService = new NavbarService();
 const sessionService = new SessionService();
@@ -213,8 +212,48 @@ class EventService {
         this.createPostModalListener();
     }
     createPostModalListener () {
-        document.getElementById("newPostBtn").addEventListener('click', ()=>{
+        document.getElementById("newPostBtn").addEventListener('click', async ()=>{
+            const newPostTitle = document.getElementById("newPostTitle").value;
+            const newPostText = document.getElementById("newPostText").value;
+            const postTags = Array.from(document.querySelectorAll('.custom-control-input:checked')).map(cb => cb.value);
+            const imageNumber = document.getElementById('imgRange').value ;
+            const newPostDescription = document.getElementById("newPostDescription").value;
 
+            const fetchedImage = uploadImageService.uploadedImage;
+            const fetchedImageSrc = fetchedImage.children[0].currentSrc;
+
+            if(postTags.length == 0 || newPostText == '' || newPostTitle == '' || newPostDescription == ''){
+                users.alert('warningAlert',"You must fill the fields and select 1 tag");
+            }
+
+            let post = {};
+            const url = `https://localhost:7073/api/posts/create`;
+            if (fetchedImageSrc) {
+              post = {
+                title: newPostTitle,
+                text: newPostText,
+                description: newPostDescription,
+                tags: postTags,
+                ImageFile: fetchedImageSrc,
+              };
+            } else {
+              post = {
+                title: newPostTitle,
+                text: newPostText,
+                tags: postTags,
+                imageId: imageNumber,
+                description: newPostDescription,
+              };
+            }
+
+            console.log(post);
+            var user = sessionService.Get();
+
+            let result = await apiCaller.fetchFromDB(url, "POST", post, user.token);
+
+
+            console.log(result);
+            
             modalService.hideModal("createPostModal");
         })
     }

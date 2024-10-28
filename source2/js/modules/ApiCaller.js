@@ -1,13 +1,17 @@
 export class ApiCaller {
-    async fetchFromDB(url, method, body ) {
+    async fetchFromDB(url, method, body, token) {
         try {
             let response = null;
+            // if(token !== undefined || token !== ""){
+
+            // }
             if (body !== undefined ) {
                 
                 response = await fetch(url, {
                     method: method,
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": `bearer ${token}`
                     },
                     
                     body: JSON.stringify(body),
@@ -17,6 +21,7 @@ export class ApiCaller {
                     method: method,
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": `bearer ${token}`
                     },
                 });
             }
