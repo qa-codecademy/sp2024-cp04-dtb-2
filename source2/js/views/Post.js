@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { ApiCaller } from "../modules/ApiCaller.js";
 import ButtonService from "../modules/ButtonService.js";
+import eventService from "../modules/EventService.js";
 const apiCaller = new ApiCaller();
 const btnService = new ButtonService();
 
@@ -10,6 +11,8 @@ export default class Post extends AbstractView {
     super(params);
     this.setTitle("Post Details");
   }
+
+  
 
   async getHtml() {
     btnService.filterBtn.style.display = "none";
@@ -34,10 +37,18 @@ export default class Post extends AbstractView {
                     <div class="card" style="width: 70vw;">
                     </div>
                     <br>
-                    <div id='addStarContainer'>
+                    <div id="addStarContainer">
                       <p>Did you like this post? 
-                        <span  id='addStartOnPost'> Add -> <img id='starPostImg' src="/data/icons/star.svg" alt="Star Icon" class="starsIcon">${post.rating}</span>
+                        <span id="addStartOnPost"> 
+                          Add -> 
+                          <img id="starPostImg" src="/data/icons/star.svg" alt="Star Icon" class="starsIcon">
+                          ${post.rating}
+                        </span>
                       </p>
+                      <div id="starRatingContainer" class="star-rating hidden">
+                        ${[...Array(5)].map((_, i) => `<img src="/data/icons/star_empty.svg" 
+                          class="star-icon" data-rating="${i + 1}" alt="Star ${i + 1}">`).join('')}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -72,4 +83,9 @@ export default class Post extends AbstractView {
             </div>
             <br><br>`;
   }
+
+  async init() {
+    // Add any additional initialization here if needed
+    await eventService.addStarEventListeners();
+}
 }

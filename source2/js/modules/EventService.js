@@ -20,6 +20,7 @@ class EventService {
     constructor() {
         this.isScrollActive = true;
         this.firstScrollReached = false;
+        this.isSubmitting = false;
         this.initScrollListener();
         this.newsLetterListener();
         this.newsLetterSubListener();
@@ -213,6 +214,8 @@ class EventService {
     }
     createPostModalListener () {
         document.getElementById("newPostBtn").addEventListener('click', async (e)=>{
+            if (this.isSubmitting) return; // Prevents duplicate submissions
+            this.isSubmitting = true;
             e.preventDefault();
             console.log("btn clicked");
             const newPostTitle = document.getElementById("newPostTitle").value;
@@ -252,13 +255,62 @@ class EventService {
             console.log(post);
             var user = sessionService.Get();
 
-            let result = await apiCaller.fetchFromDB(url, "POST", post, user.token);
+            try {
+                let result = await apiCaller.fetchFromDB(url, "POST", post, user.token);
+                console.log(result);
+            } catch (error) {
+                console.error("Failed to create post:", error);
+            } finally {
+                this.isSubmitting = false;
+            }
 
-
-            console.log(result);
-            
-            modalService.hideModal("createPostModal");
+            setTimeout(() => modalService.hideModal("createPostModal"), 100);
         })
+    }
+
+    addStarEventListeners() {
+        const starPostImg = document.getElementById('starPostImg');
+        const starRatingContainer = document.getElementById('starRatingContainer');
+        const stars = Array.from(starRatingContainer.querySelectorAll('.star-icon'));
+    
+        // Show star rating container on hover
+        starPostImg.addEventListener('mouseenter', () => {
+            starRatingContainer.classList.remove('hidden');
+        });
+    
+        // Hide the star rating container when mouse leaves
+        starPostImg.addEventListener('mouseleave', () => {
+            setTimeout(() => {
+                if (!starRatingContainer.matches(':hover')) {
+                    starRatingContainer.classList.add('hidden');
+                }
+            }, 100);
+        });
+        starRatingContainer.addEventListener('mouseleave', () => {
+            starRatingContainer.classList.add('hidden');
+        });
+    
+        // Change stars on hover and send rating on click
+        stars.forEach((star, index) => {
+            star.addEventListener('mouseenter', () => {
+                stars.forEach((s, i) => {
+                    s.src = i <= index ? '/data/icons/star_filled.svg' : '/data/icons/star_empty.svg';
+                });
+            });
+    
+            star.addEventListener('click', async () => {
+                const rating = star.getAttribute('data-rating');
+                try {
+                    const response = await apiCaller.fetchFromDB(`https://localhost:7073/api/posts/${this.params.id}/rate`, 'POST', { rating });
+                    console.log('Rating submitted:', response);
+                } catch (error) {
+                    console.error('Failed to submit rating:', error);
+                }
+                // Reset stars and hide rating container
+                stars.forEach(s => s.src = '/data/icons/star_empty.svg');
+                starRatingContainer.classList.add('hidden');
+            });
+        });
     }
 }
 

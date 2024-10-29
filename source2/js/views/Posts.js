@@ -46,12 +46,11 @@ export default class Posts extends AbstractView {
                     </div>
                     <div class="card-body icons">
                         <div> 
-                            <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon">
-                            <p>${element.rating} Stars</p>
+                            
+                            <p>${element.rating} <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon"></p>
                         </div>
                         <div>
-                            <img src="/data/icons/chat-right.svg" alt="Comment Icon" class="commentsIcon">
-                            <p>${element.comments} Comments</p>
+                            <p>${element.comments} <img src="/data/icons/chat-right.svg" alt="Comment Icon" class="commentsIcon"></p>
                         </div>
                         <br>
                         <div class="tags">

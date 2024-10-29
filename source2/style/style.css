@@ -438,3 +438,25 @@ a:hover {
     justify-content: center;
   }
 
+  .hidden {
+    display: none;
+  }
+  
+  #starRatingContainer {
+    display: flex;
+    gap: 5px;
+    position: absolute;
+    top: -30px; /* Adjust as needed */
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .star-icon {
+    width: 20px; /* Adjust the size */
+    cursor: pointer;
+  }
+  
+

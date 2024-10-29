@@ -74,6 +74,9 @@ const router = async () => {
 
     if (typeof match.route.view === "function" && /^\s*class\s+/.test(match.route.view.toString())) {
         view = new match.route.view(getParams(match));
+        // if (view.init) {
+        //     await view.init();
+        // }
     } else {
         view = match.route.view();  
     }

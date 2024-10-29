@@ -1,41 +1,29 @@
 export class ApiCaller {
     async fetchFromDB(url, method, body, token) {
         try {
-            let response = null;
-            // if(token !== undefined || token !== ""){
-
-            // }
-            if (body !== undefined ) {
-                
-                response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `bearer ${token}`
-                    },
-                    
-                    body: JSON.stringify(body),
-                });
-            } else {
-                response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `bearer ${token}`
-                    },
-                });
+            const headers = {
+                "Content-Type": "application/json",
+            };
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
             }
-            if (response !== null) {
+
+            const response = await fetch(url, {
+                method,
+                headers,
+                body: body ? JSON.stringify(body) : undefined,
+            });
+
+            if (response) {
                 const contentType = response.headers.get("Content-Type");
-                if (contentType && contentType.includes("application/json")){
-                    let result = await response.json();
+                if (contentType && contentType.includes("application/json")) {
+                    const result = await response.json();
                     console.log(result);
                     return result;
                 } else {
                     console.log(response);
                     return response;
                 }
-                
             }
 
         } catch (error) {
