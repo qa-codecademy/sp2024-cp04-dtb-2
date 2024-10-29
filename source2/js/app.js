@@ -2,7 +2,7 @@ import AboutUs from "./views/AboutUs.js";
 import Post from "./views/Post.js";
 import Posts from "./views/Posts.js";
 import postFilterService from "./modules/PostFilterService.js";
-import eventService from "./modules/EventService.js";
+// import eventService from "./modules/EventService.js";
 import ModalService from "./modules/ModalService.js";
 import modalService from "./modules/ModalService.js";
 

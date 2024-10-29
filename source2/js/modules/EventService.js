@@ -212,7 +212,9 @@ class EventService {
         this.createPostModalListener();
     }
     createPostModalListener () {
-        document.getElementById("newPostBtn").addEventListener('click', async ()=>{
+        document.getElementById("newPostBtn").addEventListener('click', async (e)=>{
+            e.preventDefault();
+            console.log("btn clicked");
             const newPostTitle = document.getElementById("newPostTitle").value;
             const newPostText = document.getElementById("newPostText").value;
             const postTags = Array.from(document.querySelectorAll('.custom-control-input:checked')).map(cb => cb.value);
@@ -220,21 +222,22 @@ class EventService {
             const newPostDescription = document.getElementById("newPostDescription").value;
 
             const fetchedImage = uploadImageService.uploadedImage;
-            const fetchedImageSrc = fetchedImage.children[0].currentSrc;
+            // const fetchedImageSrc = fetchedImage.children[0].currentSrc.slice(fetchedImage.children[0].currentSrc.indexOf(',') + 1, fetchedImage.children[0].currentSrc.length - 1);
 
             if(postTags.length == 0 || newPostText == '' || newPostTitle == '' || newPostDescription == ''){
                 users.alert('warningAlert',"You must fill the fields and select 1 tag");
+                return;
             }
 
             let post = {};
             const url = `https://localhost:7073/api/posts/create`;
-            if (fetchedImageSrc) {
+            if (fetchedImage) {
               post = {
                 title: newPostTitle,
                 text: newPostText,
                 description: newPostDescription,
                 tags: postTags,
-                ImageFile: fetchedImageSrc,
+                ImageFile: fetchedImage,
               };
             } else {
               post = {

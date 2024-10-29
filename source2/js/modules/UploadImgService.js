@@ -39,25 +39,34 @@ class UploadImgService {
             return;
         }
         this.dropAreaPreview.innerHTML = '';
-
+    
         const reader = new FileReader();
         reader.onload = () => {
+            const result = reader.result;
+    
+            // Remove the URI prefix and keep only the base64 content
+            let base64String = result.split(',')[1];
+    
+            // Remove invalid characters (anything other than A-Z, a-z, 0-9, +, /, and 🙂
+            base64String = base64String.replace(/[^A-Za-z0-9+/=]/g, '');
+    
+            // For display in the preview, add the prefix back
             const image = new Image();
-            image.src = reader.result;
-
+            image.src = "data:image/png;base64," + base64String;
+    
             const imageContainer = document.createElement("div");
             imageContainer.setAttribute("class", "image-container");
             imageContainer.appendChild(image);
-
+    
             const imageName = document.createElement("p");
             imageName.setAttribute("class", "info");
             imageName.innerHTML = file.name;
             imageContainer.appendChild(imageName);
-
-            this.uploadedImage = imageContainer;
+    
+            this.uploadedImage = base64String; // Store only the clean base64 string
             this.dropAreaPreview.appendChild(imageContainer);
         };
-
+    
         reader.readAsDataURL(file);
     }
 }
