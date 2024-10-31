@@ -18,6 +18,8 @@ const modalService = new ModalService();
 
 class EventService {
     constructor() {
+        this.currentPostId = null;
+        this.currentRating = null;
         this.isScrollActive = true;
         this.firstScrollReached = false;
         this.isSubmitting = false;
@@ -31,6 +33,11 @@ class EventService {
         this.themeListener();
         this.createPostListener();
         // this.logoutListener(); 
+        // this.addStarEventListeners();
+    }
+
+    updateCurrentRating (number){
+        this.currentRating = number;
     }
 
     canFetchNextPage() {
@@ -269,48 +276,57 @@ class EventService {
     }
 
     addStarEventListeners() {
-        const starPostImg = document.getElementById('starPostImg');
-        const starRatingContainer = document.getElementById('starRatingContainer');
-        const stars = Array.from(starRatingContainer.querySelectorAll('.star-icon'));
-    
-        // Show star rating container on hover
-        starPostImg.addEventListener('mouseenter', () => {
-            starRatingContainer.classList.remove('hidden');
-        });
-    
-        // Hide the star rating container when mouse leaves
-        starPostImg.addEventListener('mouseleave', () => {
-            setTimeout(() => {
-                if (!starRatingContainer.matches(':hover')) {
-                    starRatingContainer.classList.add('hidden');
+
+        document.querySelectorAll('input[name="rating"]').forEach(star => {
+            star.addEventListener('click', async (event) => {
+                const rating = event.target.value;
+                let user = sessionService.Get();
+                if (user != undefined || user != null) {
+                    if ((this.currentRating == 0 || this.currentRating == null) && rating != this.currentRating) {
+                        await apiCaller.fetchFromDB("https://localhost:7073/api/Stars/AddRating", "POST", {userId: user.id, postId: this.currentPostId, rating: rating}, user.token);
+                        this.paintStars(rating);
+                        this.currentRating = rating;
+                        return
+                    }
+                    if (this.currentRating == rating) {
+
+                        await apiCaller.fetchFromDB("https://localhost:7073/api/Stars/RemoveRating", "DELETE", { userId: user.id, postId: this.currentPostId }, user.token);
+                        this.clearStars();
+                        this.currentRating = rating;
+                        // event.target.checked = false;
+                        // this.currentRating = null;
+                        // console.log("Rating cleared");
+                    } else {
+                        // this.currentRating = rating;
+                        console.log(`User selected ${rating} star(s)`);
+                        await apiCaller.fetchFromDB("https://localhost:7073/api/Stars", "PUT", { userId: user.id, postId: this.currentPostId, rating: rating }, user.token);
+                        this.paintStars(rating);
+                        this.currentRating = rating;
+                    }
                 }
-            }, 100);
-        });
-        starRatingContainer.addEventListener('mouseleave', () => {
-            starRatingContainer.classList.add('hidden');
-        });
-    
-        // Change stars on hover and send rating on click
-        stars.forEach((star, index) => {
-            star.addEventListener('mouseenter', () => {
-                stars.forEach((s, i) => {
-                    s.src = i <= index ? '/data/icons/star_filled.svg' : '/data/icons/star_empty.svg';
-                });
-            });
-    
-            star.addEventListener('click', async () => {
-                const rating = star.getAttribute('data-rating');
-                try {
-                    const response = await apiCaller.fetchFromDB(`https://localhost:7073/api/posts/${this.params.id}/rate`, 'POST', { rating });
-                    console.log('Rating submitted:', response);
-                } catch (error) {
-                    console.error('Failed to submit rating:', error);
-                }
-                // Reset stars and hide rating container
-                stars.forEach(s => s.src = '/data/icons/star_empty.svg');
-                starRatingContainer.classList.add('hidden');
             });
         });
+
+    }
+    paintStars(number){
+        let stars = Array.from(document.querySelectorAll('input[name="rating"]'));
+                let sortedStars = stars.sort((a,b) => a.value - b.value);
+                sortedStars.forEach(star => {
+                if (star.value <= number){
+                    star.checked = true;
+                } else {
+                    return
+                }
+            });
+    }
+    clearStars() {
+        let stars = Array.from(document.querySelectorAll('input[name="rating"]'));
+        stars.forEach(star => {
+            star.checked = false;
+        })
+    }
+    updateCurrentPostId(id){
+        this.currentPostId = id;
     }
 }
 

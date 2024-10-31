@@ -459,4 +459,27 @@ a:hover {
     cursor: pointer;
   }
   
-
+  .star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    font-size: 2rem;
+    justify-content: center;
+}
+.star-rating input {
+    display: none;
+}
+.star-rating label {
+    cursor: pointer;
+    color: lightgray;
+}
+.star-rating label svg {
+    width: 2em;
+    height: 2em;
+    fill: lightgray; /* Default color */
+    transition: fill 0.2s ease;
+}
+.star-rating input:checked ~ label svg,
+.star-rating label:hover svg,
+.star-rating label:hover ~ label svg {
+    fill: gold; /* Gold color when selected or hovered */
+}

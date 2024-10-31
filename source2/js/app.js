@@ -2,7 +2,7 @@ import AboutUs from "./views/AboutUs.js";
 import Post from "./views/Post.js";
 import Posts from "./views/Posts.js";
 import postFilterService from "./modules/PostFilterService.js";
-// import eventService from "./modules/EventService.js";
+import eventService from "./modules/EventService.js";
 import ModalService from "./modules/ModalService.js";
 import modalService from "./modules/ModalService.js";
 
@@ -83,6 +83,13 @@ const router = async () => {
 
     if (view && view.getHtml) {
         document.querySelector("#contentPart").innerHTML = await view.getHtml();
+        
+        eventService.addStarEventListeners();
+    
+        // Check if the current view is an instance of Post
+        if (view instanceof Post) {
+            eventService.paintStars(eventService.currentRating);
+        }
     }
 };
 

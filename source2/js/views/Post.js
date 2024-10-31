@@ -2,6 +2,9 @@ import AbstractView from "./AbstractView.js";
 import { ApiCaller } from "../modules/ApiCaller.js";
 import ButtonService from "../modules/ButtonService.js";
 import eventService from "../modules/EventService.js";
+import SessionService from "../modules/SessionService.js";
+
+const sessionService = new SessionService();
 const apiCaller = new ApiCaller();
 const btnService = new ButtonService();
 
@@ -17,7 +20,18 @@ export default class Post extends AbstractView {
   async getHtml() {
     btnService.filterBtn.style.display = "none";
     btnService.loadMoreBtn.style.display = "none";
+    let user = sessionService.Get();
+    if (user != null || user != undefined) {
+      let star =  await apiCaller.fetchFromDB(`https://localhost:7073/api/Stars`, "POST", { userId : user.id, postId : this.params.id });
+      if (star != null || star != undefined ) {
+        let starNum = star.rating;
+        eventService.updateCurrentRating(starNum);
+        eventService.updateCurrentPostId(this.params.id);
+      } else {
 
+        eventService.updateCurrentRating(0);
+      }
+    }
     let post = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/${this.params.id}`, "GET");
     let imgSrc = `data:image/png;base64,${post.image}`;
 
@@ -40,15 +54,31 @@ export default class Post extends AbstractView {
                     <div id="addStarContainer">
                       <p>Did you like this post? 
                         <span id="addStartOnPost"> 
-                          Add -> 
-                          <img id="starPostImg" src="/data/icons/star.svg" alt="Star Icon" class="starsIcon">
+                          <div class="star-rating" id ="starsRating">
+                              <input type="radio" id="star5" name="rating" value="5" />
+                              <label for="star5" title="5 stars">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                              <input type="radio" id="star4" name="rating" value="4" />
+                              <label for="star4" title="4 stars">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                              <input type="radio" id="star3" name="rating" value="3" />
+                              <label for="star3" title="3 stars">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                              <input type="radio" id="star2" name="rating" value="2" />
+                              <label for="star2" title="2 stars">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                              <input type="radio" id="star1" name="rating" value="1" />
+                              <label for="star1" title="1 star">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                          </div>
                           ${post.rating}
                         </span>
                       </p>
-                      <div id="starRatingContainer" class="star-rating hidden">
-                        ${[...Array(5)].map((_, i) => `<img src="/data/icons/star_empty.svg" 
-                          class="star-icon" data-rating="${i + 1}" alt="Star ${i + 1}">`).join('')}
-                      </div>
                     </div>
                   </div>
                 </div>
