@@ -303,7 +303,11 @@ class EventService {
                         this.paintStars(rating);
                         this.currentRating = rating;
                     }
-                }
+                } else {
+                    modalService.showModal("loginModal");
+                    this.loginModalListener();
+
+                };
             });
         });
 
@@ -327,6 +331,40 @@ class EventService {
     }
     updateCurrentPostId(id){
         this.currentPostId = id;
+    }
+    commentListener(){
+        document.getElementById('commentForm').addEventListener('submit', async(e)=>{
+            e.preventDefault();
+            let commentName = document.getElementById("commentName").value;
+            let commentText = document.getElementById("commentText").value;
+            let user = sessionService.Get();
+            if(user === null || user === undefined){
+                console.log("YOu must be logged in");
+                return
+                
+            }
+            if(commentText === null || commentText == ""){
+                console.log("Invalid comment");
+                
+                return 
+            }
+            let url = "https://localhost:7073/api/Comment";
+            let response = await apiCaller.fetchFromDB(url, "POST", {postId: this.currentPostId, name: commentName, text: commentText}, user.token);
+            let commentContainer = document.getElementById("addedComments");
+            let comment = document.createElement("div");
+            comment.innerHTML = `
+                <div class="comment">
+                    <span class="user">${commentName}</span>
+                    <span class="date">${new Date().toLocaleString()}</span>
+                    <p>${commentText}</p>
+                    <button class ="btn btn-primary" id="commentDelete">Delete</button>
+                    <button class ="btn btn-primary" id="commentEdit">Edit</button>
+                </div>
+        
+            `;
+            
+            commentContainer.insertAdjacentElement("afterbegin", comment);
+        });
     }
 }
 

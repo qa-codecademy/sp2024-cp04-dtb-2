@@ -1,18 +1,18 @@
 export default class SessionService {
     constructor() {
-        
+
     };
-    Set (session) {
-        localStorage.setItem("session",JSON.stringify(session)
-    );
+    Set(session) {
+        sessionStorage.setItem("session", JSON.stringify(session)
+        );
     }
-    Get () {
-        const found = localStorage.getItem("session")
+    Get() {
+        const found = sessionStorage.getItem("session")
         const parsed = JSON.parse(found);
         return parsed;
     }
-    Remove () {
-        localStorage.removeItem("session");
+    Remove() {
+        sessionStorage.removeItem("session");
     }
 
 }

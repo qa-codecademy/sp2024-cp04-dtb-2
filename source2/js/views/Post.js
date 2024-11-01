@@ -15,15 +15,15 @@ export default class Post extends AbstractView {
     this.setTitle("Post Details");
   }
 
-  
+
 
   async getHtml() {
     btnService.filterBtn.style.display = "none";
     btnService.loadMoreBtn.style.display = "none";
     let user = sessionService.Get();
     if (user != null || user != undefined) {
-      let star =  await apiCaller.fetchFromDB(`https://localhost:7073/api/Stars`, "POST", { userId : user.id, postId : this.params.id });
-      if (star != null || star != undefined ) {
+      let star = await apiCaller.fetchFromDB(`https://localhost:7073/api/Stars`, "POST", { userId: user.id, postId: this.params.id });
+      if (star != null || star != undefined) {
         let starNum = star.rating;
         eventService.updateCurrentRating(starNum);
         eventService.updateCurrentPostId(this.params.id);
@@ -34,6 +34,33 @@ export default class Post extends AbstractView {
     }
     let post = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/${this.params.id}`, "GET");
     let imgSrc = `data:image/png;base64,${post.image}`;
+
+    
+    let commentsHTML = '';
+    for (let x of post.comments) {
+      if (user != null || user != undefined) {
+
+        if (x.userId === user.id) {
+          commentsHTML += `
+          <div class="comment">
+            <span class="user">${x.name}</span>
+            <span class="date">${x.date}</span>
+            <p>${x.text}</p>
+            <button class ="btn btn-primary" id="commentDelete">Delete</button>
+            <button class ="btn btn-primary" id="commentEdit">Edit</button>
+            </div>
+          `
+        }
+      } else {
+        commentsHTML += `
+            <div class="comment">
+              <span class="user">${x.name}</span>
+              <span class="date">${x.date}</span>
+              <p>${x.text}</p>
+            </div>`;
+      }
+    }
+
 
     return `<div class="singleCard mb-3" id="singlePostId">
               <div class="row g-0">
@@ -99,13 +126,14 @@ export default class Post extends AbstractView {
                     <input type= "text" id = "commentName" placeholder="Name (optional)">
                     <label for="commentText">Your Comment:</label>
                     <textarea type="text" id="commentText" name="commentText" placeholder="Type your comment here..." required></textarea>
-                    <button type="submit">Post Comment</button>
+                    <button type="submit" id ="commentPostBtn">Post Comment</button>
                   </form>
                 </div>
                 <br>
                 <br>
         
                 <div id="addedComments">
+                ${commentsHTML}
                 </div>
                 <!-- Add more comments here... -->
               </div>
@@ -114,8 +142,8 @@ export default class Post extends AbstractView {
             <br><br>`;
   }
 
-  async init() {
-    // Add any additional initialization here if needed
-    await eventService.addStarEventListeners();
-}
-}
+  // async init() {
+  //   // Add any additional initialization here if needed
+  //   await eventService.addStarEventListeners();
+  // }
+} 

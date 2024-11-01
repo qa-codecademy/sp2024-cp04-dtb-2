@@ -15,7 +15,7 @@ const getParams = match => {
     const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(result => result[1]);
 
     console.log(Array.from(match.route.path.matchAll(/:(\w+)/g)));
-    
+
     return Object.fromEntries(keys.map((key, i) => {
         return [key, values[i]];
     }));
@@ -29,16 +29,16 @@ const naviageteTo = url => {
 };
 
 const router = async () => {
-    
-    switch(location.pathname){
+
+    switch (location.pathname) {
         case "/filterbyold":
             postFilterService.updateFilter({ sortBy: "old" });
             break;
-        
+
         case "/filterbynew":
             postFilterService.updateFilter({ sortBy: "new" });
             break;
-        
+
         case "/filterbymostpopular":
             postFilterService.updateFilter({ sortBy: "popular" });
             break;
@@ -50,12 +50,12 @@ const router = async () => {
         { path: "/", view: () => new Posts(postFilterService.filters) },
         { path: "/posts/:id", view: Post },
         { path: "/aboutus", view: AboutUs },
-        { path: "/filterbyold", view: () => new Posts(postFilterService.filters)},
-        { path: "/filterbynew", view: () => new Posts(postFilterService.filters)},
-        { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters)}
+        { path: "/filterbyold", view: () => new Posts(postFilterService.filters) },
+        { path: "/filterbynew", view: () => new Posts(postFilterService.filters) },
+        { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters) }
     ]
 
-            const potentialMatches = routes.map(route => {
+    const potentialMatches = routes.map(route => {
         return {
             route: route,
             result: location.pathname.match(pathToRegex(route.path))
@@ -78,17 +78,18 @@ const router = async () => {
         //     await view.init();
         // }
     } else {
-        view = match.route.view();  
+        view = match.route.view();
     }
 
     if (view && view.getHtml) {
         document.querySelector("#contentPart").innerHTML = await view.getHtml();
-        
-        eventService.addStarEventListeners();
-    
+
+
         // Check if the current view is an instance of Post
         if (view instanceof Post) {
+            eventService.addStarEventListeners();
             eventService.paintStars(eventService.currentRating);
+            eventService.commentListener();
         }
     }
 };
