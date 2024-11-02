@@ -335,13 +335,18 @@ class EventService {
     commentListener(){
         document.getElementById('commentForm').addEventListener('submit', async(e)=>{
             e.preventDefault();
-            let commentName = document.getElementById("commentName").value;
-            let commentText = document.getElementById("commentText").value;
-            let user = sessionService.Get();
-            if(user === null || user === undefined){
+            const commentNameElement = document.getElementById("commentName");
+            const commentTextElement = document.getElementById("commentText");
+
+            const commentName = commentNameElement.value || "Anonymous";
+            const commentText = commentTextElement.value;
+
+            const user = sessionService.Get();
+            if(!user){
                 console.log("YOu must be logged in");
+                modalService.showModal("loginModal");
+                this.loginModalListener();
                 return
-                
             }
             if(commentText === null || commentText == ""){
                 console.log("Invalid comment");
@@ -353,19 +358,119 @@ class EventService {
             let commentContainer = document.getElementById("addedComments");
             let comment = document.createElement("div");
             comment.innerHTML = `
-                <div class="comment">
+                <div class="comment" data-id="${response.id}">
                     <span class="user">${commentName}</span>
                     <span class="date">${new Date().toLocaleString()}</span>
-                    <p>${commentText}</p>
-                    <button class ="btn btn-primary" id="commentDelete">Delete</button>
-                    <button class ="btn btn-primary" id="commentEdit">Edit</button>
+                    <p class="text">${commentText}</p>
+                    <button class ="btn btn-danger commentDelete">Delete</button>
+                    <button class ="btn btn-warning commentEdit">Edit</button>
                 </div>
         
             `;
-            
+
+            commentNameElement.value = '';
+            commentTextElement.value = '';
             commentContainer.insertAdjacentElement("afterbegin", comment);
+            console.log(commentContainer);
+            this.editCommentListener();
+            this.deleteCommentListener();
         });
     }
+
+    editCommentListener(){
+        const editButtons = document.getElementsByClassName("commentEdit");
+        Array.from(editButtons).forEach(button => {
+            button.addEventListener('click', async (e) => {
+                e.preventDefault();
+    
+                const user = sessionService.Get();
+                if (!user) {
+                    console.log("You must be logged in");
+                    modalService.showModal("loginModal");
+                    this.loginModalListener();
+                    return;
+                }
+    
+                const commentElement = button.closest(".comment");
+    
+                const commentId = commentElement.dataset.id;
+                const elements = commentElement.children;
+                const commentName = elements[0].innerHTML;
+                const commentDate = elements[1].innerHTML;
+                const commentText = elements[2].innerHTML;  
+    
+                commentElement.innerHTML = `
+                    <form id="commentEditForm" data-id="${commentId}">
+                        <label for="editCommentText">Edit text</label>
+                        <textarea id="editCommentText" name="commentText" placeholder="Type your comment here..." required>${commentText}</textarea>
+                        <button type="submit" class="btn btn-success" id="editCommentPostBtn">Done</button>
+                    </form>
+                `;
+    
+                document.getElementById("commentEditForm").addEventListener("submit", async(e) => {
+                    e.preventDefault();
+    
+                    const user = sessionService.Get();
+                    if (!user) {
+                        console.log("You must be logged in");
+                        modalService.showModal("loginModal");
+                        this.loginModalListener();
+                        return;
+                    }
+    
+                    let editedText = document.getElementById("editCommentText").value;
+    
+                    if (editedText === '') {
+                        editedText = commentText;
+                    } else{
+                        console.log('commentId:', commentId);
+                        console.log('editing..');
+                        await apiCaller.fetchFromDB('https://localhost:7073/api/Comment', "PUT", {userId: user.id, text: editedText, id: commentId}, user.token)
+                    }
+    
+                    commentElement.innerHTML = `
+                        <span class="user">${commentName}</span>
+                        <span class="date">${commentDate}</span>
+                        <p>${editedText}</p>
+                        <button class="btn btn-danger commentDelete">Delete</button>
+                        <button class="btn btn-warning commentEdit">Edit</button>
+                    `;
+    
+                    this.editCommentListener();
+                });
+            });
+        });
+    }
+
+    deleteCommentListener(){
+        const deleteButtons = document.getElementsByClassName("commentDelete");
+        Array.from(deleteButtons).forEach(button =>{
+            button.addEventListener('click', async(e)=>{
+                    e.preventDefault();
+            
+                        const user = sessionService.Get();
+                        if (!user) {
+                            console.log("You must be logged in");
+                            modalService.showModal("loginModal");
+                            this.loginModalListener();
+                            return;
+                        }
+        
+                        const comment = (button.closest(".comment"));
+                        const commentId = comment.dataset.id;
+
+                        console.log("deleting comment...");
+        
+                        let result = await apiCaller.fetchFromDB('https://localhost:7073/api/Comment', 'DELETE', {id: commentId, userId: user.id }, user.token);
+                        if (result.status !== 200){
+                            return;
+                        }
+                        comment.remove();
+            })
+        })
+    }
+    
+    
 }
 
 const eventService = new EventService();

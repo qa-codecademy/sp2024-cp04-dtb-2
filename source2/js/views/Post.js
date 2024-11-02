@@ -42,21 +42,21 @@ export default class Post extends AbstractView {
 
         if (x.userId === user.id) {
           commentsHTML += `
-          <div class="comment">
+          <div class="comment" data-id="${x.id}">
             <span class="user">${x.name}</span>
             <span class="date">${x.date}</span>
-            <p>${x.text}</p>
-            <button class ="btn btn-primary" id="commentDelete">Delete</button>
-            <button class ="btn btn-primary" id="commentEdit">Edit</button>
+            <p class="text">${x.text}</p>
+            <button class ="btn btn-danger commentDelete">Delete</button>
+            <button class ="btn btn-warning commentEdit">Edit</button>
             </div>
           `
         }
       } else {
         commentsHTML += `
-            <div class="comment">
+            <div class="comment" data-id="${x.id}">
               <span class="user">${x.name}</span>
               <span class="date">${x.date}</span>
-              <p>${x.text}</p>
+              <p class="text">${x.text}</p>
             </div>`;
       }
     }

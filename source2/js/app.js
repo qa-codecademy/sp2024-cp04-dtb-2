@@ -74,22 +74,18 @@ const router = async () => {
 
     if (typeof match.route.view === "function" && /^\s*class\s+/.test(match.route.view.toString())) {
         view = new match.route.view(getParams(match));
-        // if (view.init) {
-        //     await view.init();
-        // }
     } else {
         view = match.route.view();
     }
 
     if (view && view.getHtml) {
         document.querySelector("#contentPart").innerHTML = await view.getHtml();
-
-
-        // Check if the current view is an instance of Post
         if (view instanceof Post) {
             eventService.addStarEventListeners();
             eventService.paintStars(eventService.currentRating);
             eventService.commentListener();
+            eventService.editCommentListener();
+            eventService.deleteCommentListener();
         }
     }
 };
