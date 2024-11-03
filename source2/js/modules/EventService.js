@@ -188,7 +188,13 @@ class EventService {
             let result = await apiCaller.fetchFromDB(url, "POST", body);
             if (result != undefined) {
                 sessionService.Set(result);
-                navbarService.loggedInNavbar();
+                let isAdmin = sessionService.Get();
+                if (isAdmin.isAdmin === "False") {
+                    navbarService.loggedInNavbar();
+                    
+                } else {
+                    navbarService.adminNavbar();
+                }
                 this.logoutListener();        
                 this.themeListener();
                 this.createPostListener();
@@ -309,6 +315,7 @@ class EventService {
                 } else {
                     modalService.showModal("loginModal");
                     this.loginModalListener();
+                    this.clearStars();
 
                 };
             });
