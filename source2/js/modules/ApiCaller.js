@@ -1,6 +1,9 @@
+import loadingSpinnerService from "./loadingSpinnerService.js";
+
 export class ApiCaller {
     async fetchFromDB(url, method, body, token) {
         try {
+            loadingSpinnerService.displaySpinner();
             const headers = {
                 "Content-Type": "application/json",
             };
@@ -19,12 +22,15 @@ export class ApiCaller {
                 if (contentType && contentType.includes("application/json")) {
                     const result = await response.json();
                     console.log(result);
+                    loadingSpinnerService.hideSpinner();
                     return result;
                 } else {
                     console.log(response);
+                    loadingSpinnerService.hideSpinner();
                     return response;
                 }
             }
+            loadingSpinnerService.hideSpinner();
 
         } catch (error) {
             console.error("Error fetching posts:", error);

@@ -5,6 +5,7 @@ import postFilterService from "./modules/PostFilterService.js";
 import eventService from "./modules/EventService.js";
 import ModalService from "./modules/ModalService.js";
 import modalService from "./modules/ModalService.js";
+import themeService from "./modules/ThemeService.js";
 
 console.log("CONNECTED");
 
@@ -88,6 +89,7 @@ const router = async () => {
             eventService.deleteCommentListener();
         }
     }
+    themeService.themeCheck();
 };
 
 window.addEventListener("popstate", router);

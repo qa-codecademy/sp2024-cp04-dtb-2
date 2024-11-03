@@ -1,4 +1,4 @@
-export default class ThemeService {
+class ThemeService {
     /**
      *
      */
@@ -12,6 +12,13 @@ export default class ThemeService {
         } else {
             this.darkMode();
             this.isDarkTheme = true;
+        }
+    }
+    themeCheck(){
+        if (this.isDarkTheme) {
+            this.darkMode();
+        } else {
+            this.lightMode();
         }
     }
 
@@ -63,3 +70,6 @@ export default class ThemeService {
         });
     }
 }
+
+const themeService = new ThemeService();
+export default themeService;

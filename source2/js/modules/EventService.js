@@ -5,11 +5,10 @@ import ButtonService from "./ButtonService.js"
 import ModalService from "./ModalService.js";
 import SessionService from "./SessionService.js";
 import NavbarService from "./NavbarService.js";
-import ThemeService from "./ThemeService.js";
+import themeService from "./ThemeService.js";
 import uploadImageService from "./UploadImgService.js";
+import loadingSpinnerService from "./loadingSpinnerService.js";
 
-
-const themeService = new ThemeService();
 const navbarService = new NavbarService();
 const sessionService = new SessionService();
 const buttonService = new ButtonService();
@@ -46,8 +45,12 @@ class EventService {
     }
 
     async fetchNextPage() {
+        if(this.isSubmitting) return;
+        this.isSubmitting = true;
+
+
         console.log("starting to fetch next page");
-        console.log(postFilterService.filters);
+        // console.log(postFilterService.filters);
         const filters = postFilterService.getFilters();
         console.log(filters);
         
@@ -55,10 +58,10 @@ class EventService {
             postFilterService.updateFilter({ pageIndex: filters.pageIndex + 1 });
             
             const newPosts = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", filters);
-            console.log(newPosts);
 
             this.appendPostsToView(newPosts.posts);
         }
+        this.isSubmitting = false;
     }
 
     appendPostsToView(posts) {
@@ -164,7 +167,7 @@ class EventService {
         buttonService.newsLetterUnsubCloseBtn.addEventListener('click', ()=> {
             modalService.hideModal("unsubscribeModal");
         });
-
+ 
     }
     loginListener(){
         document.getElementById("loginBtn").addEventListener('click', ()=>{            
@@ -221,7 +224,7 @@ class EventService {
     }
     createPostModalListener () {
         document.getElementById("newPostBtn").addEventListener('click', async (e)=>{
-            if (this.isSubmitting) return; // Prevents duplicate submissions
+            if (this.isSubmitting) return; // Prevents duplicate requests
             this.isSubmitting = true;
             e.preventDefault();
             console.log("btn clicked");

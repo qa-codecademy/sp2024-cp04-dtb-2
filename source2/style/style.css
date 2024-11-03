@@ -136,7 +136,28 @@ main {
         /* justify-content: space-evenly; */
     }
 }
-
+@media (max-width: 980px){
+    #contentPartDiv {
+        padding-left: 3.5vw;
+        justify-items: center;
+    }
+    #contentPart{
+        grid-template: auto / repeat(2, 1fr); 
+        justify-items: center;
+    }
+    .card {
+        width: 45vw !important;
+        object-fit: fill;
+        height: auto;
+    }
+    .card-img-top {
+        height: 30vw !important;
+    }
+    #postImage {
+        max-width: 18rem;
+        padding-right: 1rem;
+    }
+}
 @media (max-width: 576px) { 
     /* main {
         display: flex;
