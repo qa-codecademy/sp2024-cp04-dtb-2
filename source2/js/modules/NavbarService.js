@@ -87,11 +87,25 @@ export default class NavbarService {
                                         alt="Brightness" style="width: 20px; height: 20px;"></button>
                             </li>
                             <li class="nav-item">
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createPostModal" id="createPostBtn">Create Post</button>
-                            </li>
-                            <li class="nav-item">
-                                <button type="button" class="btn btn-danger" id="logoutBtn">Log Out</button>
-                            </li>                            
+                                <div class="btn-group" id="profileIcon">
+                                    <button class="btn btn-secondary dropdown-toggle d-flex align-items-center" 
+                                        style="background-color: transparent;" 
+                                        type="button" id="dropdownMenuClickableInside" 
+                                        data-bs-toggle="dropdown" data-bs-auto-close="outside" 
+                                        aria-haspopup="true" aria-expanded="false">
+                                        <img src="/data/icons/person-circle.svg" id="lightDarkToggle" 
+                                            alt="Brightness" style="width: 20px; height: 20px;">
+                                    </button>
+                                    
+                                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuClickableInside" 
+                                        id="iconDropDown">
+                                        <a class="dropdown-item" id="myProfile">My Profile</a>
+                                        <a class="dropdown-item" id="createPostBtn" data-target="#createPostModal">Create Post</a>
+                                        <a class="dropdown-item" id="settings">Settings</a>
+                                        <a class="dropdown-item" id="logoutBtn">Log out</a>
+                                    </div>
+                                </div>      
+                            </li>       
                         </ul>
                     </div>
                 </div>
@@ -137,11 +151,26 @@ export default class NavbarService {
                                         alt="Brightness" style="width: 20px; height: 20px;"></button>
                             </li>
                             <li class="nav-item">
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createPostModal" id="createPostBtn">Create Post</button>
-                            </li>
-                            <li class="nav-item">
-                                <button type="button" class="btn btn-danger" id="logoutBtn">Log Out</button>
-                            </li>                            
+                                <div class="btn-group" id="profileIcon">
+                                    <button class="btn btn-secondary dropdown-toggle d-flex align-items-center" 
+                                        style="background-color: transparent;" 
+                                        type="button" id="dropdownMenuClickableInside" 
+                                        data-bs-toggle="dropdown" data-bs-auto-close="outside" 
+                                        aria-haspopup="true" aria-expanded="false">
+                                        <img src="/data/icons/person-circle.svg" id="lightDarkToggle" 
+                                            alt="Brightness" style="width: 20px; height: 20px;">
+                                    </button>
+                                    
+                                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuClickableInside" 
+                                        id="iconDropDown">
+                                        <a class="dropdown-item" id="myProfile">My Profile</a>
+                                        <a class="dropdown-item" id="createPostBtn" data-target="#createPostModal">Create Post</a>
+                                        <a class="dropdown-item" id="settings">Settings</a>
+                                        <a class="dropdown-item" id="adminPanel">Admin Panel</a>
+                                        <a class="dropdown-item" id="logoutBtn">Log out</a>
+                                    </div>
+                                </div>       
+                            </li>              
                         </ul>
                     </div>
                 </div>
@@ -149,3 +178,19 @@ export default class NavbarService {
         `
     }
 }
+
+
+/* <li class="nav-item"> */
+                                // {/* <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createPostModal" id="createPostBtn">Create Post</button>
+                            // </li>
+                            // <li class="nav-item">
+                                // <button type="button" class="btn btn-danger" id="logoutBtn">Log Out</button>
+                            // </li>                      */}
+
+
+// // <li class="nav-item">
+// <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createPostModal" id="createPostBtn">Create Post</button>
+// </li>
+// <li class="nav-item">
+//     <button type="button" class="btn btn-danger" id="logoutBtn">Log Out</button>
+// </li>   

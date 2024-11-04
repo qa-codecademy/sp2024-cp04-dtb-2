@@ -189,7 +189,8 @@ class EventService {
             if (result != undefined) {
                 sessionService.Set(result);
                 let isAdmin = sessionService.Get();
-                if (isAdmin.isAdmin === "False") {
+                console.log(isAdmin);
+                if (isAdmin.token.isAdmin === "False") {
                     navbarService.loggedInNavbar();
                     
                 } else {
@@ -281,6 +282,10 @@ class EventService {
             }
 
             setTimeout(() => modalService.hideModal("createPostModal"), 100);
+        });
+        buttonService.closeCreatePostModal.addEventListener('click', (e)=> {
+            e.preventDefault();
+            modalService.hideModal("createPostModal");
         })
     }
 
@@ -316,7 +321,6 @@ class EventService {
                     modalService.showModal("loginModal");
                     this.loginModalListener();
                     this.clearStars();
-
                 };
             });
         });

@@ -161,3 +161,17 @@ dist
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node
+
+
+# #Todor Pelivanov
+# 5:11 PM
+# adminite da stavaat samo adovi (baneri)
+# adminite imaat statistic page/ da ima statistics page?
+# adminite da mozat da brisat useri i postovi
+# userite mozat da si editiraat i izbrisat i postovi i sopstveniot akaunt
+# soft delete (deactivate account) i hard delete (delete account)?
+# Profile page (edit profile info)
+# Da se refaktorira create post kartickata
+# Site ostanati bagovi da se dosredat
+# responsivnost
+# kzc-hbom-juz
