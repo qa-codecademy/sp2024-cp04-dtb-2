@@ -36,6 +36,7 @@ export default class Posts extends AbstractView {
         btnService.loadMoreBtn.style.display = "block";
         let resultHtml = "";
         posts.forEach(element => {
+            element.tags = element.tags.map(x => `[ ${x} ]`).join(' ');
             let imgSrc = `data:image/png;base64,${element.image}`;
             resultHtml += `
                 <div class="card" style="width: 25vw" id="card-${element.id}">
@@ -54,12 +55,13 @@ export default class Posts extends AbstractView {
                         </div>
                         <br>
                         <div class="tags">
-                            <p><small>Tags: ${element.tags}</small></p>
+                        <button type="button" class="btn btn-secondary btn-sm disabled">${element.tags}</button>
                         </div>  
-                    </div>
-                </div>
-            `;
-        });
-        return resultHtml;
-    }
-}
+                        </div>
+                        </div>
+                        `;
+                    });
+                    return resultHtml;
+                }
+            }
+            // <p><small>Tags: ${element.tags}</small></p>

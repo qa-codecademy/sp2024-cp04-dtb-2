@@ -29,7 +29,8 @@ class ThemeService {
         document.getElementById("srcIcon").setAttribute("src", "/data/icons/search.svg");
         document.getElementById("filterIcon").setAttribute("src", "/data/icons/filter.svg");
         document.getElementById("lightDarkToggle").setAttribute("src", "/data/icons/brightness-high-fill.svg");
-        document.getElementById("loginBtn").setAttribute("class", "btn btn-dark");
+        let loginBtn = document.getElementById("loginBtn");
+        if(loginBtn) loginBtn.setAttribute("class", "btn btn-dark");
         document.getElementById("dropdownMenuClickableInside").setAttribute("style", "color: black;");
         document.getElementById('backBtn').innerHTML = `<img src='/data/icons/arrow-left.svg'>`
         document.querySelectorAll(".starsIcon").forEach(function (element) {
@@ -52,7 +53,8 @@ class ThemeService {
         document.getElementById("srcIcon").setAttribute("src", "/data/icons/searchWhite.svg");
         document.getElementById("filterIcon").setAttribute("src", "/data/icons/filterWhite.svg");
         document.getElementById("lightDarkToggle").setAttribute("src", "/data/icons/moon.svg");
-        document.getElementById("loginBtn").setAttribute("class", "btn btn-light");
+        let loginBtn = document.getElementById("loginBtn");
+        if(loginBtn) loginBtn.setAttribute("class", "btn btn-light");
         document.getElementById("dropdownMenuClickableInside").setAttribute("style", "color: white;");
         document.getElementById('backBtn').innerHTML = `<img src='/data/icons/arrow-left-dark.svg'>`
         document.querySelectorAll(".starsIcon").forEach(function (element) {

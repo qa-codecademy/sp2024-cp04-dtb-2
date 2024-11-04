@@ -17,6 +17,7 @@ const modalService = new ModalService();
 
 class EventService {
     constructor() {
+        this.windowRefreshListener();
         this.currentPostId = null;
         this.currentRating = null;
         this.isScrollActive = true;
@@ -52,7 +53,7 @@ class EventService {
         console.log("starting to fetch next page");
         // console.log(postFilterService.filters);
         const filters = postFilterService.getFilters();
-        console.log(filters);
+        // console.log(filters);
         
         if (postFilterService.filters.pageIndex < postFilterService.filters.totalPages) {
             postFilterService.updateFilter({ pageIndex: filters.pageIndex + 1 });
@@ -64,11 +65,23 @@ class EventService {
         this.isSubmitting = false;
     }
 
+    windowRefreshListener(){
+        window.addEventListener('load', async (e)=>{
+            const user = sessionService.Get();
+            if(!user) return;
+
+            // this.logoutListener();
+            // this.createPostListener();
+            navbarService.loggedInNavbar();
+        })
+    }
+
     appendPostsToView(posts) {
         const contentPart = document.querySelector("#contentPart");
         let resultHtml = "";
         
         posts.forEach(element => {
+            element.tags = element.tags.map(x => `[ ${x} ]`).join(' ');
             let imgSrc = `data:image/png;base64,${element.image}`;
             resultHtml += `
                 <div class="card" style="width: 25vw" id="card-${element.id}">
@@ -88,7 +101,7 @@ class EventService {
                         </div>
                         <br>
                         <div class="tags">
-                            <p><small>Tags: ${element.tags}</small></p>
+                            <button type="button" class="btn btn-secondary btn-sm disabled">${element.tags}</button>
                         </div>  
                     </div>
                 </div>
@@ -133,7 +146,6 @@ class EventService {
     newsLetterListener () {
 
         buttonService.newsLetterBtn.addEventListener('click', () => {
-            
             modalService.showModal("subscribeModal");
         });
         buttonService.showUnsubBtn.addEventListener('click', () => {
@@ -207,7 +219,6 @@ class EventService {
             this.loginListener();
             this.loginModalListener();
             this.themeListener();
-
         });
     }
     themeListener (){
@@ -220,7 +231,15 @@ class EventService {
         document.getElementById("createPostBtn").addEventListener('click', ()=> {
             modalService.showModal("createPostModal");
         });
+        this.closeCreatePostListener();
         this.createPostModalListener();
+
+    }
+    closeCreatePostListener() {
+        document.getElementById("closeCreatePostModal").addEventListener('click', async(e) =>{
+            e.preventDefault();
+            modalService.hideModal("createPostModal");
+        })
     }
     createPostModalListener () {
         document.getElementById("newPostBtn").addEventListener('click', async (e)=>{
@@ -471,6 +490,11 @@ class EventService {
                         comment.remove();
             })
         })
+    }
+    loggedInNavBarListeners(){
+        this.createPostListener();
+        this.logoutListener();
+        this.newsLetterListener();
     }
     
     

@@ -61,6 +61,8 @@ export default class Post extends AbstractView {
       }
     }
 
+    post.tags = post.tags.map(x => `[ ${x} ]`).join(' ');
+
 
     return `<div class="singleCard mb-3" id="singlePostId">
               <div class="row g-0">
@@ -72,7 +74,7 @@ export default class Post extends AbstractView {
                   <div class="singleCard-body">
                     <h2 class="card-title card-header"> ${post.title}</h2>
                     <small>Created by - <a style="color: #00b13d"  id="${post.user.id}">${post.user.fullname}</a> on ${post.postingTime}  </small><br>
-                    <small>tags- ${post.tags}</small>
+                    <button type="button" class="btn btn-secondary btn-sm disabled">${post.tags}</button>
                     <hr>
                     <p class="singleCard-text">${post.text}</p>
                     <div class="card" style="width: 70vw;">

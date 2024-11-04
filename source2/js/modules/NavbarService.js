@@ -1,3 +1,4 @@
+import eventService from "./EventService.js";
 export default class NavbarService {
     defaultNavbar (){
         document.getElementById('navbar').innerHTML =
@@ -97,5 +98,6 @@ export default class NavbarService {
                 </div>
             </div>
         `
+        eventService.loggedInNavBarListeners();
     }
 }

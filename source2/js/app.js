@@ -53,7 +53,9 @@ const router = async () => {
         { path: "/aboutus", view: AboutUs },
         { path: "/filterbyold", view: () => new Posts(postFilterService.filters) },
         { path: "/filterbynew", view: () => new Posts(postFilterService.filters) },
-        { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters) }
+        { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters) },
+        // { path: "/filterbymonthandyear", view: () => new Posts(postFilterService.filters) },
+        // { path: "/filterbytags", view: () => new Posts(postFilterService.filters) }
     ]
 
     const potentialMatches = routes.map(route => {
