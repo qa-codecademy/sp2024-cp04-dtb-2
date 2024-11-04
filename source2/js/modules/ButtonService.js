@@ -10,5 +10,6 @@
         this.loginBtn = document.querySelector('#loginBtn');
         this.logginCloseBtn = document.querySelector('#logginClose');
         this.logoutBtn = document.getElementById('logoutBtn');
+        this.closeCreatePostModal = document.getElementById("closeCreatePostModal");
     }
 }

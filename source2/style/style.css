@@ -504,3 +504,26 @@ a:hover {
 .star-rating label:hover ~ label svg {
     fill: gold; /* Gold color when selected or hovered */
 }
+
+/* Position the dropdown to open to the left */
+.dropdown-menu-left {
+    left: auto !important;
+    right: 0; /* Aligns the dropdown to the left of the button */
+    transform: translateX(0%); /* Moves it left */
+    max-width: 200px;
+    overflow-x: hidden;
+}
+
+/* Ensure it doesn’t overflow the viewport */
+.btn-group {
+    position: relative;
+}
+
+.dropdown-menu-left {
+    position: absolute;
+    top: 100%; /* Position it below the button */
+    right: 0; /* Ensure it opens to the left */
+}
+#profileIcon {
+    align-self: center;
+}

@@ -200,7 +200,14 @@ class EventService {
             let result = await apiCaller.fetchFromDB(url, "POST", body);
             if (result != undefined) {
                 sessionService.Set(result);
-                navbarService.loggedInNavbar();
+                let isAdmin = sessionService.Get();
+                console.log(isAdmin);
+                if (isAdmin.token.isAdmin === "False") {
+                    navbarService.loggedInNavbar();
+                    
+                } else {
+                    navbarService.adminNavbar();
+                }
                 this.logoutListener();        
                 this.themeListener();
                 this.createPostListener();
@@ -294,6 +301,10 @@ class EventService {
             }
 
             setTimeout(() => modalService.hideModal("createPostModal"), 100);
+        });
+        buttonService.closeCreatePostModal.addEventListener('click', (e)=> {
+            e.preventDefault();
+            modalService.hideModal("createPostModal");
         })
     }
 
@@ -328,7 +339,7 @@ class EventService {
                 } else {
                     modalService.showModal("loginModal");
                     this.loginModalListener();
-
+                    this.clearStars();
                 };
             });
         });
