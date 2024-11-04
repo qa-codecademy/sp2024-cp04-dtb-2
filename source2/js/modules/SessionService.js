@@ -9,6 +9,11 @@ export default class SessionService {
     Get() {
         const found = sessionStorage.getItem("session")
         const parsed = JSON.parse(found);
+        return parsed;
+    }
+    GetParsedToken() {
+        const found = sessionStorage.getItem("session")
+        const parsed = JSON.parse(found);
 
         if (parsed && parsed.token) {
             const decodedToken = this.parseJwt(parsed.token);

@@ -200,7 +200,7 @@ class EventService {
             let result = await apiCaller.fetchFromDB(url, "POST", body);
             if (result != undefined) {
                 sessionService.Set(result);
-                let isAdmin = sessionService.Get();
+                let isAdmin = sessionService.GetParsedToken();
                 console.log(isAdmin);
                 if (isAdmin.token.isAdmin === "False") {
                     navbarService.loggedInNavbar();
@@ -470,6 +470,7 @@ class EventService {
                     `;
     
                     this.editCommentListener();
+                    this.deleteCommentListener();
                 });
             });
         });
