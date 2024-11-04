@@ -6,6 +6,8 @@ import eventService from "./modules/EventService.js";
 import ModalService from "./modules/ModalService.js";
 import modalService from "./modules/ModalService.js";
 import themeService from "./modules/ThemeService.js";
+import Settings from "./views/Settings.js";
+import MyPosts from "./views/MyPosts.js";
 
 console.log("CONNECTED");
 
@@ -54,6 +56,8 @@ const router = async () => {
         { path: "/filterbyold", view: () => new Posts(postFilterService.filters) },
         { path: "/filterbynew", view: () => new Posts(postFilterService.filters) },
         { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters) },
+        { path: "/settings", view: Settings },
+        { path: "/settings/myposts", view: MyPosts },
         // { path: "/filterbymonthandyear", view: () => new Posts(postFilterService.filters) },
         // { path: "/filterbytags", view: () => new Posts(postFilterService.filters) }
     ]
@@ -90,6 +94,18 @@ const router = async () => {
             eventService.editCommentListener();
             eventService.deleteCommentListener();
         }
+    }
+    if (view instanceof Settings) {
+        let contentPart = document.getElementById("contentPart");
+        contentPart.classList.remove("contentPart");
+        contentPart.classList.add("settingsStyle");
+        
+    }
+    if (view instanceof Posts) {
+        let contentPart = document.getElementById("contentPart");
+        contentPart.classList.remove("settingsStyle");
+        contentPart.classList.add("contentPart");
+        
     }
     themeService.themeCheck();
 };

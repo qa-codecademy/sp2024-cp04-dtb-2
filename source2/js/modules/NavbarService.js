@@ -102,7 +102,7 @@ export default class NavbarService {
                                         id="iconDropDown">
                                         <a class="dropdown-item" id="myProfile">My Profile</a>
                                         <a class="dropdown-item" id="createPostBtn" data-target="#createPostModal">Create Post</a>
-                                        <a class="dropdown-item" id="settings">Settings</a>
+                                        <a class="dropdown-item" href = "/settings" id="settings" data-link>Settings</a>
                                         <a class="dropdown-item" id="logoutBtn">Log out</a>
                                     </div>
                                 </div>      
