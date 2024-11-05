@@ -350,6 +350,42 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="editPostModal" tabindex="-1" role="dialog" aria-labelledby="editPostModalLabel" style="display: none ;" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="justify-content: center;">
+                <h5 class="modal-title">Edit current post</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="editCurrentPostForm">
+                        <div class="form-group" style="justify-content: center;">
+                            <label for="editPostTitle" style="text-align: center;">Post Title</label>
+                            <input type="text" class="form-check" id="editPostTitle" placeholder="Enter post title here!" required>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label for="editPostText">Post text</label>
+                            <textarea class="form-control" id="editPostText" placeholder="Please enter the post text here" required></textarea>
+                        </div>
+                        <hr>
+                        <hr>
+                        <div class="mb-3">
+                            <label for="editPostDescription">Post description</label>
+                            <textarea class="form-control" id="editPostDescription" placeholder="Please enter the post description here" required></textarea>
+                        </div>
+                        <hr>
+                        
+                        <hr>
+                        
+                    </form>
+                </div>  
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="close" id="closeEditPostModal">Close</button>
+                    <button type="button" class="btn btn-outline-success" id="editPostSaveBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div id="loadIndicator" style="visibility: hidden" style="width: 3rem; height: 3rem;"  class="text-center">

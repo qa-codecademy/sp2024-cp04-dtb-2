@@ -32,6 +32,7 @@ class EventService {
         this.loginModalListener();
         this.themeListener();
         this.createPostListener();
+        this.editPostModalListener();
         // this.logoutListener(); 
         // this.addStarEventListeners();
     }
@@ -308,6 +309,21 @@ class EventService {
         })
     }
 
+    editPostModalListener(){
+
+        buttonService.editPostSaveBtn.addEventListener('click', async (e)=>{
+            console.log("save clicked");
+            
+        })
+
+        buttonService.closeEditPostModal.addEventListener('click', (e)=>{
+            e.preventDefault();
+            console.log("close clicked");
+            
+            modalService.hideModal("editPostModal");
+        })
+    }
+
     addStarEventListeners() {
 
         document.querySelectorAll('input[name="rating"]').forEach(star => {
@@ -508,6 +524,112 @@ class EventService {
         this.logoutListener();
         this.newsLetterListener();
     }
+
+    editUser(){
+
+    }
+
+    changeToSaveBtn(btn, id){
+        btn.id = id;
+        btn.classList.remove("btn-outline-warning");
+        btn.classList.add("btn-outline-success");
+        btn.innerHTML = "Save";
+        console.log(btn);
+    }
+    changeToEditBtn(btn, id){
+        btn.id = id;
+        btn.classList.remove("btn-outline-success");
+        btn.classList.add("btn-outline-warning");
+        btn.innerHTML = "Edit";
+        console.log(btn);
+        return btn;
+    }
+
+    saveUserSettings = async(data) =>{
+        const found = sessionService.Get();
+        if(found){
+            found.firstName = data.firstName;
+            found.lastName = data.lastName;
+            found.email = data.email;
+            sessionService.Set(found);
+
+            document.getElementById("settingsWelcomeMessage").innerHTML = `Hi ${found.firstName} ${found.lastName}!`;
+            
+            const response = await apiCaller.fetchFromDB("https://localhost:7073/api/user", "PUT", data, found.token);
+            console.log(response);
+        }
+    }
+
+    settingsListener() {
+        const editFirstNameBtn = document.getElementById("firstNameSettingsBtn");
+        const editLastNameBtn = document.getElementById("lastNameSettingsBtn");
+        const editEmailBtn = document.getElementById("emailSettingsBtn");
+    
+        const firstNameSettings = document.getElementById("firstNameSettings");
+        const lastNameSettings = document.getElementById("lastNameSettings");
+        const emailSettings = document.getElementById("emailSettings");
+    
+        const toggleEditSave = (btn, input, editId, saveId) => {
+            if (input.disabled) {
+                input.disabled = false;
+                this.changeToSaveBtn(btn, saveId);
+            } else {
+                input.disabled = true;
+                this.changeToEditBtn(btn, editId);
+    
+                const updatedData = {
+                    firstName: firstNameSettings.value,
+                    lastName: lastNameSettings.value,
+                    email: emailSettings.value
+                };
+    
+                this.saveUserSettings(updatedData);
+            }
+        };
+    
+        editFirstNameBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleEditSave(editFirstNameBtn, firstNameSettings, "firstNameSettingsBtn", "saveFirstNameBtn");
+        });
+    
+        editLastNameBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleEditSave(editLastNameBtn, lastNameSettings, "lastNameSettingsBtn", "saveLastNameBtn");
+        });
+    
+        editEmailBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleEditSave(editEmailBtn, emailSettings, "emailSettingsBtn", "saveEmailBtn");
+        });
+    }
+
+    editPostListener() {
+        let editBtn = document.getElementById("editPostBtn");
+        if (editBtn) {
+            const editPostId = editBtn.value;
+            console.log(editPostId);
+            
+            editBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+    
+                let foundPost = document.querySelector('.singleCard-body');
+                console.log(foundPost);
+                
+    
+                // Get the current values from the HTML
+                const currentTitle = foundPost.querySelector('.card-title').innerText; // Fetch the current title
+                const currentText = foundPost.querySelector('.singleCard-text').innerText; // Fetch the current text
+                const userId = foundPost.querySelector('a').id; // Fetch the user ID
+                modalService.showModal("editPostModal");
+                
+                // Update the innerHTML with input elements
+                
+            });
+        }
+    }
+    
+    
+    
     
     
 }

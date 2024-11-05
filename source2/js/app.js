@@ -93,13 +93,14 @@ const router = async () => {
             eventService.commentListener();
             eventService.editCommentListener();
             eventService.deleteCommentListener();
+            eventService.editPostListener();
         }
     }
     if (view instanceof Settings) {
         let contentPart = document.getElementById("contentPart");
         contentPart.classList.remove("contentPart");
         contentPart.classList.add("settingsStyle");
-        
+        eventService.settingsListener();
     }
     if (view instanceof Posts) {
         let contentPart = document.getElementById("contentPart");

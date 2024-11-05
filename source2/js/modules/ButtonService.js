@@ -11,5 +11,7 @@
         this.logginCloseBtn = document.querySelector('#logginClose');
         this.logoutBtn = document.getElementById('logoutBtn');
         this.closeCreatePostModal = document.getElementById("closeCreatePostModal");
-    }
+        this.closeEditPostModal = document.getElementById("closeEditPostModal");
+        this.editPostSaveBtn = document.getElementById("editPostSaveBtn");
+        }
 }
