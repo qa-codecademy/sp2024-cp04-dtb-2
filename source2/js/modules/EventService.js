@@ -33,6 +33,9 @@ class EventService {
         this.themeListener();
         this.createPostListener();
         this.editPostModalListener();
+        this.MonthFilterListener ();
+        this.MonthModalListener();
+
         this.warningAlert = 'warningAlert';
         this.successAlert = 'successAlert';
         // this.logoutListener(); 
@@ -707,7 +710,7 @@ class EventService {
 
                 const user = sessionService.Get();
                 if(!user){
-                    console.log("YOu must be logged in");
+                    console.log("You must be logged in");
                     modalService.showModal("loginModal");
                     this.loginModalListener();
                     return;
@@ -728,6 +731,39 @@ class EventService {
                 this.alert(this.warningAlert, `Post wasn't deleted successfully!`);
             })
         })
+    }
+
+    MonthFilterListener () {
+        buttonService.monthFilter.addEventListener("click", (e) => {
+            e.preventDefault();
+            modalService.showModal("monthModal");
+
+        });
+        this.MonthModalListener();
+    }
+    MonthModalListener () {
+        buttonService.monthmodalSubmitBtn.addEventListener("click", async (e)  => {
+            e.preventDefault();
+            let dateValue = document.getElementById("dateValue").value;
+            console.log(dateValue);
+            let splitValues = dateValue.split("-");
+            console.log(splitValues);
+            let year = splitValues[0];
+            let month = splitValues[1];
+            
+            postFilterService.updateFilter({undefined, undefined, undefined, tags: [""] , year, month});
+            let filters = postFilterService.getFilters();
+            let response = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", filters);
+            console.log(response);
+            
+            modalService.hideModal("monthModal");
+        });
+        
+        buttonService.closeCreatePostModal.addEventListener("click", (e) =>{
+            e.preventDefault();
+            modalService.hideModal("monthModal");
+        } )
+
     }
     
     

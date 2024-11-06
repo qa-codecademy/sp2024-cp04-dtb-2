@@ -13,5 +13,8 @@
         this.closeCreatePostModal = document.getElementById("closeCreatePostModal");
         this.closeEditPostModal = document.getElementById("closeEditPostModal");
         this.editPostSaveBtn = document.getElementById("editPostSaveBtn");
+        this.monthFilter = document.querySelector('#monthFilter');
+        this.monthModalCloseBtn = document.querySelector('#monthModalCloseBtn');
+        this.monthmodalSubmitBtn = document.querySelector('#monthModalSubmitBtn');
         }
 }

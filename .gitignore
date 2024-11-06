@@ -170,8 +170,9 @@ dist
 # adminite da mozat da brisat useri i postovi
 # userite mozat da si editiraat i izbrisat i postovi i sopstveniot akaunt
 # soft delete (deactivate account) i hard delete (delete account)?
-# Profile page (edit profile info)
+# Profile page (edit profile info)  DONE                                            DONE
 # Da se refaktorira create post kartickata
 # Site ostanati bagovi da se dosredat
 # responsivnost
+# filterite 
 # kzc-hbom-juz

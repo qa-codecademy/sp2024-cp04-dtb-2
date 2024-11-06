@@ -56,6 +56,8 @@ const router = async () => {
         { path: "/filterbyold", view: () => new Posts(postFilterService.filters) },
         { path: "/filterbynew", view: () => new Posts(postFilterService.filters) },
         { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters) },
+        { path: "/filterbymonthandyear", view: () => new Posts(postFilterService.filters)},
+        { path: "/sortbytags", view: () => new Posts (postFilterService.filters)},
         { path: "/settings", view: Settings },
         { path: "/settings/myposts", view: MyPosts },
         // { path: "/filterbymonthandyear", view: () => new Posts(postFilterService.filters) },
@@ -88,22 +90,38 @@ const router = async () => {
     if (view && view.getHtml) {
         document.querySelector("#contentPart").innerHTML = await view.getHtml();
         if (view instanceof Post) {
+            let contentPart = document.getElementById("contentPart");
+            let contentPartDiv = document.getElementById("contentPartDiv");
             eventService.addStarEventListeners();
             eventService.paintStars(eventService.currentRating);
             eventService.commentListener();
             eventService.editCommentListener();
             eventService.deleteCommentListener();
             eventService.editPostListener();
+            
+            contentPartDiv.classList.remove("row");
+            contentPartDiv.classList.remove("justify-content-md-center");
+            contentPart.classList.remove("contentPart");
+            contentPart.classList.remove("col-md-10");
+            contentPart.classList.add("singlePostStyle");
         }
     }
     if (view instanceof Settings) {
+        let contentPartDiv = document.getElementById("contentPartDiv");
         let contentPart = document.getElementById("contentPart");
+        contentPartDiv.classList.add("row");
+        contentPartDiv.classList.add("justify-content-md-center");
         contentPart.classList.remove("contentPart");
         contentPart.classList.add("settingsStyle");
+        contentPart.classList.add("col-md-10");
         eventService.settingsListener();
     }
     if (view instanceof Posts) {
+        let contentPartDiv = document.getElementById("contentPartDiv");
         let contentPart = document.getElementById("contentPart");
+        contentPartDiv.classList.add("row");
+        contentPartDiv.classList.add("justify-content-md-center");
+        contentPart.classList.remove("col-md-10");
         contentPart.classList.remove("settingsStyle");
         contentPart.classList.add("contentPart");
         

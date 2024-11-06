@@ -199,7 +199,7 @@ main {
 
 #postImage {
     max-width: 30rem;
-    padding-right: 5rem;
+    /* padding-right: 5rem; */
 }
 
 #singlePostId {
@@ -527,6 +527,48 @@ a:hover {
 #profileIcon {
     align-self: center;
 }
-.settingsStyle {
+/* .settingsStyle { */
     
+/* } */
+.singlePostStyle {
+
+}
+
+#postImg {
+    display: flex;
+    justify-content: center;
+    background-color: #333  ;
+
+}
+#singlePostTitle {
+    justify-self: center;
+    font-size: x-large;
+}
+#holder {
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+#postText{
+    width: 74%;
+    padding-left: 10rem;
+}
+#ads {
+    width: 24%;
+    background-color: #333;
+}
+@media (max-width: 768px) {
+    #holder {
+        justify-content: center;
+    }
+    #postText {
+        width: 100%;
+    }
+    #ads {
+        
+        width: 80%;
+        height: 100px;
+    }
 }
