@@ -1,9 +1,8 @@
 import AbstractView from "./AbstractView.js";
 import ButtonService from "../modules/ButtonService.js";
 import SessionService from "../modules/SessionService.js";
-import { ApiCaller } from "../modules/ApiCaller.js";
+import apiCaller from "../modules/ApiCaller.js";
 
-const apiCaller = new ApiCaller();
 const sessionService = new SessionService();
 
 const buttonService = new ButtonService();

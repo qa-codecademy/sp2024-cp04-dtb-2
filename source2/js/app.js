@@ -108,6 +108,9 @@ const router = async () => {
         contentPart.classList.add("contentPart");
         
     }
+    if (view instanceof MyPosts){
+        eventService.MyPostsListener();
+    }
     themeService.themeCheck();
 };
 

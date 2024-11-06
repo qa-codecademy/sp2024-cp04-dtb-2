@@ -1,8 +1,15 @@
 import loadingSpinnerService from "./loadingSpinnerService.js";
 
-export class ApiCaller {
+class ApiCaller {
+    constructor() {
+        this.isFetching = false;
+    }
     async fetchFromDB(url, method, body, token) {
         try {
+            if(this.isFetching) return;
+
+            this.isFetching = true;
+
             loadingSpinnerService.displaySpinner();
             const headers = {
                 "Content-Type": "application/json",
@@ -23,13 +30,16 @@ export class ApiCaller {
                     const result = await response.json();
                     console.log(result);
                     loadingSpinnerService.hideSpinner();
+                    this.isFetching = false;
                     return result;
                 } else {
                     console.log(response);
                     loadingSpinnerService.hideSpinner();
+                    this.isFetching = false;
                     return response;
                 }
             }
+            this.isFetching = false;
             loadingSpinnerService.hideSpinner();
 
         } catch (error) {
@@ -38,3 +48,6 @@ export class ApiCaller {
     }
 
 }
+
+const apiCaller = new ApiCaller();
+export default apiCaller;

@@ -1,5 +1,5 @@
 import postFilterService from "./PostFilterService.js";
-import { ApiCaller } from "./ApiCaller.js";
+import apiCaller from "./ApiCaller.js";
 import ButtonService from "./ButtonService.js"
 // import modalService from "./ModalService.js";
 import ModalService from "./ModalService.js";
@@ -12,11 +12,11 @@ import loadingSpinnerService from "./loadingSpinnerService.js";
 const navbarService = new NavbarService();
 const sessionService = new SessionService();
 const buttonService = new ButtonService();
-const apiCaller = new ApiCaller();
 const modalService = new ModalService();
 
 class EventService {
     constructor() {
+        this.currentEditPostId = null;
         this.windowRefreshListener();
         this.currentPostId = null;
         this.currentRating = null;
@@ -33,8 +33,18 @@ class EventService {
         this.themeListener();
         this.createPostListener();
         this.editPostModalListener();
+        this.warningAlert = 'warningAlert';
+        this.successAlert = 'successAlert';
         // this.logoutListener(); 
         // this.addStarEventListeners();
+    }
+
+    alert(alertId,message){
+        document.getElementById(alertId).innerText = message;
+        document.getElementById(alertId).style.display = 'block';
+        setTimeout(() => {
+            document.getElementById(alertId).style.display = 'none';
+        }, 3500);
     }
 
     updateCurrentRating (number){
@@ -161,9 +171,13 @@ class EventService {
             const url = `https://localhost:7073/api/NewsLetters?email=${subedEmail}`;
             console.log(subedEmail);
             
-            let result = await apiCaller.fetchFromDB(url, "POST");        
-            console.log(result);
-            
+            let result = await apiCaller.fetchFromDB(url, "POST");
+            if(result.status === 201){
+                this.alert(this.successAlert, 'Successfully subscribed!');
+                modalService.hideModal("subscribeModal");
+                return;
+            }
+            this.alert(this.warningAlert, `Couldn't subscribe successfully!`);
         });
         buttonService.newsLetterSubCloseBtn.addEventListener('click', () => {
             modalService.hideModal("subscribeModal");
@@ -175,7 +189,12 @@ class EventService {
             let unsubedEmail = document.getElementById("unsubNewsletterEmail").value;
             const url = `https://localhost:7073/api/NewsLetters?email=${unsubedEmail}`;
             let result = await apiCaller.fetchFromDB(url, "DELETE");
-            console.log(result);
+            if(result.status === 200){
+                this.alert(this.successAlert, 'Successfully unsubscribed!');
+                modalService.hideModal("unsubscribeModal");
+                return;
+            } 
+            this.alert(this.warningAlert, `Couldn't unsubscribe!`);
         });
         buttonService.newsLetterUnsubCloseBtn.addEventListener('click', ()=> {
             modalService.hideModal("unsubscribeModal");
@@ -199,10 +218,11 @@ class EventService {
             }
             const url = `https://localhost:7073/api/User/login`;
             let result = await apiCaller.fetchFromDB(url, "POST", body);
-            if (result != undefined) {
+            
+            if (result.token) {
+                this.alert(this.successAlert, 'Successfully logged in!');
                 sessionService.Set(result);
                 let isAdmin = sessionService.GetParsedToken();
-                console.log(isAdmin);
                 if (isAdmin.token.isAdmin === "False") {
                     navbarService.loggedInNavbar();
                     
@@ -212,9 +232,10 @@ class EventService {
                 this.logoutListener();        
                 this.themeListener();
                 this.createPostListener();
-        
+                modalService.hideModal("loginModal");
+                return;
             }
-            modalService.hideModal("loginModal");
+            this.alert(this.warningAlert, 'Invalid credentials!');
         });
         buttonService.logginCloseBtn.addEventListener('click', ()=> {
             modalService.hideModal("loginModal");
@@ -295,8 +316,10 @@ class EventService {
             try {
                 let result = await apiCaller.fetchFromDB(url, "POST", post, user.token);
                 console.log(result);
+                this.alert(this.successAlert, 'Successfully created post!');
+                setTimeout(() => modalService.hideModal("createPostModal"), 100);
             } catch (error) {
-                console.error("Failed to create post:", error);
+                this.alert(this.warningAlert, `Post wasn't created successfully!`);
             } finally {
                 this.isSubmitting = false;
             }
@@ -312,8 +335,40 @@ class EventService {
     editPostModalListener(){
 
         buttonService.editPostSaveBtn.addEventListener('click', async (e)=>{
+            e.preventDefault();
             console.log("save clicked");
-            
+            let modal = document.querySelector("#editPostModal");
+            let titleValue = modal.querySelector('#editPostTitle').value;
+            let textValue = modal.querySelector('#editPostText').value;
+            let descriptionValue = modal.querySelector('#editPostDescription').value;
+
+            const user = sessionService.Get();
+            if(!user){
+                console.log("YOu must be logged in");
+                modalService.showModal("loginModal");
+                this.loginModalListener();
+                return;
+            }
+
+            if(!titleValue || !textValue || !descriptionValue){
+                this.alert(this.warningAlert,`Please don't leave any empty fields!`);
+                return;
+            }
+            const body = {
+                title: titleValue,
+                description: descriptionValue,
+                text: textValue,
+                id: this.currentEditPostId
+            }
+            const result = await apiCaller.fetchFromDB('https://localhost:7073/api/Posts/update', "PUT", body, user.token);
+            if(result.status === 200){
+                this.alert(this.successAlert, "Successfully updated the post!");
+                document.querySelector('.card-title').innerText = titleValue;
+                document.querySelector('.singleCard-text').innerText = textValue;
+                modalService.hideModal('editPostModal');
+                return;
+            }
+            this.alert(this.warningAlert, "Post wasn't updated successfully!");
         })
 
         buttonService.closeEditPostModal.addEventListener('click', (e)=>{
@@ -335,6 +390,7 @@ class EventService {
                         await apiCaller.fetchFromDB("https://localhost:7073/api/Stars/AddRating", "POST", {userId: user.id, postId: this.currentPostId, rating: rating}, user.token);
                         this.paintStars(rating);
                         this.currentRating = rating;
+                        this.alert(this.successAlert, 'Successfully added rating!');
                         return
                     }
                     if (this.currentRating == rating) {
@@ -342,6 +398,7 @@ class EventService {
                         await apiCaller.fetchFromDB("https://localhost:7073/api/Stars/RemoveRating", "DELETE", { userId: user.id, postId: this.currentPostId }, user.token);
                         this.clearStars();
                         this.currentRating = rating;
+                        this.alert(this.successAlert, 'Successfully removed rating!');
                         // event.target.checked = false;
                         // this.currentRating = null;
                         // console.log("Rating cleared");
@@ -351,6 +408,7 @@ class EventService {
                         await apiCaller.fetchFromDB("https://localhost:7073/api/Stars", "PUT", { userId: user.id, postId: this.currentPostId, rating: rating }, user.token);
                         this.paintStars(rating);
                         this.currentRating = rating;
+                        this.alert(this.successAlert, 'Successfully updated rating!');
                     }
                 } else {
                     modalService.showModal("loginModal");
@@ -361,6 +419,7 @@ class EventService {
         });
 
     }
+
     paintStars(number){
         let stars = Array.from(document.querySelectorAll('input[name="rating"]'));
                 let sortedStars = stars.sort((a,b) => a.value - b.value);
@@ -372,15 +431,18 @@ class EventService {
                 }
             });
     }
+
     clearStars() {
         let stars = Array.from(document.querySelectorAll('input[name="rating"]'));
         stars.forEach(star => {
             star.checked = false;
         })
     }
+
     updateCurrentPostId(id){
         this.currentPostId = id;
     }
+
     commentListener(){
         document.getElementById('commentForm').addEventListener('submit', async(e)=>{
             e.preventDefault();
@@ -420,7 +482,7 @@ class EventService {
             commentNameElement.value = '';
             commentTextElement.value = '';
             commentContainer.insertAdjacentElement("afterbegin", comment);
-            console.log(commentContainer);
+            this.alert(this.successAlert, 'Successfully added comment!');
             this.editCommentListener();
             this.deleteCommentListener();
         });
@@ -474,7 +536,8 @@ class EventService {
                     } else{
                         console.log('commentId:', commentId);
                         console.log('editing..');
-                        await apiCaller.fetchFromDB('https://localhost:7073/api/Comment', "PUT", {userId: user.id, text: editedText, id: commentId}, user.token)
+                        await apiCaller.fetchFromDB('https://localhost:7073/api/Comment', "PUT", {userId: user.id, text: editedText, id: commentId}, user.token);
+                        this.alert(this.successAlert, 'Successfully updated comment!');
                     }
     
                     commentElement.innerHTML = `
@@ -513,8 +576,10 @@ class EventService {
         
                         let result = await apiCaller.fetchFromDB('https://localhost:7073/api/Comment', 'DELETE', {id: commentId, userId: user.id }, user.token);
                         if (result.status !== 200){
+                            this.alert(this.warningAlert, `Comment wasn't deleted successfully!`);
                             return;
                         }
+                        this.alert(this.successAlert, 'Successfully deleted comment!');
                         comment.remove();
             })
         })
@@ -556,6 +621,7 @@ class EventService {
             document.getElementById("settingsWelcomeMessage").innerHTML = `Hi ${found.firstName} ${found.lastName}!`;
             
             const response = await apiCaller.fetchFromDB("https://localhost:7073/api/user", "PUT", data, found.token);
+            this.alert(this.successAlert, 'Successfully updated!');
             console.log(response);
         }
     }
@@ -607,28 +673,62 @@ class EventService {
         let editBtn = document.getElementById("editPostBtn");
         if (editBtn) {
             const editPostId = editBtn.value;
+            this.currentEditPostId = editPostId;
             console.log(editPostId);
             
-            editBtn.addEventListener('click', (e) => {
+            editBtn.addEventListener('click', async(e) => {
                 e.preventDefault();
+
+                const user = sessionService.Get();
+                if(!user){
+                    console.log("YOu must be logged in");
+                    modalService.showModal("loginModal");
+                    this.loginModalListener();
+                    return
+                }
     
-                let foundPost = document.querySelector('.singleCard-body');
-                console.log(foundPost);
+                const fetchedPost = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/${editPostId}`, "GET");
+                console.log(fetchedPost);
                 
-    
-                // Get the current values from the HTML
-                const currentTitle = foundPost.querySelector('.card-title').innerText; // Fetch the current title
-                const currentText = foundPost.querySelector('.singleCard-text').innerText; // Fetch the current text
-                const userId = foundPost.querySelector('a').id; // Fetch the user ID
+                let modal = document.querySelector("#editPostModal");
+                modal.querySelector('#editPostTitle').value = fetchedPost.title;
+                modal.querySelector('#editPostText').value = fetchedPost.text;
+                modal.querySelector('#editPostDescription').value = fetchedPost.description;
+
                 modalService.showModal("editPostModal");
-                
-                // Update the innerHTML with input elements
-                
             });
         }
     }
-    
-    
+    MyPostsListener(){
+        const deleteButtons = document.getElementsByClassName("deletePost");
+        Array.from(deleteButtons).forEach(button => {
+            button.addEventListener('click', async(e) =>{
+                e.preventDefault();
+
+                const user = sessionService.Get();
+                if(!user){
+                    console.log("YOu must be logged in");
+                    modalService.showModal("loginModal");
+                    this.loginModalListener();
+                    return;
+                }
+                
+                const postToBeDeleted = button.closest('.card');
+                const postId = button.value;
+                
+                console.log('Deleting post...');
+                
+                const result = await apiCaller.fetchFromDB(`https://localhost:7073/api/posts/delete/${postId}`, 'DELETE', null, user.token);
+                console.log(result);
+                if(result.status === 200){
+                    postToBeDeleted.remove();
+                    this.alert(this.successAlert, `Successfully deleted post!`);
+                    return;
+                } 
+                this.alert(this.warningAlert, `Post wasn't deleted successfully!`);
+            })
+        })
+    }
     
     
     

@@ -1,10 +1,9 @@
 import AbstractView from "./AbstractView.js";
 import ButtonService from "../modules/ButtonService.js";
 import SessionService from "../modules/SessionService.js";
-import { ApiCaller } from "../modules/ApiCaller.js";
+import apiCaller from "../modules/ApiCaller.js";
 
 const sessionService = new SessionService();
-const apiCaller = new ApiCaller();
 const buttonService = new ButtonService();
 
 export default class MyPosts extends AbstractView {
@@ -49,6 +48,9 @@ export default class MyPosts extends AbstractView {
                         </div>
                         `;
             });
+            if(result.length < 1){
+                resultHtml = '<h3>You currently have no posts ] ;</h3>'
+            }
         } else{
             resultHtml = "You're not currently logged in!";
         }

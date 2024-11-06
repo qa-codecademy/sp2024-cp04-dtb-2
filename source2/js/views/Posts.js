@@ -1,11 +1,10 @@
 import AbstractView from "./AbstractView.js";
-import { ApiCaller } from "../modules/ApiCaller.js";
+import apiCaller from "../modules/ApiCaller.js";
 import  ButtonService  from "../modules/ButtonService.js";
 import postFilterService from "../modules/PostFilterService.js";
 import eventService from "../modules/EventService.js";
 
 const btnService = new ButtonService();
-const apiCaller = new ApiCaller();
 
 export default class Posts extends AbstractView {
     constructor(params) {
