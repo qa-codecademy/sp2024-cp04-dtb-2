@@ -16,5 +16,7 @@
         this.monthFilter = document.querySelector('#monthFilter');
         this.monthModalCloseBtn = document.querySelector('#monthModalCloseBtn');
         this.monthmodalSubmitBtn = document.querySelector('#monthModalSubmitBtn');
+        this.showSignUpBtn = document.querySelector("#showSignUpBtn");
+        this.closeSignUpModalBtn = document.querySelector("#closeSignUpModal");
         }
 }

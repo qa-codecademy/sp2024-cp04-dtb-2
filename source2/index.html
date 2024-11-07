@@ -173,9 +173,9 @@
     <!--design for singup modal -->
     <div id="signUpModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span id="closeSignUpModal" class="close">&times;</span>
             <h2>Sign Up</h2>
-            <h5>Please fill up the form below </h5>
+            <h5>Please fill the form below </h5>
             <form id="signUpForm" action="" method=post
             oninput='signUpPasswordCheck.setCustomValidity(signUpPassword.value != signUpPasswordCheck.value ? "Passwords do not match." : "")'>
                 <div class="form-group">
@@ -337,7 +337,7 @@
                         <div class="form-group" >
                             <!-- <label for="uploadImage">Upload image - <small>Coming soon...</small></label> -->
                             <div id = "drop-area">
-                                <input type="file" class="form-control-file" id="uploadImage">
+                                <input type="file" class="form-control-file btn btn-secondary" id="uploadImage">
                             </div>
                             <div id="drop-preview"></div>
                         </div>

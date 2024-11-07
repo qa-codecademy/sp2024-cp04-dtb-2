@@ -16,8 +16,8 @@ const modalService = new ModalService();
 
 class EventService {
     constructor() {
-        this.currentEditPostId = null;
         this.windowRefreshListener();
+        this.currentEditPostId = null;
         this.currentPostId = null;
         this.currentRating = null;
         this.isScrollActive = true;
@@ -35,11 +35,26 @@ class EventService {
         this.editPostModalListener();
         this.MonthFilterListener ();
         this.MonthModalListener();
+        this.signUpListener();
 
         this.warningAlert = 'warningAlert';
         this.successAlert = 'successAlert';
         // this.logoutListener(); 
         // this.addStarEventListeners();
+    }
+
+    signUpListener() {
+        buttonService.showSignUpBtn.addEventListener('click', (e) =>{
+            e.preventDefault();
+
+            modalService.hideModal("loginModal");
+            modalService.showModal("signUpModal");
+        });
+        buttonService.closeSignUpModalBtn.addEventListener('click', (e) =>{
+            e.preventDefault();
+            
+            modalService.hideModal("signUpModal");
+        })
     }
 
     alert(alertId,message){
@@ -75,6 +90,7 @@ class EventService {
             const newPosts = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", filters);
 
             this.appendPostsToView(newPosts.posts);
+            themeService.themeCheck();
         }
         this.isSubmitting = false;
     }
@@ -759,7 +775,7 @@ class EventService {
             modalService.hideModal("monthModal");
         });
         
-        buttonService.closeCreatePostModal.addEventListener("click", (e) =>{
+        buttonService.monthModalCloseBtn.addEventListener("click", (e) =>{
             e.preventDefault();
             modalService.hideModal("monthModal");
         } )

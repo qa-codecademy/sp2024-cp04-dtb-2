@@ -3,6 +3,13 @@ nav {
     background-color: beige;
     box-shadow: 0px 0px 10px black ;
 }
+
+.dark-theme .modal-content {
+    background-color: #333;
+    color: #f0f0f0;
+    border: 1px solid #444;
+}
+
 .contentPart {
     border-radius: 10px;
     padding: 1rem;
