@@ -1,3 +1,165 @@
+// import AboutUs from "./views/AboutUs.js";
+// import Post from "./views/Post.js";
+// import Posts from "./views/Posts.js";
+// import postFilterService from "./modules/PostFilterService.js";
+// import eventService from "./modules/EventService.js";
+// import ModalService from "./modules/ModalService.js";
+// import modalService from "./modules/ModalService.js";
+// import themeService from "./modules/ThemeService.js";
+// import Settings from "./views/Settings.js";
+// import MyPosts from "./views/MyPosts.js";
+
+// console.log("CONNECTED");
+
+// const getParams = match => {
+//     if (!match.result) return {};
+
+//     const values = match.result.slice(1);
+//     const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(result => result[1]);
+
+//     console.log(Array.from(match.route.path.matchAll(/:(\w+)/g)));
+
+//     return Object.fromEntries(keys.map((key, i) => {
+//         return [key, values[i]];
+//     }));
+// }
+
+// const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
+
+// const naviageteTo = url => {
+//     history.pushState(null, null, url);
+//     router();
+// };
+
+// const router = async () => {
+
+//     switch (location.pathname) {
+//         case "/filterbyold":
+//             postFilterService.updateFilter({ sortBy: "old", year: 0, month: 0 });
+//             break;
+
+//         case "/filterbynew":
+//             postFilterService.updateFilter({ sortBy: "new", year: 0, month: 0 });
+//             break;
+
+//         case "/filterbymostpopular":
+//             postFilterService.updateFilter({ sortBy: "popular", year: 0, month: 0 });
+//             break;
+//         case "/filterbymonthandyear":
+//             let dateValue = document.getElementById("dateValue").value;
+//             console.log(dateValue);
+//             let splitValues = dateValue.split("-");
+//             console.log(splitValues);
+//             let year = splitValues[0];
+//             let month = splitValues[1];
+//             postFilterService.updateFilter({year: year? year:0, month: month? month: 0});
+//             break;
+//         case "/filterbytags":
+//             const selectedTags = Array.from(document.querySelectorAll('.form-check-input:checked')).map(cb => cb.value);
+//             console.log(selectedTags);
+            
+//             // postFilterService.updateFilter();
+//         default: break;
+//     }
+
+//     const routes = [
+//         { path: "/", view: () => new Posts(postFilterService.filters) },
+//         { path: "/posts/:id", view: Post },
+//         { path: "/aboutus", view: AboutUs },
+//         { path: "/filterbyold", view: () => new Posts(postFilterService.filters) },
+//         { path: "/filterbynew", view: () => new Posts(postFilterService.filters) },
+//         { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters) },
+//         { path: "/filterbymonthandyear", view: () => new Posts(postFilterService.filters)},
+//         { path: "/sortbytags", view: () => new Posts (postFilterService.filters)},
+//         { path: "/settings", view: Settings },
+//         { path: "/settings/myposts", view: MyPosts },
+//         // { path: "/filterbymonthandyear", view: () => new Posts(postFilterService.filters) },
+//         // { path: "/filterbytags", view: () => new Posts(postFilterService.filters) }
+//     ]
+
+//     const potentialMatches = routes.map(route => {
+//         return {
+//             route: route,
+//             result: location.pathname.match(pathToRegex(route.path))
+//         };
+//     });
+
+//     let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
+//     if (!match) {
+//         match = {
+//             route: routes[0],
+//             result: [location.pathname]
+//         };
+//     }
+
+//     let view;
+
+//     if (typeof match.route.view === "function" && /^\s*class\s+/.test(match.route.view.toString())) {
+//         view = new match.route.view(getParams(match));
+//     } else {
+//         view = match.route.view();
+//     }
+
+//     if (view && view.getHtml) {
+//         document.querySelector("#contentPart").innerHTML = await view.getHtml();
+//         if (view instanceof Post) {
+//             let contentPart = document.getElementById("contentPart");
+//             let contentPartDiv = document.getElementById("contentPartDiv");
+//             eventService.addStarEventListeners();
+//             eventService.paintStars(eventService.currentRating);
+//             eventService.commentListener();
+//             eventService.editCommentListener();
+//             eventService.deleteCommentListener();
+//             eventService.editPostListener();
+            
+//             contentPartDiv.classList.remove("row");
+//             contentPartDiv.classList.remove("justify-content-md-center");
+//             contentPart.classList.remove("contentPart");
+//             contentPart.classList.remove("col-md-10");
+//             contentPart.classList.add("singlePostStyle");
+//         }
+//     }
+//     if (view instanceof Settings) {
+//         let contentPartDiv = document.getElementById("contentPartDiv");
+//         let contentPart = document.getElementById("contentPart");
+//         contentPartDiv.classList.add("row");
+//         contentPartDiv.classList.add("justify-content-md-center");
+//         contentPart.classList.remove("contentPart");
+//         contentPart.classList.add("settingsStyle");
+//         contentPart.classList.add("col-md-10");
+//         eventService.settingsListener();
+//     }
+//     if (view instanceof Posts) {
+//         let contentPartDiv = document.getElementById("contentPartDiv");
+//         let contentPart = document.getElementById("contentPart");
+//         contentPartDiv.classList.add("row");
+//         contentPartDiv.classList.add("justify-content-md-center");
+//         contentPart.classList.remove("col-md-10");
+//         contentPart.classList.remove("settingsStyle");
+//         contentPart.classList.add("contentPart");
+        
+//     }
+//     if (view instanceof MyPosts){
+//         eventService.MyPostsListener();
+//     }
+//     themeService.themeCheck();
+// };
+
+// window.addEventListener("popstate", router);
+
+// document.addEventListener("DOMContentLoaded", () => {
+//     document.body.addEventListener("click", e => {
+//         const link = e.target.closest("[data-link]");
+//         if (link) {
+//             e.preventDefault();
+//             console.log('Link clicked:', link.href);
+//             naviageteTo(link.href);
+//         }
+//     });
+//     router();
+// });
+
+
 import AboutUs from "./views/AboutUs.js";
 import Post from "./views/Post.js";
 import Posts from "./views/Posts.js";
@@ -11,39 +173,55 @@ import MyPosts from "./views/MyPosts.js";
 
 console.log("CONNECTED");
 
+// Function to get route parameters from URL
 const getParams = match => {
     if (!match.result) return {};
 
     const values = match.result.slice(1);
     const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(result => result[1]);
 
-    console.log(Array.from(match.route.path.matchAll(/:(\w+)/g)));
-
     return Object.fromEntries(keys.map((key, i) => {
         return [key, values[i]];
     }));
 }
 
+// Converts a path to a regex pattern
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
+// Function to navigate to a URL without reloading the page
 const naviageteTo = url => {
     history.pushState(null, null, url);
     router();
 };
 
+// Router function to handle different routes
 const router = async () => {
-
     switch (location.pathname) {
+        case "/filterbytags":
+            const urlParams = new URLSearchParams(window.location.search);
+            const tagsParam = urlParams.get('tags');
+            const tags = tagsParam ? tagsParam.split(',') : [];
+            postFilterService.updateFilter({ tags }); // Update the filter based on selected tags
+            break;
+
         case "/filterbyold":
-            postFilterService.updateFilter({ sortBy: "old" });
+            postFilterService.updateFilter({ sortBy: "old", year: 0, month: 0 });
             break;
 
         case "/filterbynew":
-            postFilterService.updateFilter({ sortBy: "new" });
+            postFilterService.updateFilter({ sortBy: "new", year: 0, month: 0 });
             break;
 
         case "/filterbymostpopular":
-            postFilterService.updateFilter({ sortBy: "popular" });
+            postFilterService.updateFilter({ sortBy: "popular", year: 0, month: 0 });
+            break;
+
+        case "/filterbymonthandyear":
+            let dateValue = document.getElementById("dateValue").value;
+            let splitValues = dateValue.split("-");
+            let year = splitValues[0];
+            let month = splitValues[1];
+            postFilterService.updateFilter({ year: year ? year : 0, month: month ? month : 0 });
             break;
 
         default: break;
@@ -56,13 +234,11 @@ const router = async () => {
         { path: "/filterbyold", view: () => new Posts(postFilterService.filters) },
         { path: "/filterbynew", view: () => new Posts(postFilterService.filters) },
         { path: "/filterbymostpopular", view: () => new Posts(postFilterService.filters) },
-        { path: "/filterbymonthandyear", view: () => new Posts(postFilterService.filters)},
-        { path: "/sortbytags", view: () => new Posts (postFilterService.filters)},
+        { path: "/filterbymonthandyear", view: () => new Posts(postFilterService.filters) },
+        { path: "/filterbytags", view: () => new Posts(postFilterService.filters) },
         { path: "/settings", view: Settings },
         { path: "/settings/myposts", view: MyPosts },
-        // { path: "/filterbymonthandyear", view: () => new Posts(postFilterService.filters) },
-        // { path: "/filterbytags", view: () => new Posts(postFilterService.filters) }
-    ]
+    ];
 
     const potentialMatches = routes.map(route => {
         return {
@@ -98,7 +274,7 @@ const router = async () => {
             eventService.editCommentListener();
             eventService.deleteCommentListener();
             eventService.editPostListener();
-            
+
             contentPartDiv.classList.remove("row");
             contentPartDiv.classList.remove("justify-content-md-center");
             contentPart.classList.remove("contentPart");
@@ -106,6 +282,7 @@ const router = async () => {
             contentPart.classList.add("singlePostStyle");
         }
     }
+
     if (view instanceof Settings) {
         let contentPartDiv = document.getElementById("contentPartDiv");
         let contentPart = document.getElementById("contentPart");
@@ -116,6 +293,7 @@ const router = async () => {
         contentPart.classList.add("col-md-10");
         eventService.settingsListener();
     }
+
     if (view instanceof Posts) {
         let contentPartDiv = document.getElementById("contentPartDiv");
         let contentPart = document.getElementById("contentPart");
@@ -124,24 +302,44 @@ const router = async () => {
         contentPart.classList.remove("col-md-10");
         contentPart.classList.remove("settingsStyle");
         contentPart.classList.add("contentPart");
-        
     }
-    if (view instanceof MyPosts){
+
+    if (view instanceof MyPosts) {
         eventService.MyPostsListener();
     }
+
     themeService.themeCheck();
 };
 
+// Function to update the URL when a tag is selected
+const updateTagFilter = () => {
+    const selectedTags = Array.from(document.querySelectorAll('.form-check-input:checked')).map(cb => cb.value);
+    const url = `/filterbytags?tags=${selectedTags.join(',')}`;
+    naviageteTo(url);  // Use your SPA navigation to update the URL
+};
+
+// Attach event listeners for checkbox changes
+const addTagEventListeners = () => {
+    const tagCheckboxes = document.querySelectorAll('.form-check-input');
+    
+    tagCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateTagFilter);
+    });
+};
+
+// Handle the popstate event when the user uses browser navigation (back/forward)
 window.addEventListener("popstate", router);
 
+// Run once when the DOM is loaded to set up event listeners and routing
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
-        const link = e.target.closest("[data-link]");
-        if (link) {
-            e.preventDefault();
-            console.log('Link clicked:', link.href);
-            naviageteTo(link.href);
-        }
-    });
-    router();
+                const link = e.target.closest("[data-link]");
+                if (link) {
+                    e.preventDefault();
+                    console.log('Link clicked:', link.href);
+                    naviageteTo(link.href);
+                }
+            });
+    addTagEventListeners();  // Attach event listeners for tag checkboxes
+    router();  // Initialize routing based on the current URL
 });

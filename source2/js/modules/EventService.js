@@ -36,6 +36,7 @@ class EventService {
         this.MonthFilterListener ();
         this.MonthModalListener();
         this.signUpListener();
+        this.TagDropdownListener ();
 
         this.warningAlert = 'warningAlert';
         this.successAlert = 'successAlert';
@@ -759,18 +760,22 @@ class EventService {
     }
     MonthModalListener () {
         buttonService.monthmodalSubmitBtn.addEventListener("click", async (e)  => {
+            if (this.isSubmitting) return; // Prevents duplicate requests
+            this.isSubmitting = true;
             e.preventDefault();
-            let dateValue = document.getElementById("dateValue").value;
-            console.log(dateValue);
-            let splitValues = dateValue.split("-");
-            console.log(splitValues);
-            let year = splitValues[0];
-            let month = splitValues[1];
+            // let dateValue = document.getElementById("dateValue").value;
+            // console.log(dateValue);
+            // let splitValues = dateValue.split("-");
+            // console.log(splitValues);
+            // let year = splitValues[0];
+            // let month = splitValues[1].replace(/^0(?=\d)/, "");
             
-            postFilterService.updateFilter({undefined, undefined, undefined, tags: [""] , year, month});
-            let filters = postFilterService.getFilters();
-            let response = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", filters);
-            console.log(response);
+            // // postFilterService.updateFilter({undefined, undefined, undefined, tags: [""] , year, month});
+            // let filters = postFilterService.getFilters();
+            // // let response = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", filters);
+            // console.log(response);
+            // let totalPages = response.totalPages;
+            // postFilterService.updateFilter({totalPages: totalPages, year: year, month: month });
             
             modalService.hideModal("monthModal");
         });
@@ -780,6 +785,18 @@ class EventService {
             modalService.hideModal("monthModal");
         } )
 
+    }
+
+    TagDropdownListener (){
+        buttonService.tagFilterDropdownBtn.addEventListener("click", function() {
+            console.log("it worksz");
+            var tagDropdown = document.getElementById('tagFilterDropdown');
+            if (tagDropdown.style.display === 'none' || tagDropdown.style.display === '') {
+                tagDropdown.style.display = 'block';
+            } else {
+                tagDropdown.style.display = 'none';
+            }
+        });
     }
     
     

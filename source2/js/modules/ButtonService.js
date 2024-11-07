@@ -18,5 +18,6 @@
         this.monthmodalSubmitBtn = document.querySelector('#monthModalSubmitBtn');
         this.showSignUpBtn = document.querySelector("#showSignUpBtn");
         this.closeSignUpModalBtn = document.querySelector("#closeSignUpModal");
+        this.tagFilterDropdownBtn = document.getElementById("tagFilter");
         }
 }
