@@ -173,7 +173,6 @@ import MyPosts from "./views/MyPosts.js";
 
 console.log("CONNECTED");
 
-// Function to get route parameters from URL
 const getParams = match => {
     if (!match.result) return {};
 
@@ -185,35 +184,32 @@ const getParams = match => {
     }));
 }
 
-// Converts a path to a regex pattern
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
-// Function to navigate to a URL without reloading the page
 const naviageteTo = url => {
     history.pushState(null, null, url);
     router();
 };
 
-// Router function to handle different routes
 const router = async () => {
     switch (location.pathname) {
         case "/filterbytags":
             const urlParams = new URLSearchParams(window.location.search);
             const tagsParam = urlParams.get('tags');
             const tags = tagsParam ? tagsParam.split(',') : [];
-            postFilterService.updateFilter({ tags }); // Update the filter based on selected tags
+            postFilterService.updateFilter({ pageIndex: 1, tags }); 
             break;
 
         case "/filterbyold":
-            postFilterService.updateFilter({ sortBy: "old", year: 0, month: 0 });
+            postFilterService.updateFilter({ pageIndex: 1, sortBy: "old", year: 0, month: 0 });
             break;
 
         case "/filterbynew":
-            postFilterService.updateFilter({ sortBy: "new", year: 0, month: 0 });
+            postFilterService.updateFilter({ pageIndex: 1, sortBy: "new", year: 0, month: 0 });
             break;
 
         case "/filterbymostpopular":
-            postFilterService.updateFilter({ sortBy: "popular", year: 0, month: 0 });
+            postFilterService.updateFilter({ pageIndex: 1, sortBy: "popular", year: 0, month: 0 });
             break;
 
         case "/filterbymonthandyear":
@@ -221,7 +217,7 @@ const router = async () => {
             let splitValues = dateValue.split("-");
             let year = splitValues[0];
             let month = splitValues[1];
-            postFilterService.updateFilter({ year: year ? year : 0, month: month ? month : 0 });
+            postFilterService.updateFilter({ pageIndex: 1, year: year ? year : 0, month: month ? month : 0 });
             break;
 
         default: break;
@@ -311,14 +307,12 @@ const router = async () => {
     themeService.themeCheck();
 };
 
-// Function to update the URL when a tag is selected
 const updateTagFilter = () => {
     const selectedTags = Array.from(document.querySelectorAll('.form-check-input:checked')).map(cb => cb.value);
     const url = `/filterbytags?tags=${selectedTags.join(',')}`;
-    naviageteTo(url);  // Use your SPA navigation to update the URL
+    naviageteTo(url);
 };
 
-// Attach event listeners for checkbox changes
 const addTagEventListeners = () => {
     const tagCheckboxes = document.querySelectorAll('.form-check-input');
     
@@ -327,10 +321,8 @@ const addTagEventListeners = () => {
     });
 };
 
-// Handle the popstate event when the user uses browser navigation (back/forward)
 window.addEventListener("popstate", router);
 
-// Run once when the DOM is loaded to set up event listeners and routing
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
                 const link = e.target.closest("[data-link]");
@@ -340,6 +332,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     naviageteTo(link.href);
                 }
             });
-    addTagEventListeners();  // Attach event listeners for tag checkboxes
-    router();  // Initialize routing based on the current URL
+    addTagEventListeners(); 
+    router();
 });

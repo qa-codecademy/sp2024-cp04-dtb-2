@@ -34,6 +34,10 @@ export default class Posts extends AbstractView {
         btnService.filterBtn.style.display = "block";
         btnService.loadMoreBtn.style.display = "block";
         let resultHtml = "";
+        if(posts && posts.length < 1){
+            resultHtml = "<h3>No results were found!</h3";
+            return resultHtml;
+        }
         posts.forEach(element => {
             element.tags = element.tags.map(x => `[ ${x} ]`).join(' ');
             let imgSrc = `data:image/png;base64,${element.image}`;

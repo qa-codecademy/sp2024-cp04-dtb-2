@@ -165,14 +165,14 @@ dist
 
 # #Todor Pelivanov
 # 5:11 PM
-# adminite da stavaat samo adovi (baneri)
+# adminite da stavaat samo adovi (baneri) NOT DONE
 # adminite imaat statistic page/ da ima statistics page?
-# adminite da mozat da brisat useri i postovi
-# userite mozat da si editiraat i izbrisat i postovi i sopstveniot akaunt
+# adminite da mozat da brisat useri i postovi Needs an admin view where he can see all the users and delete any of them
+# userite mozat da si editiraat i izbrisat i postovi i sopstveniot akaunt - Only account delete left
 # soft delete (deactivate account) i hard delete (delete account)?
 # Profile page (edit profile info)  DONE                                            DONE
-# Da se refaktorira create post kartickata
+# Da se refaktorira create post kartickata THE STUPID TAGS DON'T LOOK GOOD??? (Also upload image needs to fit inside of the modal)
 # Site ostanati bagovi da se dosredat
-# responsivnost
-# filterite 
+# responsivnost DONE                                                                DONE
+# filterite DONE                                                                        DONE
 # kzc-hbom-juz

@@ -179,10 +179,10 @@
             <form id="signUpForm" action="" method=post
             oninput='signUpPasswordCheck.setCustomValidity(signUpPassword.value != signUpPasswordCheck.value ? "Passwords do not match." : "")'>
                 <div class="form-group">
-                    <input type="text" id="signUpFirstName" placeholder="First Name" name="signUpFirstName" pattern="([A-Za-z]).{3,15}" title="No numbers and special chars allowed (4-15 character limit)" required>
+                    <input type="text" id="signUpFirstName" placeholder="First Name" name="signUpFirstName" pattern="([A-Za-z]).{3,15}" title="No numbers and special characters allowed (4-15 character limit)" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" id="signUpLastName" placeholder="Last Name" name="signUpLastName" pattern="([A-Za-z]).{3,15}" title="No numbers and special chars allowed (4-15 character limit)" required>
+                    <input type="text" id="signUpLastName" placeholder="Last Name" name="signUpLastName" pattern="([A-Za-z]).{3,15}" title="No numbers and special characters allowed (4-15 character limit)" required>
                 </div>
                 <div class="form-group">
                     <input type="email" id="signUpEmail" placeholder="E-mail" name="signUpEmail" required>
@@ -204,7 +204,7 @@
             <form id="monthModalForm">
                 <label for="dateValue">Select month and year:</label>
                 <input type="month" id="dateValue" name="dateValue">
-                <a class="btn btn-primary" id="monthModalSubmitBtn" href="/filterbymonthandyear" data-link>submit</a>
+                <a class="btn btn-outline" id="monthModalSubmitBtn" href="/filterbymonthandyear" data-link>submit</a>
             </form>
         </div>
     </div>

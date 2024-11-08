@@ -45,6 +45,46 @@ class EventService {
     }
 
     signUpListener() {
+        const form = document.querySelector("#signUpForm");
+        form.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            console.log("Attempting to sign up!");
+            const signUpFirstNameElement = document.querySelector("#signUpFirstName");
+            const signUpLastNameElement = document.querySelector("#signUpLastName");
+            const signUpEmailElement = document.querySelector("#signUpEmail");
+            const signUpPasswordElement = document.querySelector("#signUpPassword");
+            const signUpPasswordCheckElement = document.querySelector("#signUpPasswordCheck");
+
+            const signUpFirstName = signUpFirstNameElement.value;
+            const signUpLastName = signUpLastNameElement.value;
+            const signUpEmail = signUpEmailElement.value;
+            const signUpPassword = signUpPasswordElement.value;
+            const signUpPasswordCheck = signUpPasswordCheckElement.value;
+            console.log(`${signUpFirstName}\n${signUpLastName}\n${signUpEmail}\n${signUpPassword}\n${signUpPasswordCheck}`);
+            const body = {
+                firstName: signUpFirstName,
+                lastName: signUpLastName,
+                email: signUpEmail, 
+                password: signUpPassword,
+                confirmPassword: signUpPasswordCheck
+            }
+
+            const result = await apiCaller.fetchFromDB(`https://localhost:7073/api/User/register`, 'POST', body);
+            if(result.status === 200){
+                this.alert(this.successAlert, 'You have successfully signed up the account!\nYou can now sign in.');
+                signUpFirstNameElement.value = '';
+                signUpLastNameElement.value = '';
+                signUpEmailElement.value = '';
+                signUpPasswordElement.value = '';
+                signUpPasswordCheckElement.value = '';
+                modalService.hideModal("signUpModal");
+                modalService.show("loginModal");
+                return;
+            }
+            this.alert(this.warningAlert, 'Something went wrong!');
+
+
+        })
         buttonService.showSignUpBtn.addEventListener('click', (e) =>{
             e.preventDefault();
 
@@ -104,6 +144,9 @@ class EventService {
             // this.logoutListener();
             // this.createPostListener();
             navbarService.loggedInNavbar();
+            this.logoutListener();        
+            this.themeListener();
+            this.createPostListener();
         })
     }
 
@@ -175,7 +218,6 @@ class EventService {
     }
 
     newsLetterListener () {
-
         buttonService.newsLetterBtn.addEventListener('click', () => {
             modalService.showModal("subscribeModal");
         });
@@ -245,9 +287,10 @@ class EventService {
                 let isAdmin = sessionService.GetParsedToken();
                 if (isAdmin.token.isAdmin === "False") {
                     navbarService.loggedInNavbar();
-                    
+                    buttonService.fetchAllButtons();
                 } else {
                     navbarService.adminNavbar();
+                    buttonService.fetchAllButtons();
                 }
                 this.logoutListener();        
                 this.themeListener();
@@ -265,6 +308,7 @@ class EventService {
         document.getElementById('logoutBtn').addEventListener('click', ()=> {           
             sessionService.Remove();
             navbarService.defaultNavbar();
+            buttonService.fetchAllButtons();
             this.loginListener();
             this.loginModalListener();
             this.themeListener();
@@ -763,21 +807,8 @@ class EventService {
             if (this.isSubmitting) return; // Prevents duplicate requests
             this.isSubmitting = true;
             e.preventDefault();
-            // let dateValue = document.getElementById("dateValue").value;
-            // console.log(dateValue);
-            // let splitValues = dateValue.split("-");
-            // console.log(splitValues);
-            // let year = splitValues[0];
-            // let month = splitValues[1].replace(/^0(?=\d)/, "");
-            
-            // // postFilterService.updateFilter({undefined, undefined, undefined, tags: [""] , year, month});
-            // let filters = postFilterService.getFilters();
-            // // let response = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", filters);
-            // console.log(response);
-            // let totalPages = response.totalPages;
-            // postFilterService.updateFilter({totalPages: totalPages, year: year, month: month });
-            
             modalService.hideModal("monthModal");
+            this.isSubmitting = false;
         });
         
         buttonService.monthModalCloseBtn.addEventListener("click", (e) =>{
