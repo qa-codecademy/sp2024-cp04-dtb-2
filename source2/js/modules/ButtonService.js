@@ -19,7 +19,8 @@
         this.showSignUpBtn = document.querySelector("#showSignUpBtn");
         this.closeSignUpModalBtn = document.querySelector("#closeSignUpModal");
         this.tagFilterDropdownBtn = document.getElementById("tagFilter");
-        }
+        this.imageModalBtn = document.getElementById("imageModalBtn");
+    }
     fetchAllButtons(){
         this.loadMoreBtn = document.querySelector("#loadMoreBtn");
         this.newsLetterBtn = document.querySelector("#newsletterBtn");
@@ -40,5 +41,6 @@
         this.showSignUpBtn = document.querySelector("#showSignUpBtn");
         this.closeSignUpModalBtn = document.querySelector("#closeSignUpModal");
         this.tagFilterDropdownBtn = document.getElementById("tagFilter");
+        this.imageModalBtn = document.getElementById("imageModalBtn");
     }
 }

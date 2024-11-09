@@ -288,6 +288,7 @@ const router = async () => {
         contentPart.classList.add("settingsStyle");
         contentPart.classList.add("col-md-10");
         eventService.settingsListener();
+        eventService.DeleteAccountListener();
     }
 
     if (view instanceof Posts) {

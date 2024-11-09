@@ -78,7 +78,7 @@ class EventService {
                 signUpPasswordElement.value = '';
                 signUpPasswordCheckElement.value = '';
                 modalService.hideModal("signUpModal");
-                modalService.show("loginModal");
+                modalService.showModal("loginModal");
                 return;
             }
             this.alert(this.warningAlert, 'Something went wrong!');
@@ -269,41 +269,103 @@ class EventService {
         });
 
     }
-    loginModalListener(){
-        document.getElementById('loginForm').addEventListener('submit', async(e)=> {
+    // loginModalListener(){
+    //     document.getElementById('loginForm').addEventListener('submit', async(e)=> {
+    //         e.preventDefault();
+    //         let loginEmail = document.getElementById("loginEmail").value;
+    //         let loginPass = document.getElementById("loginPassword").value;
+    //         let body = {
+    //             email: loginEmail ,
+    //             password: loginPass
+    //         }
+    //         const url = `https://localhost:7073/api/User/login`;
+    //         let result = await apiCaller.fetchFromDB(url, "POST", body);
+            
+    //         if (result.token) {
+    //             this.alert(this.successAlert, 'Successfully logged in!');
+    //             sessionService.Set(result);
+    //             let isAdmin = sessionService.GetParsedToken();
+    //             if (isAdmin.token.isAdmin === "False") {
+    //                 navbarService.loggedInNavbar();
+    //                 buttonService.fetchAllButtons();
+    //             } else {
+    //                 navbarService.adminNavbar();
+    //                 buttonService.fetchAllButtons();
+    //             }
+    //             // document.getElementById("newsletterBtn").addEventListener("click",() => {
+    //             //     console.log("itworks");
+                    
+    //             // })
+    //             this.newsLetterListener();
+    //             this.logoutListener();        
+    //             this.themeListener();
+    //             this.createPostListener();
+    //             modalService.hideModal("loginModal");
+    //             return;
+    //         }
+    //         this.alert(this.warningAlert, 'Invalid credentials!');
+    //     });
+    //     buttonService.logginCloseBtn.addEventListener('click', ()=> {
+    //         modalService.hideModal("loginModal");
+    //     });
+    // }
+
+    loginModalListener() {
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+    
+            // Gather input values
             let loginEmail = document.getElementById("loginEmail").value;
             let loginPass = document.getElementById("loginPassword").value;
             let body = {
-                email: loginEmail ,
+                email: loginEmail,
                 password: loginPass
-            }
+            };
+    
             const url = `https://localhost:7073/api/User/login`;
-            let result = await apiCaller.fetchFromDB(url, "POST", body);
-            
-            if (result.token) {
-                this.alert(this.successAlert, 'Successfully logged in!');
-                sessionService.Set(result);
-                let isAdmin = sessionService.GetParsedToken();
-                if (isAdmin.token.isAdmin === "False") {
-                    navbarService.loggedInNavbar();
+    
+            try {
+                // Call the API
+                let result = await apiCaller.fetchFromDB(url, "POST", body);
+    
+                // Check if the response contains a token
+                if (result && result.token) {
+                    this.alert(this.successAlert, 'Successfully logged in!');
+                    sessionService.Set(result);
+    
+                    // Parse token to check if user is admin
+                    let isAdmin = sessionService.GetParsedToken();
+                    if (isAdmin?.token?.isAdmin === "False") {
+                        navbarService.loggedInNavbar();
+                    } else {
+                        navbarService.adminNavbar();
+                    }
+    
+                    // Reinitialize necessary listeners
                     buttonService.fetchAllButtons();
+                    this.newsLetterListener();
+                    this.logoutListener();
+                    this.themeListener();
+                    this.createPostListener();
+    
+                    // Hide the login modal
+                    modalService.hideModal("loginModal");
                 } else {
-                    navbarService.adminNavbar();
-                    buttonService.fetchAllButtons();
+                    // Display warning if token is missing
+                    this.alert(this.warningAlert, 'Invalid credentials!');
                 }
-                this.logoutListener();        
-                this.themeListener();
-                this.createPostListener();
-                modalService.hideModal("loginModal");
-                return;
+            } catch (error) {
+                console.error("Login failed:", error);
+                this.alert(this.warningAlert, 'An error occurred while logging in.');
             }
-            this.alert(this.warningAlert, 'Invalid credentials!');
         });
-        buttonService.logginCloseBtn.addEventListener('click', ()=> {
+    
+        // Event listener to close the login modal
+        buttonService.logginCloseBtn.addEventListener('click', () => {
             modalService.hideModal("loginModal");
         });
     }
+
     logoutListener() {
         document.getElementById('logoutBtn').addEventListener('click', ()=> {           
             sessionService.Remove();
@@ -312,6 +374,8 @@ class EventService {
             this.loginListener();
             this.loginModalListener();
             this.themeListener();
+            this.newsLetterListener();
+
         });
     }
     themeListener (){
@@ -343,6 +407,12 @@ class EventService {
             const newPostTitle = document.getElementById("newPostTitle").value;
             const newPostText = document.getElementById("newPostText").value;
             const postTags = Array.from(document.querySelectorAll('.custom-control-input:checked')).map(cb => cb.value);
+            buttonService.imageModalBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                console.log("in");
+                
+                modalService.showModal("imageModal");
+            });
             const imageNumber = document.getElementById('imgRange').value ;
             const newPostDescription = document.getElementById("newPostDescription").value;
 
@@ -829,8 +899,36 @@ class EventService {
             }
         });
     }
+
+    // SinglePostListener (){ 
+    //     document.getElementById("")
+    // }
     
-    
+    DeleteAccountListener(){
+        document.getElementById("deleteUserBtn").addEventListener("click",  ()=>{
+        console.log("your in brother");
+        modalService.showModal("deleteUserModal");            
+    });
+        document.getElementById("confirmDeleteUserBtn").addEventListener("click",async (e)=>{
+            e.preventDefault();
+
+            let user = sessionService.Get()
+            if(user){
+                let response = await apiCaller.fetchFromDB(`https://localhost:7073/api/User/${user.id}`, "DELETE",null, user.token);
+                console.log(response);
+            }
+            if (response){}
+
+        });
+        document.getElementById("cancelDeleteUserBtn").addEventListener("click", ()=>{
+            modalService.hideModal("deleteUserModal");
+        });
+        document.getElementById("deleteUserClose").addEventListener("click",(e)=>{
+            e.preventDefault();
+            modalService.hideModal("deleteUserModal");
+        });
+    }
+
     
 }
 

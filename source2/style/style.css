@@ -579,3 +579,7 @@ a:hover {
         height: 100px;
     }
 }
+.input-group .btn {
+    position: relative;
+    z-index: 0;
+}

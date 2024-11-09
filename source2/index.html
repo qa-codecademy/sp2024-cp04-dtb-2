@@ -225,6 +225,17 @@
             </form>
         </div>
     </div>
+    <div id="deleteUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="deleteUserClose">&times;</span>
+            <h2>Are you sure you want to DELETE your account?</h2>
+            <div id="deleteUserText">
+                <small><p>If you proceede you will PERMANENTLY <span style="color: red;">DELETE</span> your account, and you wont be able to restore it</p></small>
+            </div>
+            <button class="btn btn-danger" id="confirmDeleteUserBtn">Confirm</button>
+            <button class="btn " id="cancelDeleteUserBtn">Cancel</button>
+        </div>
+    </div>
    <!--design for unsubscribe modal -->
     <div id="unsubscribeModal" class="modal">
         <div class="modal-content">
@@ -331,6 +342,8 @@
                             </div>
                         </div>
                         <hr>
+                        <button id="imagesModalBtn">select an image</button>
+                        <hr>
                         <label for="imgRange">Choose from existing images (1-30)</label>
                         <output id="rangeValue"></output>
                         <input type="range" class="form-control-range" min="1" max="30" value="15" id="imgRange" oninput="rangeValue.value=imgRange.value" >
@@ -349,6 +362,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="modal fade" id="imagesModal" tabindex="-1" role="dialog" aria-labelledby="imagesModalLabel" style="display: none;">
+        
     </div>
     <div class="modal fade" id="editPostModal" tabindex="-1" role="dialog" aria-labelledby="editPostModalLabel" style="display: none ;" >
         <div class="modal-dialog" role="document">

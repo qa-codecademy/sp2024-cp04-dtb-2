@@ -59,7 +59,8 @@ export default class Settings extends AbstractView {
                     </div>
                 </div>
             </form>            
-            <a href="/settings/myposts" id ="myPostsBtn" data-link> <p>MY POSTS</p> </a>
+            <a class="btn btn-primary" href="/settings/myposts" id ="myPostsBtn" data-link>MY POSTS</a>
+            <button class="btn btn-danger" id="deleteUserBtn">DELETE ACCOUNT</button>
         `;
     } else {
       result = "<h1>Not currently logged in!</h1>";

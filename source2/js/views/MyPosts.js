@@ -16,11 +16,16 @@ export default class MyPosts extends AbstractView {
     async getHtml() {
         buttonService.filterBtn.style.display = "none";
         buttonService.loadMoreBtn.style.display = "none";
-
+        let url = null;
         const found = sessionService.Get();
         let resultHtml = '';
         if(found){
-            const result = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/authorposts/${found.id}`, "GET");
+            if (found.isAdmin) {
+                url = `https://localhost:7073/api/Posts`;
+            } else {
+                url =`https://localhost:7073/api/Posts/authorposts/${found.id}`
+            }
+            const result = await apiCaller.fetchFromDB(url, "GET");
             result.forEach(post => {
                 resultHtml += `
                 <div class="card" style="width: 25vw" id="card-${post.id}">

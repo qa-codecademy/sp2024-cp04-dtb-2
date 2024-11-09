@@ -319,10 +319,10 @@ export default class Post extends AbstractView {
   //   // Add any additional initialization here if needed
   //   await eventService.addStarEventListeners();
   // }
-} 
+// } 
 
 
-{/* <div id="singlePostId">
+/*{ <div id="singlePostId">
               <div>
                 <div>
                   <img src=${imgSrc} id="postImage" class="img-fluid rounded-start" alt="Relevant Picture">

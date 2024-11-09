@@ -25,9 +25,7 @@ export default class NavbarService {
                                     </form>
                                 </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" id="homeBtn">Home</a>
-                            </li>
+                            
                             <li class="nav-item">
                                 <a class="nav-link active" id="newsletterBtn"><img src="/data/icons/envelope.svg" height="20px" width="20px" id="newsletterImg"></a>
                             </li>
@@ -74,9 +72,7 @@ export default class NavbarService {
                                     </form>
                                 </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" id="homeBtn">Home</a>
-                            </li>
+                            
                             <li class="nav-item">
                                 <a class="nav-link active" id="newsletterBtn"><img src="/data/icons/envelope.svg" height="20px" width="20px" id="newsletterImg"></a>
                             </li>
@@ -139,9 +135,7 @@ export default class NavbarService {
                                     </form>
                                 </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" id="homeBtn">Home</a>
-                            </li>
+                            
                             <li class="nav-item">
                                 <a class="nav-link active" id="newsletterBtn"><img src="/data/icons/envelope.svg" height="20px" width="20px" id="newsletterImg"></a>
                             </li>
