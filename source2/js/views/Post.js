@@ -20,7 +20,6 @@ export default class Post extends AbstractView {
     btnService.loadMoreBtn.style.display = "none";
     
     const user = sessionService.Get();
-    
     if (user) {
       const star = await apiCaller.fetchFromDB(`https://localhost:7073/api/Stars`, "POST", { userId: user.id, postId: this.params.id });
       eventService.updateCurrentRating(star?.rating || 0);

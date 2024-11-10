@@ -96,7 +96,6 @@ export default class NavbarService {
                                     
                                     <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuClickableInside" 
                                         id="iconDropDown">
-                                        <a class="dropdown-item" id="myProfile">My Profile</a>
                                         <a class="dropdown-item" id="createPostBtn" data-target="#createPostModal">Create Post</a>
                                         <a class="dropdown-item" href = "/settings" id="settings" data-link>Settings</a>
                                         <a class="dropdown-item" id="logoutBtn">Log out</a>
@@ -159,10 +158,9 @@ export default class NavbarService {
                                     
                                     <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuClickableInside" 
                                         id="iconDropDown">
-                                        <a class="dropdown-item" id="myProfile">My Profile</a>
                                         <a class="dropdown-item" id="createPostBtn" data-target="#createPostModal">Create Post</a>
-                                        <a class="dropdown-item" id="settings">Settings</a>
-                                        <a class="dropdown-item" id="adminPanel">Admin Panel</a>
+                                        <a class="dropdown-item" href = "/settings" id="settings" data-link>Settings</a>
+                                        <a class="dropdown-item" href = "/adminpanel" id="adminPanel" data-link>Admin Panel</a>
                                         <a class="dropdown-item" id="logoutBtn">Log out</a>
                                     </div>
                                 </div>       

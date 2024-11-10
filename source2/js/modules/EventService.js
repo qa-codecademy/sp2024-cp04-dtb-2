@@ -143,13 +143,18 @@ class EventService {
         window.addEventListener('load', async (e)=>{
             const user = sessionService.Get();
             if(!user) return;
-
-            // this.logoutListener();
-            // this.createPostListener();
-            navbarService.loggedInNavbar();
+            let isAdmin = sessionService.GetParsedToken();
+            
+            if(isAdmin.token.isAdmin === "True"){
+                navbarService.adminNavbar();
+            }else{
+                navbarService.loggedInNavbar();                
+            }
             this.logoutListener();        
             this.themeListener();
             this.createPostListener();
+            // this.logoutListener();
+            // this.createPostListener();
         })
     }
 
@@ -931,7 +936,6 @@ class EventService {
             modalService.hideModal("deleteUserModal");
         });
     }
-
     // SearchPostsListener () {
     //     document.getElementById("searchDiv").addEventListener("submit", async (event) => {
     //         event.preventDefault();

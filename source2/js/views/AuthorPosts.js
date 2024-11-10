@@ -24,6 +24,14 @@ export default class AuthorPosts extends AbstractView {
         const result = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/authorposts/${this.params.id}`, "GET");
         let resultHtml = '';
         if(result){
+                const user = sessionService.Get();
+                let isAdmin = false;
+                if(user){
+                    const token = sessionService.GetParsedToken();
+                    if(token.token.isAdmin === "True"){
+                        isAdmin = true;
+                    }
+                }
                 result.forEach(post => {
                     const imgSrc = `data:image/png;base64,${post.image}`;
                 resultHtml += `
@@ -44,6 +52,7 @@ export default class AuthorPosts extends AbstractView {
                         <br>
                         <div class="tags">
                             <button type="button" class="btn btn-secondary btn-sm disabled">${post.tags}</button>
+                            ${isAdmin ? `<button class="btn btn-outline-danger deletePost" value="${post.id}">Delete</button>` : ''}
                         </div>  
                     </div>
                 </div>
@@ -51,7 +60,7 @@ export default class AuthorPosts extends AbstractView {
                         `;
             });
             if(result.length < 1){
-                resultHtml = '<h3>You currently have no posts ] ;</h3>'
+                resultHtml = '<h3>There\'s currently no posts ] ;</h3>'
             }
         } else{
             resultHtml = "You're not currently logged in!";
