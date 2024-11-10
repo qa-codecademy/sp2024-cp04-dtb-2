@@ -50,7 +50,6 @@ export default class Posts extends AbstractView {
                     </div>
                     <div class="card-body icons">
                         <div> 
-                            
                             <p>${element.rating} <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon"></p>
                         </div>
                         <div>
@@ -58,10 +57,10 @@ export default class Posts extends AbstractView {
                         </div>
                         <br>
                         <div class="tags">
-                        <button type="button" class="btn btn-secondary btn-sm disabled">${element.tags}</button>
+                            <button type="button" class="btn btn-secondary btn-sm disabled">${element.tags}</button>
                         </div>  
-                        </div>
-                        </div>
+                    </div>
+                </div>
                         `;
                     });
                     return resultHtml;

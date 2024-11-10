@@ -170,6 +170,12 @@ import modalService from "./modules/ModalService.js";
 import themeService from "./modules/ThemeService.js";
 import Settings from "./views/Settings.js";
 import MyPosts from "./views/MyPosts.js";
+import ButtonService from "./modules/ButtonService.js";
+import AuthorPosts from "./views/AuthorPosts.js";
+import SearchPosts from "./views/SearchPosts.js";
+
+
+const buttonService = new ButtonService();
 
 console.log("CONNECTED");
 
@@ -234,6 +240,9 @@ const router = async () => {
         { path: "/filterbytags", view: () => new Posts(postFilterService.filters) },
         { path: "/settings", view: Settings },
         { path: "/settings/myposts", view: MyPosts },
+        { path: "/authorposts/:id", view: AuthorPosts},
+        { path: "/search/:query", view: SearchPosts}
+        // eventService.PostUserListener.authorId
     ];
 
     const potentialMatches = routes.map(route => {
@@ -299,12 +308,36 @@ const router = async () => {
         contentPart.classList.remove("col-md-10");
         contentPart.classList.remove("settingsStyle");
         contentPart.classList.add("contentPart");
+        buttonService.fetchAllButtons();        
+        eventService.isScrollActive = true;
     }
-
+    
     if (view instanceof MyPosts) {
         eventService.MyPostsListener();
     }
+    
+    if (view instanceof AuthorPosts) {
+        let contentPartDiv = document.getElementById("contentPartDiv");
+        let contentPart = document.getElementById("contentPart");
+        contentPartDiv.classList.add("row");
+        contentPartDiv.classList.add("justify-content-md-center");
+        contentPart.classList.remove("col-md-10");
+        contentPart.classList.remove("settingsStyle");
+        contentPart.classList.add("contentPart");
+        eventService.isScrollActive = false;
+    }
+    
+    if (view instanceof SearchPosts) {
+        let contentPartDiv = document.getElementById("contentPartDiv");
+        let contentPart = document.getElementById("contentPart");
+        contentPartDiv.classList.add("row");
+        contentPartDiv.classList.add("justify-content-md-center");
+        contentPart.classList.remove("col-md-10");
+        contentPart.classList.remove("settingsStyle");
+        contentPart.classList.add("contentPart");
+        eventService.isScrollActive = false;
 
+    } 
     themeService.themeCheck();
 };
 
@@ -323,6 +356,21 @@ const addTagEventListeners = () => {
 };
 
 window.addEventListener("popstate", router);
+
+document.getElementById('srcIcon').addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log("you are in");
+    
+    const query = document.getElementById('searchInput').value;  // Get the query from the input
+    if (query) {
+        console.log("you are in @2");
+        // Update the URL with the query parameter
+        // window.history.pushState({}, '', `/posts/search?query=${encodeURIComponent(query)}`);
+        
+        // Optionally, you can trigger a function to re-render the view or load posts
+        naviageteTo(`/search/${(query)}`);
+    }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {

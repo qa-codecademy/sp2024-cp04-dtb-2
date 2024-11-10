@@ -23,6 +23,7 @@ class EventService {
         this.isScrollActive = true;
         this.firstScrollReached = false;
         this.isSubmitting = false;
+        this.authorId = null;
         this.initScrollListener();
         this.newsLetterListener();
         this.newsLetterSubListener();
@@ -37,6 +38,8 @@ class EventService {
         this.MonthModalListener();
         this.signUpListener();
         this.TagDropdownListener ();
+        // this.SearchPostsListener ();
+
 
         this.warningAlert = 'warningAlert';
         this.successAlert = 'successAlert';
@@ -929,7 +932,21 @@ class EventService {
         });
     }
 
-    
+    // SearchPostsListener () {
+    //     document.getElementById("searchDiv").addEventListener("submit", async (event) => {
+    //         event.preventDefault();
+    //         const query = document.getElementById("searchInput").value;
+            
+    //         await fetch(`https://localhost:7073/api/Posts/search?query=${encodeURIComponent(query)}`)
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 // Display the search results, such as in a container on the page
+    //                 console.log(data); // Replace this with your display logic
+    //             })
+    //             .catch(error => console.error('Error fetching search results:', error));
+    //     });
+    // }
+
 }
 
 const eventService = new EventService();

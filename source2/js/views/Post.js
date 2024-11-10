@@ -49,7 +49,7 @@ export default class Post extends AbstractView {
         <div>
           <img src="${imgSrc}" id="postImage" class="img-fluid rounded-start" alt="Relevant Picture">
           <h2 class="card-title card-header"> ${post.title}</h2>
-          <small>Created by - <a style="color: #00b13d" id="${post.user.id}">${post.user.fullname}</a> on ${post.postingTime}</small>
+          <small>Created by - <a href="/authorposts/${post.user.id}" style="color: #00b13d" class="userFullname" id="${post.user.id}" data-link>${post.user.fullname}</a> on ${post.postingTime}</small>
           <button type="button" class="btn btn-secondary btn-sm disabled">${postTags}</button>
           ${isAuthor ? `<button class="btn btn-outline-warning" value="${post.id}" id="editPostBtn">Edit</button>` : ''}
           <hr>
