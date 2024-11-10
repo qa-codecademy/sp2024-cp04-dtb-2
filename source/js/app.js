@@ -6,25 +6,12 @@ import { Newsletter } from "./modules/newsletterService.js";
 import { mostPopularPostsLoader, newPostsLoader, oldPostsLoader, showTagPosts, taggedPosts, mostPopularPosts, oldPosts, newestPosts, searchPostsLoader, filteredPosts, authorPostsLoader, postsByAuthor, monthYear } from "./modules/filter.js";
 import { aboutUsPageLoader } from "./modules/aboutUs.js";   
 import { lightDarkChek } from "./modules/themeToggle.js";
+import {apiCall} from "./modules/apiCall.js";
+import { PostFilter } from "./modules/PostFilter.js";
+import { ModalService } from "./modules/ModalService.js";
 
-class ModalService {
-    constructor(){
-        this.currentUser = this.removeSession();
-    }
+let apiCallz = new apiCall();
 
-    emptySession(){
-        let user = users.emptyUser();
-        const {firstName, lastName, email, password, isSubscribed} = user;
-        console.log(`Current session user:
-        \nfirst name:${firstName}
-        \nlast name: ${lastName}
-        \nemail: ${email}
-        \npassword: ${password}
-        \nisSubscribed: ${isSubscribed}`);
-        return user;
-    }
-    removeSession = () => this.currentUser = this.emptySession();
-}
 class PostService {
     constructor(){
         this.logoBtn = document.getElementById('logoBtn');
@@ -41,6 +28,7 @@ class PostService {
         this.backBtn = document.getElementById("backBtn");
         this.logoImg = document.getElementById('logoImg');
         this.isDarkTheme = false;
+        // this.
         
 
 
@@ -185,6 +173,8 @@ class PostService {
         openedPostId = [];
         commentPostId = null;
         indexOfPost = null;
+        
+        
 
         renderPosts = (posts) => {
             postService.result.setAttribute("style","max-width: min-content; max height: min-content; display: grid");
@@ -192,30 +182,33 @@ class PostService {
                 this.lastAuthor = null;
                 this.lastPageLoaded = ["cards"]; 
             }
-            let copies = [...posts];
+           // let copies = [...posts];
+           let copies = [];
+           copies = posts;
             console.log(posts)
+            console.log(copies);
             console.log("second posts")
             this.counter = 0;
          
-            for (let x of copies) {            
-    
+            for (let x of copies.posts) {            
+                const imageSrc = `data:image/png;base64,${x.image}`; 
                 if (this.counter < this.initialPosts) {
                          
                     this.result.innerHTML += `
                         <div class="card" style="width: 25vw" id="card-${x.id}">
-                            <img class="card-img-top img-fluid imgLink" src="${x.imgSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here" value="${x.id}">
+                            <img class="card-img-top img-fluid imgLink" src="${imageSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here" value="${x.id}">
                             <div class="card-body title">
                                 <a class="post-link"  value="${x.id}"><h5 class="card-title">${x.title}</h5></a>
-                                <p class="card-text">Do you want to read more?</p>
+                                <p class="card-text">${x.description}</p>
                             </div>
                             <div class="card-body icons">
                                 <div> 
                                     <img src="./source/data/icons/star.svg" alt="Star Icon" class="starsIcon">
-                                    <p>${x.stars.length} Stars</p>
+                                    <p>${x.rating} Stars</p>
                                 </div>
                                 <div>
                                     <img src="./source/data/icons/chat-right.svg" alt="Comment Icon" class="commentsIcon">
-                                    <p>${x.comments.length} Comments</p>
+                                    <p>${x.comments} Comments</p>
                                 </div>
                                 <br>
                                 <div class="tags">
@@ -243,6 +236,7 @@ class PostService {
             });
         }
         renderSinglePost = (post) =>{
+            const imageSrc = `data:image/png;base64,${post.image}`; 
             window.scrollTo(0,0);
             postService.lastPageLoaded.push("post");
             this.loadMoreBtn.style.display = "none";
@@ -253,13 +247,13 @@ class PostService {
             this.result.innerHTML = `<div class="singleCard mb-3" id="singlePostId">
     <div class="row g-0">
       <div class="col-md-5">
-        <img src=${post.imgSrc} id="postImage" class="img-fluid rounded-start" alt="Relevant Picture">
+        <img src=${imageSrc} id="postImage" class="img-fluid rounded-start" alt="Relevant Picture">
       </div>
       <br>
       <div class="col-md-7">
         <div class="singleCard-body">
           <h2 class="card-title card-header"> ${post.title}</h2>
-          <small>Created by - <a style="color: #00b13d"  id="postAuthorId">${post.authorId.fullName()}</a> on ${post.postingTime}  </small><br>
+          <small>Created by - <a style="color: #00b13d"  id="${post.user.id}">${post.user.fullname}</a> on ${post.postingTime}  </small><br>
           <small>tags- ${post.tags}</small>
           <hr>
           <p class="singleCard-text">${post.text}</p>
@@ -268,7 +262,7 @@ class PostService {
         <br>
       <div id='addStarContainer'>
             <p>Did you like this post? 
-            <span  id='addStartOnPost'> Add -> <img id='starPostImg' src="./source/data/icons/star.svg" alt="Star Icon" class="starsIcon"></span>
+            <span  id='addStartOnPost'> Add -> <img id='starPostImg' src="./source/data/icons/star.svg" alt="Star Icon" class="starsIcon">${post.rating}</span>
             </p>
     </div>
       </div>
@@ -300,7 +294,7 @@ class PostService {
         <br>
         <br>
         
-        <div id="addedComments"> 
+        <div id="addedComments">
         </div>
         <!-- Add more comments here... -->
     </div>
@@ -320,7 +314,7 @@ class PostService {
             posts.storage[indexPost].addStar(modalService.currentUser.id);
         }
     })
-    posts.storage[this.indexOfPost].fillStar(modalService.currentUser.id);
+    // posts.storage[this.indexOfPost].fillStar(modalService.currentUser.id); Api Logic needed to check if user already liked the post
     document.getElementById("commentForm").addEventListener("submit",function(event){
         event.preventDefault();
         console.log("it kinda works")
@@ -334,28 +328,21 @@ class PostService {
         displayComments();
     });
     displayComments();
-    document.getElementById("postAuthorId").addEventListener('click',()=>{
-        postService.lastPageLoaded.push("author");
-        postService.lastAuthor = this.loadedSinglePost.authorId;
-        authorPostsLoader(posts.storage, this.loadedSinglePost.authorId);
-    });
-// let testComment = document.getElementById("commentForm");
-
-// testComment.addEventListener("click", function (e) {
-//     e.preventDefault();
-//     const commentText = document.getElementById("commentText").value;
-//     const isAnonymous = document.getElementById("anonymous").checked;
-
-//     // Process the comment (you can send it to a server or handle it as needed)
-//     console.log("Comment:", commentText);
-//     console.log("Anonymous:", isAnonymous);
-// });
-// lightDarkChek();        
+    // document.getElementById("postAuthorId").addEventListener('click',()=>{  Router will take care of navigation history
+    //     postService.lastPageLoaded.push("author");
+    //     postService.lastAuthor = this.loadedSinglePost.authorId;
+    //     authorPostsLoader(posts.storage, this.loadedSinglePost.authorId);
+    // });     
 }
 
-        loadMore = (posts) => {
-            let postsToLoad = posts.filter(post => !this.loadedPosts.includes(post));
-            this.renderPosts(postsToLoad.slice(0, this.loadPosts));
+        loadMore = async () => {
+            if(postFilter.totalPages !== 0 && postFilter.pageIndex >= postFilter.totalPages){
+                console.log("No more posts!");
+                return;
+            }
+            let result = await apiCallz.fetchPaginatedPosts(postFilter);
+            postFilter.updateFilter(result.pageIndex, result.totalPages);
+            this.renderPosts(result);
         }
     writePosts = (postData)=> {
         for (const item of postData) {
@@ -363,20 +350,24 @@ class PostService {
         }
     }
     
-    openPost (postId){
-        let post = posts.storage.find(x=> x.id == postId);
+    openPost = async(postId) =>{
+        let post =  await apiCallz.fetchDetailedPost(postId);
         this.loadedSinglePost = post;
         this.indexOfPost = posts.storage.indexOf(post);
         this.renderSinglePost(post);
     }
+    
 } 
 let getPostId = function(){
-        let postId = this.getAttribute("value");
-        postService.openedPostId.push(postId);
-        postService.commentPostId = postId;
-        postService.selectedFilter = null;
-        postService.openPost(postId);
+    let postId = this.getAttribute("value");
+    postService.openedPostId.push(postId);
+    postService.commentPostId = postId;
+    postService.selectedFilter = null;
+    postService.openPost(postId);
 }
+
+
+
 loadMoreBtn.addEventListener("click", function () {
     console.log(postService.selectedFilter)
     if (postService.selectedFilter == "newPostsLoader") {
@@ -419,8 +410,15 @@ users.newUser("Test","Testing",'test@lala.com','123456');
 
 const postData = await getDataFromJson(postJsonPath);
 postService.writePosts(postData)
+// let titleWords = getTitleWords(posts.storage);
 
-newPostsLoader(posts.storage);
+const postFilter = new PostFilter();
+// newPostsLoader(posts.storage); json loader
+var result = await apiCallz.fetchPaginatedPosts(postFilter);
+newPostsLoader(result); 
+postFilter.updateFilter(result.pageIndex, result.totalPages);
+
+
 
 // posts.newPost("source/data/postImgs/3.jpg", "This man predicts stock prices like a fortune teller.", "Pay for more", ["stock"], users.storage[30], new Date(1992,11,20,8,30));
 // posts.newPost("source/data/postImgs/20.jpg", "How this professor teaches AI and thinks about the future of human creativity", "Pay for more", ["AI"], users.storage[50]);
@@ -497,26 +495,13 @@ function scrollFunction() {
   }
 }
 
-console.log(postData);
+
 export {postService,users};
 
 
 
 
 //display modal function
-function showModal(modalId) {
-    const modal = document.getElementById(modalId);
-    modal.style.display = 'block';
-    setTimeout(() => modal.classList.add('show'), 10);
-}
-
-// hide modal function
-
-function hideModal(modalId) {
-    const modal = document.getElementById(modalId);
-    modal.classList.remove('show');
-    setTimeout(() => modal.style.display = 'none', 500);
-}
 
 //sign up modal storing entered values
 document.getElementById('signUpForm').addEventListener('submit', function(event) {
@@ -672,11 +657,16 @@ document.getElementById('newPostBtn').addEventListener('click',()=>{
     let postText = document.getElementById('newPostText').value ;
     let postTags = Array.from(document.querySelectorAll('.custom-control-input:checked')).map(cb => cb.value);
     let imageNumber = document.getElementById('imgRange').value ;
+    if(postTags.length == 0 || postText == '' || postTitle == ''){
+        users.alert('warningAlert',"You must fill the fields and select 1 tag");
+
+    }
+    else{
     posts.newPost(`source/data/postImgs/${imageNumber}.jpg`, postTitle, postText, postTags, users.storage[modalService.currentUser.id - 1]);
     hideModal('createPostModal');
     newPostsLoader(posts.storage);
-
-})
+    }
+});
 
 
 //closing open modals when clinked on the background
@@ -703,8 +693,6 @@ updateNavbar();
 // displayComments();
 
 
-export{modalService,hideModal};
-
 
 document.getElementById("monthFilter").addEventListener("click",function(){
     showModal("monthModal");
@@ -719,6 +707,24 @@ document.getElementById("searchDiv").addEventListener("submit", function(event){
     event.preventDefault();
     searchPostsLoader(posts.storage);
 })
+document.getElementById("searchInput").addEventListener("input", function(event){
+    event.preventDefault();
+    let searchField = document.getElementById("searchInput").value;
+    document.getElementById('suggestionWords').innerHTML = '';
+    if(searchField.length >= 2){
+        searchSuggestions(searchField, titleWords);
+    }
+})
+function searchSuggestions(searchQuery, suggestionWords) {
+    let suggestions = suggestionWords.filter(x => x.includes(searchQuery.toLowerCase()));
+    let firstFiveSuggestions = suggestions.splice(0, 4);
+    let optionList = document.getElementById('suggestionWords');
+    firstFiveSuggestions.forEach(element => {
+        optionList.innerHTML +=`
+            <option value="${element}">${element}</option>
+        `
+    });
+}
 
 
 function displayComments() {
@@ -741,3 +747,17 @@ function displayComments() {
     }
     
 }
+// function getTitleWords(posts){
+//     let result = [];
+
+//     posts.forEach(x => {
+//         let words = x.title.split(' ');
+//         for(let i = 0; i < words.length; i++){
+//             if (!result.includes(words[i].toLowerCase())){
+//                 result.push(words[i].toLowerCase());
+//             }
+//         }
+
+//     })
+//     return result;
+// }

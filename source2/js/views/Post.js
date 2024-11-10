@@ -1,0 +1,401 @@
+import AbstractView from "./AbstractView.js";
+import apiCaller from "../modules/ApiCaller.js";
+import ButtonService from "../modules/ButtonService.js";
+import eventService from "../modules/EventService.js";
+import SessionService from "../modules/SessionService.js";
+
+const sessionService = new SessionService();
+const btnService = new ButtonService();
+
+export default class Post extends AbstractView {
+
+  constructor(params) {
+    super(params);
+    this.setTitle("Post Details");
+  }
+
+
+  async getHtml() {
+    btnService.filterBtn.style.display = "none";
+    btnService.loadMoreBtn.style.display = "none";
+    
+    const user = sessionService.Get();
+    if (user) {
+      const star = await apiCaller.fetchFromDB(`https://localhost:7073/api/Stars`, "POST", { userId: user.id, postId: this.params.id });
+      eventService.updateCurrentRating(star?.rating || 0);
+      eventService.updateCurrentPostId(this.params.id);
+    }
+    
+    const post = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/${this.params.id}`, "GET");
+    const isAuthor = user && user.id === post.user.id;
+    const imgSrc = `data:image/png;base64,${post.image}`;
+    const postTags = post.tags.map(tag => `[ ${tag} ]`).join(' ');
+  
+    const commentsHTML = post.comments.map(x => `
+      <div class="comment" data-id="${x.id}">
+        <span class="user">${x.name}</span>
+        <span class="date">${x.date}</span>
+        <p class="text">${x.text}</p>
+        ${user && x.userId === user.id ? `
+          <button class="btn btn-danger commentDelete">Delete</button>
+          <button class="btn btn-warning commentEdit">Edit</button>
+        ` : ''}
+      </div>
+    `).join('');
+  
+    let resultHtml = `
+      <div id="singlePostId">
+        <div>
+          <img src="${imgSrc}" id="postImage" class="img-fluid rounded-start" alt="Relevant Picture">
+          <h2 class="card-title card-header"> ${post.title}</h2>
+          <small>Created by - <a href="/authorposts/${post.user.id}" style="color: #00b13d" class="userFullname" id="${post.user.id}" data-link>${post.user.fullname}</a> on ${post.postingTime}</small>
+          <button type="button" class="btn btn-secondary btn-sm disabled">${postTags}</button>
+          ${isAuthor ? `<button class="btn btn-outline-warning" value="${post.id}" id="editPostBtn">Edit</button>` : ''}
+          <hr>
+          <p class="singleCard-text">${post.text}</p>
+          <div id="addStarContainer">
+            <p>Did you like this post? 
+              <span id="addStartOnPost"> 
+                <div class="star-rating" id="starsRating">
+                  ${[5, 4, 3, 2, 1].map(num => `
+                    <input type="radio" id="star${num}" name="rating" value="${num}" />
+                    <label for="star${num}" title="${num} stars">
+                      <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    </label>
+                  `).join('')}
+                </div>
+                ${post.rating}
+              </span>
+            </p>
+          </div>
+        </div>
+        <br>
+        <hr>
+        <div class="ad-banner">
+          <h1>QINSHIFT</h1>
+          <p>The Change Begins Here! <a href="https://qinshiftacademy.com/" target="_blank">Click to learn more</a></p>
+        </div>
+        <hr>
+        <div class="comments">
+          <div class="comment-form">
+            <h3>Add a Comment</h3>
+            <form id="commentForm">
+              <input type="text" id="commentName" placeholder="Name (optional)">
+              <label for="commentText">Your Comment:</label>
+              <textarea id="commentText" name="commentText" placeholder="Type your comment here..." required></textarea>
+              <button type="submit" id="commentPostBtn">Post Comment</button>
+            </form>
+          </div>
+          <div id="addedComments">${commentsHTML}</div>
+        </div>
+      </div>
+    `;
+  
+    return resultHtml;
+  }
+  
+  // async getHtml() {
+  //   btnService.filterBtn.style.display = "none";
+  //   btnService.loadMoreBtn.style.display = "none";
+  //   const user = sessionService.Get();
+  //   if (user != null || user != undefined) {
+  //     let star = await apiCaller.fetchFromDB(`https://localhost:7073/api/Stars`, "POST", { userId: user.id, postId: this.params.id });
+  //     if (star != null || star != undefined) {
+  //       let starNum = star.rating;
+  //       eventService.updateCurrentRating(starNum);
+  //       eventService.updateCurrentPostId(this.params.id);
+  //     } else {
+
+  //       eventService.updateCurrentRating(0);
+  //     }
+  //   }
+  //   let post = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/${this.params.id}`, "GET");
+  //   let imgSrc = `data:image/png;base64,${post.image}`;
+
+    
+  //   let commentsHTML = '';
+  //   for (let x of post.comments) {
+  //     if (user != null || user != undefined) {
+
+  //       if (x.userId === user.id) {
+  //         commentsHTML += `
+  //         <div class="comment" data-id="${x.id}">
+  //           <span class="user">${x.name}</span>
+  //           <span class="date">${x.date}</span>
+  //           <p class="text">${x.text}</p>
+  //           <button class ="btn btn-danger commentDelete">Delete</button>
+  //           <button class ="btn btn-warning commentEdit">Edit</button>
+  //           </div>
+  //         `
+  //       }
+  //     } else {
+  //       commentsHTML += `
+  //           <div class="comment" data-id="${x.id}">
+  //             <span class="user">${x.name}</span>
+  //             <span class="date">${x.date}</span>
+  //             <p class="text">${x.text}</p>
+  //           </div>`;
+  //     }
+  //   }
+
+  //   post.tags = post.tags.map(x => `[ ${x} ]`).join(' ');
+
+  //   let resultHtml = '';
+  //   if(user && user.id === post.user.id){
+  //     resultHtml = `<div id="singlePostId">
+  //             <div>
+  //               <div>
+  //                 <img src=${imgSrc} id="postImage" class="img-fluid rounded-start" alt="Relevant Picture">
+  //               </div>
+  //               <br>
+  //               <div>
+  //                 <div>
+  //                   <h2 class="card-title card-header"> ${post.title}</h2>
+  //                   <small>Created by - <a style="color: #00b13d"  id="${post.user.id}">${post.user.fullname}</a> on ${post.postingTime}  </small><br>
+  //                   <button type="button" class="btn btn-secondary btn-sm disabled">${post.tags}</button>
+  //                   <button class="btn btn-outline-warning" value="${post.id}" id="editPostBtn">Edit</button>
+  //                   <hr>
+  //                   <p class="singleCard-text">${post.text}</p>
+  //                   <div style="width: 70vw;">
+  //                   </div>
+  //                   <br>
+  //                   <div id="addStarContainer">
+  //                     <p>Did you like this post? 
+  //                       <span id="addStartOnPost"> 
+  //                         <div class="star-rating" id ="starsRating">
+  //                             <input type="radio" id="star5" name="rating" value="5" />
+  //                             <label for="star5" title="5 stars">
+  //                                 <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                             </label>
+  //                             <input type="radio" id="star4" name="rating" value="4" />
+  //                             <label for="star4" title="4 stars">
+  //                                 <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                             </label>
+  //                             <input type="radio" id="star3" name="rating" value="3" />
+  //                             <label for="star3" title="3 stars">
+  //                                 <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                             </label>
+  //                             <input type="radio" id="star2" name="rating" value="2" />
+  //                             <label for="star2" title="2 stars">
+  //                                 <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                             </label>
+  //                             <input type="radio" id="star1" name="rating" value="1" />
+  //                             <label for="star1" title="1 star">
+  //                                 <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                             </label>
+  //                         </div>
+  //                         ${post.rating}
+  //                       </span>
+  //                     </p>
+  //                   </div>
+  //                 </div>
+  //               </div>
+  //             </div>
+    
+  //             <br>
+  //             <br>
+  //             <hr>
+  //             <div class="ad-banner">
+  //               <h1>QINSHIFT</h1>
+  //               <p>The Change Begins Here! <a href="https://qinshiftacademy.com/" target="_blank">Click to learn more</a></p>
+  //             </div><hr><br>
+  //             <div class="comments">
+  //               <!-- Comment form -->
+  //               <div class="comment-form">
+  //                 <h3>Add a Comment</h3>
+  //                 <form id="commentForm">
+  //                   <input type= "text" id = "commentName" placeholder="Name (optional)">
+  //                   <label for="commentText">Your Comment:</label>
+  //                   <textarea type="text" id="commentText" name="commentText" placeholder="Type your comment here..." required></textarea>
+  //                   <button type="submit" id ="commentPostBtn">Post Comment</button>
+  //                 </form>
+  //               </div>
+  //               <br>
+  //               <br>
+        
+  //               <div id="addedComments">
+  //               ${commentsHTML}
+  //               </div>
+  //               <!-- Add more comments here... -->
+  //               </div>
+                
+  //               </div>
+  //               <br><br>`
+  //   } else{
+  //     resultHtml = `<div id="postImg">
+  //                     <img src=${imgSrc} id="postImage" class="img-fluid rounded-start" alt="Relevant Picture">
+  //                   </div>
+  //                   <div id="holder">
+  //                     <div id="postText">
+  //                       <h2 class="card-title card-header" id="singlePostTitle"> ${post.title}</h2>
+  //                       <small>Created by - <a style="color: #00b13d"  id="${post.user.id}">${post.user.fullname}</a> on ${post.postingTime}  </small><br>
+  //                       <button type="button" class="btn btn-secondary btn-sm disabled">${post.tags}</button>
+  //                       <hr>
+  //                       <p class="singleCard-text">${post.text}</p>
+  //                       <div id="addStarContainer">
+  //                         <p>Did you like this post? 
+  //                           <span id="addStartOnPost"> 
+  //                             <div class="star-rating" id ="starsRating">
+  //                                 <input type="radio" id="star5" name="rating" value="5" />
+  //                                 <label for="star5" title="5 stars">
+  //                                     <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                                 </label>
+  //                                 <input type="radio" id="star4" name="rating" value="4" />
+  //                                 <label for="star4" title="4 stars">
+  //                                     <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                                 </label>
+  //                                 <input type="radio" id="star3" name="rating" value="3" />
+  //                                 <label for="star3" title="3 stars">
+  //                                     <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                                 </label>
+  //                                 <input type="radio" id="star2" name="rating" value="2" />
+  //                                 <label for="star2" title="2 stars">
+  //                                     <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                                 </label>
+  //                                 <input type="radio" id="star1" name="rating" value="1" />
+  //                                 <label for="star1" title="1 star">
+  //                                     <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+  //                                 </label>
+  //                             </div>
+  //                             ${post.rating}
+  //                           </span>
+  //                         </p>
+  //                       </div>
+  //                     </div>
+  //                     <div id="ads">
+  //                     </div>
+  //                   </div>
+  //                   <div id="comments">
+  //                     <div class="comments">
+  //                       <!-- Comment form -->
+  //                       <div class="comment-form">
+  //                         <h3>Add a Comment</h3>
+  //                         <form id="commentForm">
+  //                           <input type= "text" id = "commentName" placeholder="Name (optional)">
+  //                           <label for="commentText">Your Comment:</label>
+  //                           <textarea type="text" id="commentText" name="commentText" placeholder="Type your comment here..." required></textarea>
+  //                           <button type="submit" id ="commentPostBtn">Post Comment</button>
+  //                         </form>
+  //                       </div>
+  //                       <br>
+  //                       <br>
+                
+  //                       <div id="addedComments">
+  //                       ${commentsHTML}
+  //                       </div>
+  //                       <!-- Add more comments here... -->
+  //                     </div>
+  //                   </div>
+  //             <div>
+  //               <div>
+  //               </div>
+  //               <br>
+  //               <div>
+  //                 <div class="singleCard-body">
+  //                   <div class="card" style="width: 70vw;">
+  //                   </div>
+  //                   <br>
+  //                 </div>
+  //               </div>
+  //             </div>
+    
+  //             <br>
+  //             <br>
+  //             <hr>
+  //             <div class="ad-banner">
+  //               <h1>QINSHIFT</h1>
+  //               <p>The Change Begins Here! <a href="https://qinshiftacademy.com/" target="_blank">Click to learn more</a></p>
+  //             </div><hr><br>
+
+  //           </div>
+  //           <br><br>`
+  //   }
+
+  //   return resultHtml;
+  // }
+  
+  // async init() {
+  //   // Add any additional initialization here if needed
+  //   await eventService.addStarEventListeners();
+  // }
+// } 
+
+
+/*{ <div id="singlePostId">
+              <div>
+                <div>
+                  <img src=${imgSrc} id="postImage" class="img-fluid rounded-start" alt="Relevant Picture">
+                </div>
+                <br>
+                <div>
+                  <div class="singleCard-body">
+                    <h2 class="card-title card-header"> ${post.title}</h2>
+                    <small>Created by - <a style="color: #00b13d"  id="${post.user.id}">${post.user.fullname}</a> on ${post.postingTime}  </small><br>
+                    <button type="button" class="btn btn-secondary btn-sm disabled">${post.tags}</button>
+                    <hr>
+                    <p class="singleCard-text">${post.text}</p>
+                    <div class="card" style="width: 70vw;">
+                    </div>
+                    <br>
+                    <div id="addStarContainer">
+                      <p>Did you like this post? 
+                        <span id="addStartOnPost"> 
+                          <div class="star-rating" id ="starsRating">
+                              <input type="radio" id="star5" name="rating" value="5" />
+                              <label for="star5" title="5 stars">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                              <input type="radio" id="star4" name="rating" value="4" />
+                              <label for="star4" title="4 stars">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                              <input type="radio" id="star3" name="rating" value="3" />
+                              <label for="star3" title="3 stars">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                              <input type="radio" id="star2" name="rating" value="2" />
+                              <label for="star2" title="2 stars">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                              <input type="radio" id="star1" name="rating" value="1" />
+                              <label for="star1" title="1 star">
+                                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                              </label>
+                          </div>
+                          ${post.rating}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+              <br>
+              <br>
+              <hr>
+              <div class="ad-banner">
+                <h1>QINSHIFT</h1>
+                <p>The Change Begins Here! <a href="https://qinshiftacademy.com/" target="_blank">Click to learn more</a></p>
+              </div><hr><br>
+              <div class="comments">
+                <!-- Comment form -->
+                <div class="comment-form">
+                  <h3>Add a Comment</h3>
+                  <form id="commentForm">
+                    <input type= "text" id = "commentName" placeholder="Name (optional)">
+                    <label for="commentText">Your Comment:</label>
+                    <textarea type="text" id="commentText" name="commentText" placeholder="Type your comment here..." required></textarea>
+                    <button type="submit" id ="commentPostBtn">Post Comment</button>
+                  </form>
+                </div>
+                <br>
+                <br>
+        
+                <div id="addedComments">
+                ${commentsHTML}
+                </div>
+                <!-- Add more comments here... -->
+              </div>
+
+            </div>
+            <br><br></br> */}

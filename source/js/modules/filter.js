@@ -1,5 +1,5 @@
-import {postService,users,hideModal} from "../app.js";
-
+import {postService,users} from "../app.js";
+import {ModalService} from "./ModalService.js";
 export let taggedPosts = [];
 export let mostPopularPosts = [];
 export let oldPosts = [];
@@ -7,10 +7,11 @@ export let newestPosts = [];
 export let filteredPosts = [];
 export let postsByAuthor = [];
 
+const modalService = new ModalService();
 
 export function newPostsLoader(posts) {
     postService.selectedFilter = "newPostsLoader";
-    newestPosts = posts.slice().sort((a, b) => new Date(b.postingTime) - new Date(a.postingTime));
+    newestPosts = posts // .slice().sort((a, b) => new Date(b.postingTime) - new Date(a.postingTime));
     document.getElementById("contentPart").innerHTML = "";
     postService.renderPosts(newestPosts);
 }
@@ -49,7 +50,14 @@ export function searchPostsLoader(posts) {
     filteredPosts = posts.filter(post => post.title.toLowerCase().includes(searchInput) || post.text.toLowerCase().includes(searchInput));
     document.getElementById("searchInput").value = '';
     document.getElementById("contentPart").innerHTML = "";
-    postService.renderPosts(filteredPosts);
+    if(filteredPosts.length < 1){
+        document.getElementById('contentPart').innerHTML = `
+        <h5 style="width: 30vw; text-align:center">No posts were found with the search query -> ( <b>${searchInput}</b> ).<br>Please try searching something else!</h5>`;
+        document.getElementById('loadMoreBtn').style.display = 'none';
+
+    } else{
+        postService.renderPosts(filteredPosts);
+    }
 }
 export function authorPostsLoader(posts, id) {
     postService.selectedFilter = "authorPosts";
@@ -78,7 +86,7 @@ export function monthYear(posts, dateValue) {
 
     }
     else{// Render the filtered posts
-    hideModal('monthModal');
+    modalService.hideModal('monthModal');
     document.getElementById('contentPart').innerHTML = "";
     postService.renderPosts(monthYearPosts);
     }

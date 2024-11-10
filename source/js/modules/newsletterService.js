@@ -1,4 +1,5 @@
-import{modalService} from "./../app.js";
+import{ModalService} from "./ModalService.js";
+const modalService = new ModalService();
 export class Newsletter{
     constructor(){
         this.storage = [];
