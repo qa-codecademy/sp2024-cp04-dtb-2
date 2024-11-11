@@ -150,6 +150,8 @@ class EventService {
             }else{
                 navbarService.loggedInNavbar();                
             }
+            buttonService.fetchAllButtons();
+            this.newsLetterListener();
             this.logoutListener();        
             this.themeListener();
             this.createPostListener();
@@ -238,7 +240,7 @@ class EventService {
         document.getElementById('newsletterForm').addEventListener('submit', async(e) => {
             e.preventDefault();
             let subedEmail = document.getElementById("newsletterEmail").value;
-            const url = `https://localhost:7073/api/NewsLetters?email=${subedEmail}`;
+            const url = `https://localhost:7073/api/NewsLetters/${subedEmail}`;
             console.log(subedEmail);
             
             let result = await apiCaller.fetchFromDB(url, "POST");
@@ -257,7 +259,7 @@ class EventService {
         document.getElementById('newsletterUnsubscribeForm').addEventListener('submit', async(e)=> {
             e.preventDefault();
             let unsubedEmail = document.getElementById("unsubNewsletterEmail").value;
-            const url = `https://localhost:7073/api/NewsLetters?email=${unsubedEmail}`;
+            const url = `https://localhost:7073/api/NewsLetters/${unsubedEmail}`;
             let result = await apiCaller.fetchFromDB(url, "DELETE");
             if(result.status === 200){
                 this.alert(this.successAlert, 'Successfully unsubscribed!');
@@ -320,6 +322,8 @@ class EventService {
 
     loginModalListener() {
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            if(this.isSubmitting) return;
+            this.isSubmitting = true;
             e.preventDefault();
     
             // Gather input values
@@ -358,13 +362,16 @@ class EventService {
     
                     // Hide the login modal
                     modalService.hideModal("loginModal");
+                    this.isSubmitting = false;
                 } else {
                     // Display warning if token is missing
                     this.alert(this.warningAlert, 'Invalid credentials!');
+                    this.isSubmitting = false;
                 }
             } catch (error) {
                 console.error("Login failed:", error);
                 this.alert(this.warningAlert, 'An error occurred while logging in.');
+                this.isSubmitting = false;
             }
         });
     
@@ -587,6 +594,8 @@ class EventService {
 
     commentListener(){
         document.getElementById('commentForm').addEventListener('submit', async(e)=>{
+            if(this.isSubmitting) return;
+            this.isSubmitting = true;
             e.preventDefault();
             const commentNameElement = document.getElementById("commentName");
             const commentTextElement = document.getElementById("commentText");
@@ -599,11 +608,12 @@ class EventService {
                 console.log("YOu must be logged in");
                 modalService.showModal("loginModal");
                 this.loginModalListener();
-                return
+                this.isSubmitting = false;
+                return;
             }
             if(commentText === null || commentText == ""){
                 console.log("Invalid comment");
-                
+                this.isSubmitting = false;
                 return 
             }
             let url = "https://localhost:7073/api/Comment";
@@ -627,10 +637,14 @@ class EventService {
             this.alert(this.successAlert, 'Successfully added comment!');
             this.editCommentListener();
             this.deleteCommentListener();
+            this.isSubmitting = false;
         });
     }
 
     editCommentListener(){
+        if(this.isSubmitting) return;
+        this.isSubmitting = true;
+
         const editButtons = document.getElementsByClassName("commentEdit");
         Array.from(editButtons).forEach(button => {
             button.addEventListener('click', async (e) => {
@@ -641,6 +655,7 @@ class EventService {
                     console.log("You must be logged in");
                     modalService.showModal("loginModal");
                     this.loginModalListener();
+                    this.isSubmitting = false;
                     return;
                 }
     
@@ -668,6 +683,7 @@ class EventService {
                         console.log("You must be logged in");
                         modalService.showModal("loginModal");
                         this.loginModalListener();
+                        this.isSubmitting = false;
                         return;
                     }
     
@@ -680,6 +696,7 @@ class EventService {
                         console.log('editing..');
                         await apiCaller.fetchFromDB('https://localhost:7073/api/Comment', "PUT", {userId: user.id, text: editedText, id: commentId}, user.token);
                         this.alert(this.successAlert, 'Successfully updated comment!');
+                        this.isSubmitting = false;
                     }
     
                     commentElement.innerHTML = `
@@ -692,6 +709,7 @@ class EventService {
     
                     this.editCommentListener();
                     this.deleteCommentListener();
+                    this.isSubmitting = false;
                 });
             });
         });
@@ -701,6 +719,8 @@ class EventService {
         const deleteButtons = document.getElementsByClassName("commentDelete");
         Array.from(deleteButtons).forEach(button =>{
             button.addEventListener('click', async(e)=>{
+                    if(this.isSubmitting) return;
+                    this.isSubmitting
                     e.preventDefault();
             
                         const user = sessionService.Get();
