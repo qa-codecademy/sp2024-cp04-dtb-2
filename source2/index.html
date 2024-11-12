@@ -29,14 +29,22 @@
                         <ul class="navbar-nav mb-2 mb-lg-0 d-flex flex-row">
                             <li class="nav-item">
                                 <div class="text-container">
-                                    <form id="searchDiv">
+                                    <form id="searchDiv" class="search-form">
                                         <input type="search" id="searchInput" list="suggestionWords" placeholder="Search" required>
                                         <datalist id="suggestionWords">
-                                            <!-- <option value="Objective C">Objective C</option> -->
                                         </datalist>
                                         <button class="btn" type="submit"><img src="/data/icons/search.svg" id="srcIcon" alt="Search Icon"
                                             style="width: 20px; height: 20px;"></button>
                                     </form>
+                                    <!-- <form id="searchForm">
+                                        <input type="search" id="searchInput" list="suggestionWords" placeholder="Search" required>
+                                        <datalist id="suggestionWords">
+                                        </datalist>
+                                        <button class="btn" type="submit">
+                                            <img src="/data/icons/search.svg" id="srcIcon" alt="Search Icon" style="width: 20px; height: 20px;">
+                                        </button>
+                                    </form> -->
+                                    
                                 </div>
                             </li>
                             <li class="nav-item">
@@ -269,7 +277,6 @@
                             <label for="newPostText">Post text</label>
                             <textarea class="form-control" id="newPostText" placeholder="Please enter the post text here" required></textarea>
                         </div>
-                        <hr>
                         <hr>
                         <div class="mb-3">
                             <label for="newPostDescription">Post description</label>

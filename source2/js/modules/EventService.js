@@ -422,12 +422,13 @@ class EventService {
             const newPostTitle = document.getElementById("newPostTitle").value;
             const newPostText = document.getElementById("newPostText").value;
             const postTags = Array.from(document.querySelectorAll('.custom-control-input:checked')).map(cb => cb.value);
-            buttonService.imageModalBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                console.log("in");
+            // NOT IMPLEMENTED YET
+            // buttonService.imageModalBtn.addEventListener("click", (e) => {
+            //     e.preventDefault();
+            //     console.log("in");
                 
-                modalService.showModal("imageModal");
-            });
+            //     modalService.showModal("imageModal");
+            // });
             const imageNumber = document.getElementById('imgRange').value ;
             const newPostDescription = document.getElementById("newPostDescription").value;
 
@@ -435,7 +436,8 @@ class EventService {
             // const fetchedImageSrc = fetchedImage.children[0].currentSrc.slice(fetchedImage.children[0].currentSrc.indexOf(',') + 1, fetchedImage.children[0].currentSrc.length - 1);
 
             if(postTags.length == 0 || newPostText == '' || newPostTitle == '' || newPostDescription == ''){
-                users.alert('warningAlert',"You must fill the fields and select 1 tag");
+                this.alert('warningAlert',"You must fill the fields and select 1 tag");
+                this.isSubmitting = false;
                 return;
             }
 
@@ -861,6 +863,42 @@ class EventService {
             });
         }
     }
+    deletePostListener(){
+        let deleteBtn = document.getElementById("deletePostBtn");
+        console.log(deleteBtn);
+        if(deleteBtn !== null){
+            deleteBtn.addEventListener('click', async(e)=>{
+                e.preventDefault();
+
+                const user = sessionService.Get();
+                if(!user){
+                    console.log("YOu must be logged in");
+                    modalService.showModal("loginModal");
+                    this.loginModalListener();
+                    return
+                }
+
+                const deleteButtonId = deleteBtn.value;
+                console.log(deleteButtonId);
+
+                const fetchedPost = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/delete/${deleteButtonId}`, "DELETE", null, user.token);
+                console.log(fetchedPost);
+
+                if(fetchedPost.status === 200){
+                    document.querySelector("#contentPart").innerHTML = `
+                    <h1>This post is now deleted!</h1>
+                    `
+                    this.alert(this.successAlert, `Successfully deleted post!`);
+                    return;
+                } 
+                this.alert(this.warningAlert, `Post wasn't deleted successfully!`);
+                
+            })
+
+        }
+            
+        
+    }
     MyPostsListener(){
         const deleteButtons = document.getElementsByClassName("deletePost");
         Array.from(deleteButtons).forEach(button => {
@@ -956,12 +994,46 @@ class EventService {
             modalService.hideModal("deleteUserModal");
         });
     }
+
+    DeleteUsersListener(){
+        const deleteUserBtns = document.getElementsByClassName("delete-users");
+
+        Array.from(deleteUserBtns).forEach(button => {
+            button.addEventListener('click', async(e) =>{
+                e.preventDefault();
+
+                const user = sessionService.Get();
+                if(!user){
+                    console.log("You must be logged in");
+                    modalService.showModal("loginModal");
+                    this.loginModalListener();
+                    return;
+                }
+                
+                const userToBeDeleted = button.closest('.user');
+                const userId = button.value;
+                console.log(userId, userToBeDeleted);
+                
+                
+                console.log('Deleting user');
+                
+                const result = await apiCaller.fetchFromDB(`https://localhost:7073/api/User/${userId}`, 'DELETE', null, user.token);
+                console.log(result);
+                if(result.status === 200){
+                    userToBeDeleted.remove();
+                    this.alert(this.successAlert, `Successfully deleted user!`);
+                    return;
+                } 
+                this.alert(this.warningAlert, `User wasn't deleted successfully!`);
+            })
+        })
+    }
     // SearchPostsListener () {
     //     document.getElementById("searchDiv").addEventListener("submit", async (event) => {
     //         event.preventDefault();
     //         const query = document.getElementById("searchInput").value;
             
-    //         await fetch(`https://localhost:7073/api/Posts/search?query=${encodeURIComponent(query)}`)
+    //         await fetch(`https://localhost:7073/api/Posts/search/${query}`)
     //             .then(response => response.json())
     //             .then(data => {
     //                 // Display the search results, such as in a container on the page

@@ -120,6 +120,7 @@ const router = async () => {
             eventService.editCommentListener();
             eventService.deleteCommentListener();
             eventService.editPostListener();
+            eventService.deletePostListener();
 
             contentPartDiv.classList.remove("row");
             contentPartDiv.classList.remove("justify-content-md-center");
@@ -154,6 +155,7 @@ const router = async () => {
 
     if(view instanceof AdminPanelUsers){
         eventService.isScrollActive = false;
+        eventService.DeleteUsersListener();
     }
 
     if (view instanceof Posts) {
@@ -214,13 +216,20 @@ const addTagEventListeners = () => {
 
 window.addEventListener("popstate", router);
 
-document.getElementById('srcIcon').addEventListener('click', (e) => {
+document.querySelector('.search-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const query = document.getElementById('searchInput').value;
     if (query) {
-        naviageteTo(`/search/${(query)}`);
+        naviageteTo(`/search/${encodeURIComponent(query)}`);
     }
 });
+// document.getElementById('srcIcon').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     const query = document.getElementById('searchInput').value;
+//     if (query) {
+//         naviageteTo(`/search/${(query)}`);
+//     }
+// });
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {

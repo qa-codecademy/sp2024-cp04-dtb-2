@@ -24,11 +24,11 @@ export default class AdminPanelUsers extends AbstractView{
             let resultRecords = '';
             result.forEach(user =>{
                 resultRecords += `
-                    <tr>
+                    <tr class="user">
                         <th>${user.id}</th>
                         <td>${user.fullname}</td>
                         <td>${user.email}</td>
-                        ${user.isAdmin ? '<td>No can\'t do</td>' : `<td><a class="btn btn-outline-danger">Delete</a></td>` }
+                        ${user.isAdmin ? '<td>No can\'t do</td>' : `<td><button class="btn btn-outline-danger delete-users" value="${user.id}">Delete</button></td>` }
                         <td><a href="/authorposts/${user.id}" class="btn btn-primary" data-link>Posts</a></td>
                     </tr>
                 `
