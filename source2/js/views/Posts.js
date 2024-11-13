@@ -46,11 +46,12 @@ export default class Posts extends AbstractView {
                     <img class="card-img-top img-fluid imgLink" src="${imgSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here" value="${element.id}">
                     <div class="card-body title">
                         <a class="post-link" href="posts/${element.id}" data-link><h5 class="card-title">${element.title}</h5></a>
+                        <h6>By ${element.user.fullname}</h6>
                         <p class="card-text">${element.description}</p>
                     </div>
                     <div class="card-body icons">
                         <div> 
-                            <p>${element.rating} <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon"></p>
+                            <p>${element.rating} <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon"> ${element.rating !== 0 ? `(${element.ratings !== 1 ? `${element.ratings} ratings` : `${element.ratings} rating`})` : ''}</p>
                         </div>
                         <div>
                             <p>${element.comments} <img src="/data/icons/chat-right.svg" alt="Comment Icon" class="commentsIcon"></p>

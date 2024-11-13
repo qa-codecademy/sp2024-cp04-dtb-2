@@ -167,21 +167,21 @@ class EventService {
         posts.forEach(element => {
             element.tags = element.tags.map(x => `[ ${x} ]`).join(' ');
             let imgSrc = `data:image/png;base64,${element.image}`;
-            resultHtml += `
+            resultHtml += 
+            `
                 <div class="card" style="width: 25vw" id="card-${element.id}">
                     <img class="card-img-top img-fluid imgLink" src="${imgSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here" value="${element.id}">
                     <div class="card-body title">
                         <a class="post-link" href="posts/${element.id}" data-link><h5 class="card-title">${element.title}</h5></a>
+                        <h6>By ${element.user.fullname}</h6>
                         <p class="card-text">${element.description}</p>
                     </div>
                     <div class="card-body icons">
-                        <div> 
-                            <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon">
-                            <p>${element.rating} Stars</p>
+                        <div>
+                            <p>${element.rating} <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon"> ${element.rating !== 0 ? `(${element.ratings !== 1 ? `${element.ratings} ratings` : `${element.ratings} rating`})` : ''}</p>
                         </div>
                         <div>
-                            <img src="/data/icons/chat-right.svg" alt="Comment Icon" class="commentsIcon">
-                            <p>${element.comments} Comments</p>
+                            <p>${element.comments} <img src="/data/icons/chat-right.svg" alt="Comment Icon" class="commentsIcon"></p>
                         </div>
                         <br>
                         <div class="tags">
@@ -189,7 +189,7 @@ class EventService {
                         </div>  
                     </div>
                 </div>
-            `;
+                        `
         });
 
         contentPart.insertAdjacentHTML('beforeend', resultHtml);
@@ -886,8 +886,8 @@ class EventService {
 
                 if(fetchedPost.status === 200){
                     document.querySelector("#contentPart").innerHTML = `
-                    <h1>This post is now deleted!</h1>
-                    `
+                    <h1 style="text-align: center; margin-top: 30px;">This post is now deleted!</h1>
+                  `;
                     this.alert(this.successAlert, `Successfully deleted post!`);
                     return;
                 } 

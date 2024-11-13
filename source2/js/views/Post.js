@@ -31,7 +31,7 @@ export default class Post extends AbstractView {
     
     let isAdmin = false;
     const token = sessionService.GetParsedToken();
-    if(token.token.isAdmin === "True"){
+    if( token && token.token.isAdmin === "True"){
       isAdmin = true;
     }
 
@@ -63,7 +63,7 @@ export default class Post extends AbstractView {
                         <hr>
                         <p class="singleCard-text">${post.text}</p>
                         <div id="addStarContainer">
-                          <p>Did you like this post? 
+                          <p>Did you like this post? Current rating: <span id="postRating">${post.rating}</span>
                             <span id="addStartOnPost"> 
                               <div class="star-rating" id ="starsRating">
                                   <input type="radio" id="star5" name="rating" value="5" />
@@ -87,7 +87,7 @@ export default class Post extends AbstractView {
                                       <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                                   </label>
                               </div>
-                              ${post.rating}
+                              
                             </span>
                           </p>
                         </div>
