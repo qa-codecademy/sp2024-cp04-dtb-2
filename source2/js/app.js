@@ -43,7 +43,7 @@ const router = async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const tagsParam = urlParams.get('tags');
             const tags = tagsParam ? tagsParam.split(',') : [];
-            postFilterService.updateFilter({ pageIndex: 1, tags }); 
+            postFilterService.updateFilter({ pageIndex: 1, tags:tags, year:0, month:0 }); 
             break;
 
         case "/filterbyold":

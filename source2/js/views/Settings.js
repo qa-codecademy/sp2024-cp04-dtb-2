@@ -25,8 +25,8 @@ export default class Settings extends AbstractView {
       result = `
             <form>
                 <h3 id="settingsWelcomeMessage">Hi ${fetchedUser.firstName} ${fetchedUser.lastName}!</h3>
-                <div class="col-md-5">
-                    <div class="form-group mb-3">
+                <div class="col-md-4">
+                    <div class="form-group mb-3 ">
                         <label for="firstNameSettings" class="form-label">First Name</label>
                         <div class="input-group">
                             <input disabled=true type="text" class="form-control" id="firstNameSettings" value="${fetchedUser.firstName}" placeholder="First Name">
@@ -37,7 +37,7 @@ export default class Settings extends AbstractView {
                     <div class="form-group mb-3">
                         <label for="lastNameSettings" class="form-label">Last Name</label>
                         <div class="input-group">
-                            <input disabled=true type="text" class="form-control" id="lastNameSettings" value="${fetchedUser.lastName}" placeholder="Last Name">
+                            <input disabled=true type="text" class="form-control " id="lastNameSettings" value="${fetchedUser.lastName}" placeholder="Last Name">
                             <button class="btn btn-outline-warning" id="lastNameSettingsBtn" type="button">Edit</button>
                         </div>
                     </div>
@@ -45,16 +45,16 @@ export default class Settings extends AbstractView {
                     <div class="form-group mb-3">
                         <label for="emailSettings" class="form-label">Email</label>
                         <div class="input-group">
-                            <input disabled=true type="text" class="form-control" id="emailSettings" value="${fetchedUser.email}" placeholder="Email">
+                            <input disabled=true type="text" class="form-control " id="emailSettings" value="${fetchedUser.email}" placeholder="Email">
                             <button class="btn btn-outline-warning" id="emailSettingsBtn" type="button">Edit</button>
                         </div>
                     </div>
                     <div>
                     <h5>
-                    Is subscribed: ${fetchedUser.isSubscribed}
+                    Is subscribed: ${fetchedUser.isSubscribed? '<img style="max-width: 30px; max-height: 30px;" src="data/icons/greenCheckMark.png">':'<img style="max-width: 30px; max-height: 30px;" src="data/icons/redXMarkpng.png">'}
                     </h5>
                     <h5>
-                    Has admin privileges: ${fetchedUser.isAdmin}
+                    Has admin privileges: ${fetchedUser.isAdmin? '<img style="max-width: 30px; max-height: 30px;" src="data/icons/greenCheckMark.png">':'<img style="max-width: 30px; max-height: 30px;" src="data/icons/redXMarkpng.png">'}
                     </h5>
                     </div>
                 </div>

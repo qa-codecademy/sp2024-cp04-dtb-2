@@ -28,7 +28,7 @@ export default class AdminPanelUsers extends AbstractView{
                         <th>${user.id}</th>
                         <td>${user.fullname}</td>
                         <td>${user.email}</td>
-                        ${user.isAdmin ? '<td>No can\'t do</td>' : `<td><button class="btn btn-outline-danger delete-users" value="${user.id}">Delete</button></td>` }
+                        ${user.isAdmin ? '<td>Not permitted</td>' : `<td><button class="btn btn-outline-danger delete-users" value="${user.id}">Delete</button></td>` }
                         <td><a href="/authorposts/${user.id}" class="btn btn-primary" data-link>Posts</a></td>
                     </tr>
                 `
