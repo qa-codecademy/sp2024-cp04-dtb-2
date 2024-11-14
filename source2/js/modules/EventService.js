@@ -322,9 +322,9 @@ class EventService {
 
     loginModalListener() {
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
             if(this.isSubmitting) return;
             this.isSubmitting = true;
-            e.preventDefault();
     
             // Gather input values
             let loginEmail = document.getElementById("loginEmail").value;
@@ -1027,6 +1027,32 @@ class EventService {
                 this.alert(this.warningAlert, `User wasn't deleted successfully!`);
             })
         })
+    }
+
+    SubscribeAuthorListener () {
+        document.getElementById("subscribeAuthor").addEventListener("click", async (e)=> {
+            e.preventDefault();
+            const user = sessionService.Get();
+                if(!user){
+                    this.alert(this.warningAlert,`You must be logged in first`)
+                    modalService.showModal("loginModal");
+                    this.loginModalListener();
+                    return;
+                }
+                if(!user.isSubscribed){
+                    this.alert(this.warningAlert,`You must be subscribed to our newsletter first`)
+                    modalService.showModal("subscribeModal");
+                    this.newsLetterSubListener();
+                    return
+                }
+                let authorId = document.querySelector(".userFullname").id;
+                let result =  await apiCaller.fetchFromDB(`https://localhost:7073/api/NewsLetters`, "PUT", {email: user.email, authorID: authorId});
+                if(result.status === 200){
+                    this.alert(this.successAlert, `Successfully subscribed to user!`);
+                    return;                
+                }
+                this.alert(this.warningAlert, `You didnt successfully subscribe`);
+        });
     }
     // SearchPostsListener () {
     //     document.getElementById("searchDiv").addEventListener("submit", async (event) => {

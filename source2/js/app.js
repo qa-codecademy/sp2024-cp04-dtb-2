@@ -114,6 +114,7 @@ const router = async () => {
         if (view instanceof Post) {
             let contentPart = document.getElementById("contentPart");
             let contentPartDiv = document.getElementById("contentPartDiv");
+            buttonService.fetchAllButtons();
             eventService.addStarEventListeners();
             eventService.paintStars(eventService.currentRating);
             eventService.commentListener();
@@ -121,6 +122,9 @@ const router = async () => {
             eventService.deleteCommentListener();
             eventService.editPostListener();
             eventService.deletePostListener();
+            eventService.SubscribeAuthorListener();
+            eventService.loginListener();
+            eventService.loginModalListener();
 
             contentPartDiv.classList.remove("row");
             contentPartDiv.classList.remove("justify-content-md-center");
