@@ -204,7 +204,7 @@ main {
    
 }
 
-#postImage {
+#singlePostImage {
     max-width: 30rem;
     /* padding-right: 5rem; */
 }
@@ -604,12 +604,14 @@ a:hover {
     }
     #postText {
         width: 100%;
+        padding-left: 0px;
     }
     #ads {
         
         width: 80%;
         height: 100px;
     }
+    
 }
 .input-group .btn {
     position: relative;

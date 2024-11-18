@@ -56,7 +56,7 @@ export default class Post extends AbstractView {
     `).join('');
   
     let resultHtml = `<div id="postImg">
-                      <img src=${imgSrc} id="postImage" class="img-fluid rounded-start" alt="Relevant Picture">
+                      <img src=${imgSrc} id="singlePostImage" class="img-fluid rounded-start" alt="Relevant Picture">
                     </div>
                     <div id="holder">
                       <div id="postText">
