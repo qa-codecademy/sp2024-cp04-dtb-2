@@ -13,8 +13,10 @@ import AuthorPosts from "./views/AuthorPosts.js";
 import SearchPosts from "./views/SearchPosts.js";
 import AdminPanel from "./views/AdminPanel.js";
 import AdminPanelUsers from "./views/AdminPanelUsers.js";
+import SessionService from "./modules/SessionService.js";
 
 
+const sessionService = new SessionService();
 const buttonService = new ButtonService();
 
 console.log("CONNECTED");
@@ -123,8 +125,12 @@ const router = async () => {
             eventService.editPostListener();
             eventService.deletePostListener();
             eventService.SubscribeAuthorListener();
-            eventService.loginListener();
-            eventService.loginModalListener();
+            let user = sessionService.Get();
+
+            if (!user){
+                eventService.loginListener();
+                eventService.loginModalListener();
+            }
 
             contentPartDiv.classList.remove("row");
             contentPartDiv.classList.remove("justify-content-md-center");
