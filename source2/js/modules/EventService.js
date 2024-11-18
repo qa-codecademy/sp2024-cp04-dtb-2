@@ -46,7 +46,18 @@ class EventService {
         // this.logoutListener(); 
         // this.addStarEventListeners();
     }
-
+    get isSubmitting() {
+        return this._isSubmitting;
+    }
+    
+    set isSubmitting(value) {
+        if (this._isSubmitting !== value) {
+            const stackTrace = new Error().stack;
+            console.log(`isSubmitting changed: ${this._isSubmitting} -> ${value}`);
+            console.log(`Changed at: ${stackTrace}`);
+        }
+        this._isSubmitting = value;
+    }
     signUpListener() {
         const form = document.querySelector("#signUpForm");
         form.addEventListener('submit', async(e) => {
@@ -121,22 +132,27 @@ class EventService {
     async fetchNextPage() {
         if(this.isSubmitting) return;
         this.isSubmitting = true;
-
-
-        console.log("starting to fetch next page");
-        // console.log(postFilterService.filters);
-        const filters = postFilterService.getFilters();
-        // console.log(filters);
         
-        if (postFilterService.filters.pageIndex < postFilterService.filters.totalPages) {
-            postFilterService.updateFilter({ pageIndex: filters.pageIndex + 1 });
-            
-            const newPosts = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", filters);
+        try {
 
-            this.appendPostsToView(newPosts.posts);
-            themeService.themeCheck();
+            console.log("starting to fetch next page");
+            // console.log(postFilterService.filters);
+            const filters = postFilterService.getFilters();
+            // console.log(filters);
+            
+            if (postFilterService.filters.pageIndex < postFilterService.filters.totalPages) {
+                postFilterService.updateFilter({ pageIndex: filters.pageIndex + 1 });
+                
+                const newPosts = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts`, "POST", filters);
+    
+                this.appendPostsToView(newPosts.posts);
+                themeService.themeCheck();
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            this.isSubmitting = false;
         }
-        this.isSubmitting = false;
     }
 
     windowRefreshListener(){
@@ -236,6 +252,7 @@ class EventService {
             modalService.showModal("unsubscribeModal");
         } )
     }
+
     newsLetterSubListener (){
         document.getElementById('newsletterForm').addEventListener('submit', async(e) => {
             e.preventDefault();
@@ -255,6 +272,7 @@ class EventService {
             modalService.hideModal("subscribeModal");
         } );
     }
+
     newsLetterUnsubListener (){
         document.getElementById('newsletterUnsubscribeForm').addEventListener('submit', async(e)=> {
             e.preventDefault();
@@ -273,8 +291,10 @@ class EventService {
         });
  
     }
+
     loginListener(){
-        document.getElementById("loginBtn").addEventListener('click', ()=>{            
+        document.getElementById("loginBtn").addEventListener('click', ()=>{         
+            this.loginModalListener();   
             modalService.showModal("loginModal");
         });
 
@@ -321,32 +341,33 @@ class EventService {
     // }
 
     loginModalListener() {
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            if(this.isSubmitting) return;
+    
+            // Prevent duplicate submissions
+            if (this.isSubmitting) return;
             this.isSubmitting = true;
     
-            // Gather input values
-            let loginEmail = document.getElementById("loginEmail").value;
-            let loginPass = document.getElementById("loginPassword").value;
-            let body = {
-                email: loginEmail,
-                password: loginPass
-            };
+            console.log("Attempting to log in...");
     
+            // Gather input values
+            const loginEmail = document.getElementById("loginEmail").value;
+            const loginPass = document.getElementById("loginPassword").value;
+            const body = { email: loginEmail, password: loginPass };
             const url = `https://localhost:7073/api/User/login`;
     
             try {
                 // Call the API
-                let result = await apiCaller.fetchFromDB(url, "POST", body);
+                const result = await apiCaller.fetchFromDB(url, "POST", body);
     
-                // Check if the response contains a token
-                if (result && result.token) {
-                    this.alert(this.successAlert, 'Successfully logged in!');
+                // Handle successful login
+                if (result?.token) {
+                    console.log("Login successful:", result);
+                    this.alert(this.successAlert, "Successfully logged in!");
                     sessionService.Set(result);
     
-                    // Parse token to check if user is admin
-                    let isAdmin = sessionService.GetParsedToken();
+                    // Check if user is admin
+                    const isAdmin = sessionService.GetParsedToken();
                     if (isAdmin?.token?.isAdmin === "False") {
                         navbarService.loggedInNavbar();
                     } else {
@@ -362,24 +383,27 @@ class EventService {
     
                     // Hide the login modal
                     modalService.hideModal("loginModal");
-                    this.isSubmitting = false;
                 } else {
-                    // Display warning if token is missing
-                    this.alert(this.warningAlert, 'Invalid credentials!');
-                    this.isSubmitting = false;
+                    // Invalid credentials
+                    console.warn("Invalid login attempt.");
+                    this.alert(this.warningAlert, "Invalid credentials!");
                 }
             } catch (error) {
-                console.error("Login failed:", error);
-                this.alert(this.warningAlert, 'An error occurred while logging in.');
+                console.error("Error during login:", error);
+                this.alert(this.warningAlert, "An error occurred while logging in.");
+            } finally {
+                // Ensure the flag is always reset
                 this.isSubmitting = false;
             }
         });
     
         // Event listener to close the login modal
-        buttonService.logginCloseBtn.addEventListener('click', () => {
+        buttonService.logginCloseBtn.addEventListener("click", (e) => {
+            e.preventDefault();
             modalService.hideModal("loginModal");
         });
     }
+    
 
     logoutListener() {
         document.getElementById('logoutBtn').addEventListener('click', ()=> {           
@@ -393,6 +417,7 @@ class EventService {
 
         });
     }
+
     themeListener (){
         document.getElementById("lightDarkToggle").addEventListener('click',()=>{
             themeService.lightDarkChek();
@@ -407,81 +432,82 @@ class EventService {
         this.createPostModalListener();
 
     }
+
     closeCreatePostListener() {
         document.getElementById("closeCreatePostModal").addEventListener('click', async(e) =>{
             e.preventDefault();
             modalService.hideModal("createPostModal");
         })
     }
-    createPostModalListener () {
-        document.getElementById("newPostBtn").addEventListener('click', async (e)=>{
-            if (this.isSubmitting) return; // Prevents duplicate requests
-            this.isSubmitting = true;
+
+    createPostModalListener() {
+        document.getElementById("newPostBtn").addEventListener("click", async (e) => {
             e.preventDefault();
-            console.log("btn clicked");
+    
+            // Prevent duplicate submissions
+            if (this.isSubmitting) return;
+            this.isSubmitting = true;
+    
+            console.log("Creating a new post...");
+    
+            // Gather form values
             const newPostTitle = document.getElementById("newPostTitle").value;
             const newPostText = document.getElementById("newPostText").value;
-            const postTags = Array.from(document.querySelectorAll('.custom-control-input:checked')).map(cb => cb.value);
-            // NOT IMPLEMENTED YET
-            // buttonService.imageModalBtn.addEventListener("click", (e) => {
-            //     e.preventDefault();
-            //     console.log("in");
-                
-            //     modalService.showModal("imageModal");
-            // });
-            const imageNumber = document.getElementById('imgRange').value ;
             const newPostDescription = document.getElementById("newPostDescription").value;
-
+            const postTags = Array.from(document.querySelectorAll(".custom-control-input:checked")).map(cb => cb.value);
+            const imageNumber = document.getElementById("imgRange").value;
             const fetchedImage = uploadImageService.uploadedImage;
-            // const fetchedImageSrc = fetchedImage.children[0].currentSrc.slice(fetchedImage.children[0].currentSrc.indexOf(',') + 1, fetchedImage.children[0].currentSrc.length - 1);
-
-            if(postTags.length == 0 || newPostText == '' || newPostTitle == '' || newPostDescription == ''){
-                this.alert('warningAlert',"You must fill the fields and select 1 tag");
+    
+            // Validate inputs
+            if (!newPostTitle || !newPostText || !newPostDescription || postTags.length === 0) {
+                this.alert("warningAlert", "You must fill all fields and select at least one tag.");
                 this.isSubmitting = false;
                 return;
             }
-
-            let post = {};
-            const url = `https://localhost:7073/api/posts/create`;
-            if (fetchedImage) {
-              post = {
-                title: newPostTitle,
-                text: newPostText,
-                description: newPostDescription,
-                tags: postTags,
-                ImageFile: fetchedImage,
-              };
-            } else {
-              post = {
-                title: newPostTitle,
-                text: newPostText,
-                tags: postTags,
-                imageId: imageNumber,
-                description: newPostDescription,
-              };
-            }
-
-            console.log(post);
-            var user = sessionService.Get();
-
+    
+            // Create the post object
+            const post = fetchedImage
+                ? {
+                    title: newPostTitle,
+                    text: newPostText,
+                    description: newPostDescription,
+                    tags: postTags,
+                    ImageFile: fetchedImage,
+                  }
+                : {
+                    title: newPostTitle,
+                    text: newPostText,
+                    description: newPostDescription,
+                    tags: postTags,
+                    imageId: imageNumber,
+                  };
+    
+            console.log("Post object:", post);
+    
+            // Send API request
             try {
-                let result = await apiCaller.fetchFromDB(url, "POST", post, user.token);
-                console.log(result);
-                this.alert(this.successAlert, 'Successfully created post!');
-                setTimeout(() => modalService.hideModal("createPostModal"), 100);
+                const user = sessionService.Get();
+                const url = `https://localhost:7073/api/posts/create`;
+                const result = await apiCaller.fetchFromDB(url, "POST", post, user.token);
+    
+                console.log("API response:", result);
+                this.alert(this.successAlert, "Successfully created post!");
+                modalService.hideModal("createPostModal");
             } catch (error) {
-                this.alert(this.warningAlert, `Post wasn't created successfully!`);
+                console.error("Error creating post:", error);
+                this.alert(this.warningAlert, "Post wasn't created successfully!");
             } finally {
                 this.isSubmitting = false;
             }
-
-            setTimeout(() => modalService.hideModal("createPostModal"), 100);
         });
-        buttonService.closeCreatePostModal.addEventListener('click', (e)=> {
+    
+        // Add listener for closing the modal
+        buttonService.closeCreatePostModal.addEventListener("click", (e) => {
             e.preventDefault();
             modalService.hideModal("createPostModal");
-        })
+        });
     }
+    
 
     editPostModalListener(){
 
@@ -643,80 +669,89 @@ class EventService {
         });
     }
 
-    editCommentListener(){
-        if(this.isSubmitting) return;
-        this.isSubmitting = true;
-
+    editCommentListener() {
+        
         const editButtons = document.getElementsByClassName("commentEdit");
         Array.from(editButtons).forEach(button => {
             button.addEventListener('click', async (e) => {
                 e.preventDefault();
-    
-                const user = sessionService.Get();
-                if (!user) {
-                    console.log("You must be logged in");
-                    modalService.showModal("loginModal");
-                    this.loginModalListener();
-                    this.isSubmitting = false;
-                    return;
-                }
-    
-                const commentElement = button.closest(".comment");
-    
-                const commentId = commentElement.dataset.id;
-                const elements = commentElement.children;
-                const commentName = elements[0].innerHTML;
-                const commentDate = elements[1].innerHTML;
-                const commentText = elements[2].innerHTML;  
-    
-                commentElement.innerHTML = `
-                    <form id="commentEditForm" data-id="${commentId}">
-                        <label for="editCommentText">Edit text</label>
-                        <textarea id="editCommentText" name="commentText" placeholder="Type your comment here..." required>${commentText}</textarea>
-                        <button type="submit" class="btn btn-success" id="editCommentPostBtn">Done</button>
-                    </form>
-                `;
-    
-                document.getElementById("commentEditForm").addEventListener("submit", async(e) => {
-                    e.preventDefault();
-    
+                
+                try {
+                    if (this.isSubmitting) return;
+                    this.isSubmitting = true;
                     const user = sessionService.Get();
                     if (!user) {
                         console.log("You must be logged in");
                         modalService.showModal("loginModal");
                         this.loginModalListener();
-                        this.isSubmitting = false;
                         return;
-                    }
+                    } 
     
-                    let editedText = document.getElementById("editCommentText").value;
+                    const commentElement = button.closest(".comment");
     
-                    if (editedText === '') {
-                        editedText = commentText;
-                    } else{
-                        console.log('commentId:', commentId);
-                        console.log('editing..');
-                        await apiCaller.fetchFromDB('https://localhost:7073/api/Comment', "PUT", {userId: user.id, text: editedText, id: commentId}, user.token);
-                        this.alert(this.successAlert, 'Successfully updated comment!');
-                        this.isSubmitting = false;
-                    }
+                    const commentId = commentElement.dataset.id;
+                    const elements = commentElement.children;
+                    const commentName = elements[0].innerHTML;
+                    const commentDate = elements[1].innerHTML;
+                    const commentText = elements[2].innerHTML;
     
                     commentElement.innerHTML = `
-                        <span class="user">${commentName}</span>
-                        <span class="date">${commentDate}</span>
-                        <p>${editedText}</p>
-                        <button class="btn btn-danger commentDelete">Delete</button>
-                        <button class="btn btn-warning commentEdit">Edit</button>
+                        <form id="commentEditForm" data-id="${commentId}">
+                            <label for="editCommentText">Edit text</label>
+                            <textarea id="editCommentText" name="commentText" placeholder="Type your comment here..." required>${commentText}</textarea>
+                            <button type="submit" class="btn btn-success" id="editCommentPostBtn">Done</button>
+                        </form>
                     `;
     
-                    this.editCommentListener();
-                    this.deleteCommentListener();
+                    document.getElementById("commentEditForm").addEventListener("submit", async (e) => {
+                        e.preventDefault();
+    
+                        try {
+                            const user = sessionService.Get();
+                            if (!user) {
+                                console.log("You must be logged in");
+                                modalService.showModal("loginModal");
+                                this.loginModalListener();
+                                return;
+                            }
+    
+                            let editedText = document.getElementById("editCommentText").value;
+    
+                            if (editedText === '') {
+                                editedText = commentText;
+                            } else {
+                                console.log('commentId:', commentId);
+                                console.log('editing..');
+                                await apiCaller.fetchFromDB('https://localhost:7073/api/Comment', "PUT", { userId: user.id, text: editedText, id: commentId }, user.token);
+                                this.alert(this.successAlert, 'Successfully updated comment!');
+                            }
+    
+                            commentElement.innerHTML = `
+                                <span class="user">${commentName}</span>
+                                <span class="date">${commentDate}</span>
+                                <p>${editedText}</p>
+                                <button class="btn btn-danger commentDelete">Delete</button>
+                                <button class="btn btn-warning commentEdit">Edit</button>
+                            `;
+    
+                            this.editCommentListener();
+                            this.deleteCommentListener();
+                        } catch (error) {
+                            console.error('Error updating comment:', error);
+                            // Handle any error that occurs during the fetch request
+                        } finally {
+                            this.isSubmitting = false;
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error during comment editing process:', error);
+                } finally {
                     this.isSubmitting = false;
-                });
+                }
             });
         });
     }
-
+    
     deleteCommentListener(){
         const deleteButtons = document.getElementsByClassName("commentDelete");
         Array.from(deleteButtons).forEach(button =>{
@@ -748,6 +783,7 @@ class EventService {
             })
         })
     }
+
     loggedInNavBarListeners(){
         this.createPostListener();
         this.logoutListener();
@@ -765,6 +801,7 @@ class EventService {
         btn.innerHTML = "Save";
         console.log(btn);
     }
+
     changeToEditBtn(btn, id){
         btn.id = id;
         btn.classList.remove("btn-outline-success");
@@ -863,6 +900,7 @@ class EventService {
             });
         }
     }
+
     deletePostListener(){
         let deleteBtn = document.getElementById("deletePostBtn");
         console.log(deleteBtn);
@@ -899,6 +937,7 @@ class EventService {
             
         
     }
+
     MyPostsListener(){
         const deleteButtons = document.getElementsByClassName("deletePost");
         Array.from(deleteButtons).forEach(button => {
@@ -938,13 +977,21 @@ class EventService {
         });
         this.MonthModalListener();
     }
+
     MonthModalListener () {
         buttonService.monthmodalSubmitBtn.addEventListener("click", async (e)  => {
             if (this.isSubmitting) return; // Prevents duplicate requests
             this.isSubmitting = true;
             e.preventDefault();
-            modalService.hideModal("monthModal");
-            this.isSubmitting = false;
+            try {
+                modalService.hideModal("monthModal");
+            } catch (error){
+                console.log(error);
+                
+            } finally {
+
+                this.isSubmitting = false;
+            }
         });
         
         buttonService.monthModalCloseBtn.addEventListener("click", (e) =>{
@@ -966,10 +1013,6 @@ class EventService {
         });
     }
 
-    // SinglePostListener (){ 
-    //     document.getElementById("")
-    // }
-    
     DeleteAccountListener(){
         document.getElementById("deleteUserBtn").addEventListener("click",  ()=>{
         console.log("your in brother");
@@ -1054,21 +1097,6 @@ class EventService {
                 this.alert(this.warningAlert, `You didnt successfully subscribe`);
         });
     }
-    // SearchPostsListener () {
-    //     document.getElementById("searchDiv").addEventListener("submit", async (event) => {
-    //         event.preventDefault();
-    //         const query = document.getElementById("searchInput").value;
-            
-    //         await fetch(`https://localhost:7073/api/Posts/search/${query}`)
-    //             .then(response => response.json())
-    //             .then(data => {
-    //                 // Display the search results, such as in a container on the page
-    //                 console.log(data); // Replace this with your display logic
-    //             })
-    //             .catch(error => console.error('Error fetching search results:', error));
-    //     });
-    // }
-
 }
 
 const eventService = new EventService();

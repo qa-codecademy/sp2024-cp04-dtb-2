@@ -125,13 +125,15 @@ const router = async () => {
             eventService.editPostListener();
             eventService.deletePostListener();
             eventService.SubscribeAuthorListener();
-            let user = sessionService.Get();
 
+
+            let user = sessionService.Get();
+            
             if (!user){
                 eventService.loginListener();
                 eventService.loginModalListener();
             }
-
+            
             contentPartDiv.classList.remove("row");
             contentPartDiv.classList.remove("justify-content-md-center");
             contentPart.classList.remove("contentPart");
