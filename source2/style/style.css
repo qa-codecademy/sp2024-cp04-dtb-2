@@ -638,3 +638,23 @@ a:hover {
 #subscribeAuthor {
     margin-left: 10px;
 }
+#newPostText, #editPostText {
+    height: 200px;
+}
+
+#newPostDescription, #editPostDescription {
+    height: 50px;
+}
+#newPostTitle{
+    padding: 10px;
+    margin: 0px;
+}
+#editPostTitle{ 
+    padding: 10px;
+    margin: 0px;
+
+}
+#postTitleDiv {
+    display: flex;
+    justify-content: center;
+}
