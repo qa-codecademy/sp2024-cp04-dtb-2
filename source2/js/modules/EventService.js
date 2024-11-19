@@ -19,6 +19,7 @@ class EventService {
         this.windowRefreshListener();
         this.currentEditPostId = null;
         this.currentPostId = null;
+        this.currentPostAuthorId = null;
         this.currentRating = null;
         this.isScrollActive = true;
         this.firstScrollReached = false;
@@ -179,9 +180,16 @@ class EventService {
     appendPostsToView(posts) {
         const contentPart = document.querySelector("#contentPart");
         let resultHtml = "";
-        
+        posts.forEach(post => {
+            const date = new Date(post.postingTime);
+            post.postingTime = date.toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",  // Ex: Sep, Oct, Nov
+                year: "numeric"
+            });
+        })
         posts.forEach(element => {
-            element.tags = element.tags.map(x => `[ ${x} ]`).join(' ');
+            element.tags = element.tags.map(x => `#${x}`).join(' ');
             let imgSrc = `data:image/png;base64,${element.image}`;
             resultHtml += 
             `
@@ -189,7 +197,7 @@ class EventService {
                     <img class="card-img-top img-fluid imgLink" src="${imgSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here" value="${element.id}">
                     <div class="card-body title">
                         <a class="post-link" href="posts/${element.id}" data-link><h5 class="card-title">${element.title}</h5></a>
-                        <h6>By ${element.user.fullname}</h6>
+                        <h6>By ${element.user.fullname} - <small>${element.postingTime}</small></h6>
                         <p class="card-text">${element.description}</p>
                     </div>
                     <div class="card-body icons">
@@ -561,8 +569,14 @@ class EventService {
         document.querySelectorAll('input[name="rating"]').forEach(star => {
             star.addEventListener('click', async (event) => {
                 const rating = event.target.value;
-                let user = sessionService.Get();
+                const user = sessionService.Get();
                 if (user != undefined || user != null) {
+                    //  check if the current user id is the same as the author's id in the current post and don't allow the rating to be applied
+                    if(this.currentPostAuthorId === user.id){
+                        this.alert(this.warningAlert, 'You can\'t rate your own post!');
+                        this.clearStars();
+                        return;
+                    }
                     if ((this.currentRating == 0 || this.currentRating == null) && rating != this.currentRating) {
                         await apiCaller.fetchFromDB("https://localhost:7073/api/Stars/AddRating", "POST", {userId: user.id, postId: this.currentPostId, rating: rating}, user.token);
                         this.paintStars(rating);

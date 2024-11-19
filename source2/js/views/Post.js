@@ -27,6 +27,7 @@ export default class Post extends AbstractView {
     }
     
     const post = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/${this.params.id}`, "GET");
+    eventService.currentPostAuthorId = post.user.id;
     const isAuthor = user && user.id === post.user.id;
     
     let isAdmin = false;
@@ -36,11 +37,11 @@ export default class Post extends AbstractView {
     }
 
     const imgSrc = `data:image/png;base64,${post.image}`;
-    const postTags = post.tags.map(tag => `[ ${tag} ]`).join(' ');
+    const postTags = post.tags.map(tag => `#${tag}`).join(' ');
     const date = new Date(post.postingTime);
     const formattedDate = date.toLocaleDateString("en-GB", {
       day: "2-digit",
-      month: "short",  // "short" gives abbreviated month name, like "Sep"
+      month: "short",  // Ex: Sep, Oct, Nov
       year: "numeric"
   });
     const commentsHTML = post.comments.map(x => `

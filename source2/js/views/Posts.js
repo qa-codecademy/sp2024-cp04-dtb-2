@@ -23,7 +23,14 @@ export default class Posts extends AbstractView {
             postFilterService.updateFilter({ pageIndex: result.pageIndex, totalPages: result.totalPages});
             console.log(postFilterService.filters);
             
-
+            result.posts.forEach(post => {
+                const date = new Date(post.postingTime);
+                post.postingTime = date.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",  // Ex: Sep, Oct, Nov
+                    year: "numeric"
+                });
+            })
             return this.renderPosts(result.posts);
         }
         
@@ -39,14 +46,15 @@ export default class Posts extends AbstractView {
             return resultHtml;
         }
         posts.forEach(element => {
-            element.tags = element.tags.map(x => `[ ${x} ]`).join(' ');
+            element.tags = element.tags.map(x => `#${x}`).join(' ');
             let imgSrc = `data:image/png;base64,${element.image}`;
             resultHtml += `
                 <div class="card" style="width: 25vw" id="card-${element.id}">
                     <img class="card-img-top img-fluid imgLink" src="${imgSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here" value="${element.id}">
                     <div class="card-body title">
                         <a class="post-link" href="posts/${element.id}" data-link><h5 class="card-title">${element.title}</h5></a>
-                        <h6>By ${element.user.fullname}</h6>
+                        <h6>By ${element.user.fullname} - <small>${element.postingTime}</small></h6>
+                        
                         <p class="card-text">${element.description}</p>
                     </div>
                     <div class="card-body icons">
