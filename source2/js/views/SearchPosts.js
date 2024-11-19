@@ -17,6 +17,8 @@ export default class SearchPosts extends AbstractView {
         
         buttonService.filterBtn.style.display = "none";
         buttonService.loadMoreBtn.style.display = "none";
+        document.querySelector("#searchInput").value = '';
+        document.querySelector("#contentPart").innerHTML = '';
         const result = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/search?query=${encodeURIComponent(this.params.query)}`, "GET");
         let resultHtml = '';
         if(result){
