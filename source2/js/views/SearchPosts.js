@@ -23,6 +23,7 @@ export default class SearchPosts extends AbstractView {
         let resultHtml = '';
         if(result){
                 result.forEach(post => {
+                    const tags = post.tags.map(tag => `#${tag}`).join(' ');
                     const imgSrc = `data:image/png;base64,${post.image}`;
                 resultHtml += `
                 
@@ -41,7 +42,7 @@ export default class SearchPosts extends AbstractView {
                         </div>
                         <br>
                         <div class="tags">
-                            <button type="button" class="btn btn-secondary btn-sm disabled">${post.tags}</button>
+                            <button type="button" class="btn btn-secondary btn-sm disabled">${tags}</button>
                         </div>  
                     </div>
                 </div>
@@ -49,10 +50,10 @@ export default class SearchPosts extends AbstractView {
                         `;
             });
             if(result.length < 1){
-                resultHtml = '<h3>You currently have no posts ] ;</h3>'
+                resultHtml = '<h3>There\'s no results!</h3>'
             }
         } else{
-            resultHtml = "You're not currently logged in!";
+            resultHtml = '<h3>There\'s no results!</h3>'
         }
         return resultHtml;
     }
