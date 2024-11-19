@@ -268,9 +268,11 @@
                 </div>
                 <div class="modal-body">
                     <form id="createNewPostForm">
-                        <div class="form-group" style="justify-content: center;">
+                        <div class="form-group" style="justify-content: center;"  id="postTitleGroup">
                             <label for="newPostTitle" style="text-align: center;">Post Title</label>
-                            <input type="text" class="form-check" id="newPostTitle" placeholder="Enter post title here!" required>
+                            <div id="postTitleDiv">
+                                <input type="text" class="form-check" id="newPostTitle" placeholder="Enter post title here!" required>
+                            </div>
                         </div>
                         <hr>
                         <div class="mb-3">
@@ -370,9 +372,11 @@
                 </div>
                 <div class="modal-body">
                     <form id="editCurrentPostForm">
-                        <div class="form-group" style="justify-content: center;">
+                        <div class="form-group" style="justify-content: center;" id="postTitleGroup">
                             <label for="editPostTitle" style="text-align: center;">Post Title</label>
-                            <input type="text" class="form-check" id="editPostTitle" placeholder="Enter post title here!" required>
+                            <div id="postTitleDiv">
+                                <input type="text" class="form-check" id="editPostTitle" placeholder="Enter post title here!" required>
+                            </div>
                         </div>
                         <hr>
                         <div class="mb-3">
@@ -380,14 +384,12 @@
                             <textarea class="form-control" id="editPostText" placeholder="Please enter the post text here" required></textarea>
                         </div>
                         <hr>
-                        <hr>
                         <div class="mb-3">
                             <label for="editPostDescription">Post description</label>
                             <textarea class="form-control" id="editPostDescription" placeholder="Please enter the post description here" required></textarea>
                         </div>
                         <hr>
                         
-                        <hr>
                         
                     </form>
                 </div>  
