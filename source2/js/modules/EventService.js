@@ -647,7 +647,7 @@ class EventService {
 
             const user = sessionService.Get();
             if(!user){
-                console.log("YOu must be logged in");
+                console.log("You must be logged in");
                 modalService.showModal("loginModal");
                 this.loginModalListener();
                 this.isSubmitting = false;
@@ -655,11 +655,16 @@ class EventService {
             }
             if(commentText === null || commentText == ""){
                 console.log("Invalid comment");
+                this.alert(this.warningAlert, "Please ensure the comment has a body!");
                 this.isSubmitting = false;
                 return 
             }
             let url = "https://localhost:7073/api/Comment";
             let response = await apiCaller.fetchFromDB(url, "POST", {postId: this.currentPostId, name: commentName, text: commentText}, user.token);
+            if(response.status !== 201){
+                this.alert(this.warningAlert, "The comment wasn't created successfully!");
+                return;
+            }
             let commentContainer = document.getElementById("addedComments");
             let comment = document.createElement("div");
             comment.innerHTML = `

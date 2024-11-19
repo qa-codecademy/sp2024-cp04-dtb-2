@@ -31,6 +31,7 @@ class ApiCaller {
                     console.log(result);
                     loadingSpinnerService.hideSpinner();
                     this.isFetching = false;
+                    result.status = response.status;
                     return result;
                 } else {
                     loadingSpinnerService.hideSpinner();
