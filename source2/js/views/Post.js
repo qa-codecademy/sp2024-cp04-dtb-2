@@ -20,15 +20,20 @@ export default class Post extends AbstractView {
     btnService.loadMoreBtn.style.display = "none";
     
     const user = sessionService.Get();
-    if (user) {
-      const star = await apiCaller.fetchFromDB(`https://localhost:7073/api/Stars`, "POST", { userId: user.id, postId: this.params.id });
-      eventService.updateCurrentRating(star?.rating || 0);
-    }
     eventService.updateCurrentPostId(this.params.id);
     
     const post = await apiCaller.fetchFromDB(`https://localhost:7073/api/Posts/${this.params.id}`, "GET");
     eventService.currentPostAuthorId = post.user.id;
     const isAuthor = user && user.id === post.user.id;
+    let isSubscribed = null;
+    if (user) {
+      const star = await apiCaller.fetchFromDB(`https://localhost:7073/api/Stars`, "POST", { userId: user.id, postId: this.params.id });
+      const foundUserWithNewsletter = await apiCaller.fetchFromDB(`https://localhost:7073/api/User/usernewsletter`, "GET", null, user.token);
+      if(foundUserWithNewsletter.newsLetter !== null && foundUserWithNewsletter.newsLetter.authors.some(x => x.id === eventService.currentPostAuthorId)){
+        isSubscribed = true;
+      }
+      eventService.updateCurrentRating(star?.rating || 0);
+    }
     
     let isAdmin = false;
     const token = sessionService.GetParsedToken();
@@ -62,7 +67,7 @@ export default class Post extends AbstractView {
                     <div id="holder">
                       <div id="postText">
                         <h2 class="card-title card-header" id="singlePostTitle"> ${post.title}</h2>
-                        <small>Created by -   <a href="/authorposts/${post.user.id}" style="color: #00b13d" class="userFullname" id="${post.user.id}" data-link>${post.user.fullname}</a>  <button type="button" class="btn btn-dark btn-sm" id="subscribeAuthor">Subscribe</button>  Posted on ${formattedDate}</small><br>
+                        <small>Created by -   <a href="/authorposts/${post.user.id}" style="color: #00b13d" class="userFullname" id="${post.user.id}" data-link>${post.user.fullname}</a>  ${isSubscribed ? `<button type="button" class="btn btn-dark btn-sm subButton" id="subscribeAuthor" disabled>Subscribed</button>` :`<button type="button" class="btn btn-dark btn-sm subButton" id="subscribeAuthor">Subscribe</button>`}  Posted on ${formattedDate}</small><br>
                         
                         <button type="button" class="btn btn-secondary btn-sm disabled">${postTags}</button>
                         ${isAuthor ? `<button class="btn btn-outline-warning" value="${post.id}" id="editPostBtn">Edit</button>` : ''}

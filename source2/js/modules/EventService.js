@@ -1101,16 +1101,20 @@ class EventService {
                     this.loginModalListener();
                     return;
                 }
-                if(!user.isSubscribed){
+                const foundDetailedUser = await apiCaller.fetchFromDB(`https://localhost:7073/api/User/usernewsletter`, "GET", null, user.token);
+                if(!foundDetailedUser.isSubscribed){
                     this.alert(this.warningAlert,`You must be subscribed to our newsletter first`)
                     modalService.showModal("subscribeModal");
                     this.newsLetterSubListener();
                     return
                 }
-                let authorId = document.querySelector(".userFullname").id;
-                let result =  await apiCaller.fetchFromDB(`https://localhost:7073/api/NewsLetters`, "PUT", {email: user.email, authorID: authorId});
+                let authorId = this.currentPostAuthorId;
+                let result =  await apiCaller.fetchFromDB(`https://localhost:7073/api/NewsLetters`, "PUT", {email: user.email,tag:"", authorID: authorId});
                 if(result.status === 200){
-                    this.alert(this.successAlert, `Successfully subscribed to user!`);
+                    this.alert(this.successAlert, `Successfully subscribed to author!`);
+                    let btn = document.querySelector(".subButton")
+                    btn.innerText = 'Subscribed';
+                    btn.disabled = true;
                     return;                
                 }
                 this.alert(this.warningAlert, `You didnt successfully subscribe`);
