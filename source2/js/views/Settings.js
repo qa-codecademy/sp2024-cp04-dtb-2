@@ -51,10 +51,10 @@ export default class Settings extends AbstractView {
                     </div>
                     <div>
                     <h5>
-                    Is subscribed: ${fetchedUser.isSubscribed? '<img style="max-width: 30px; max-height: 30px;" src="data/icons/greenCheckMark.png">':'<img style="max-width: 30px; max-height: 30px;" src="data/icons/redXMarkpng.png">'}
+                    Subscribed: ${fetchedUser.isSubscribed? '<img style="max-width: 30px; max-height: 30px;" src="data/icons/greenCheckMark.png">':'<img style="max-width: 30px; max-height: 30px;" src="data/icons/redXMarkpng.png">'}
                     </h5>
                     <h5>
-                    Has admin privileges: ${fetchedUser.isAdmin? '<img style="max-width: 30px; max-height: 30px;" src="data/icons/greenCheckMark.png">':'<img style="max-width: 30px; max-height: 30px;" src="data/icons/redXMarkpng.png">'}
+                    Admin: ${fetchedUser.isAdmin? '<img style="max-width: 30px; max-height: 30px;" src="data/icons/greenCheckMark.png">':'<img style="max-width: 30px; max-height: 30px;" src="data/icons/redXMarkpng.png">'}
                     </h5>
                     </div>
                 </div>

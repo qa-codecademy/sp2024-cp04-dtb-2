@@ -14,6 +14,7 @@ import SearchPosts from "./views/SearchPosts.js";
 import AdminPanel from "./views/AdminPanel.js";
 import AdminPanelUsers from "./views/AdminPanelUsers.js";
 import SessionService from "./modules/SessionService.js";
+import AdminPanelBanners from "./views/AdminPanelBanners.js";
 
 
 const sessionService = new SessionService();
@@ -49,15 +50,15 @@ const router = async () => {
             break;
 
         case "/filterbyold":
-            postFilterService.updateFilter({ pageIndex: 1, sortBy: "old", year: 0, month: 0 });
+            postFilterService.updateFilter({ pageIndex: 1, sortBy: "old", year: 0, month: 0, tags: [] });
             break;
 
         case "/filterbynew":
-            postFilterService.updateFilter({ pageIndex: 1, sortBy: "new", year: 0, month: 0 });
+            postFilterService.updateFilter({ pageIndex: 1, sortBy: "new", year: 0, month: 0, tags: [] });
             break;
 
         case "/filterbymostpopular":
-            postFilterService.updateFilter({ pageIndex: 1, sortBy: "popular", year: 0, month: 0 });
+            postFilterService.updateFilter({ pageIndex: 1, sortBy: "popular", year: 0, month: 0, tags: [] });
             break;
 
         case "/filterbymonthandyear":
@@ -65,7 +66,7 @@ const router = async () => {
             let splitValues = dateValue.split("-");
             let year = splitValues[0];
             let month = splitValues[1];
-            postFilterService.updateFilter({ pageIndex: 1, year: year ? year : 0, month: month ? month : 0 });
+            postFilterService.updateFilter({ pageIndex: 1, year: year ? year : 0, month: month ? month : 0, tags: [] });
             break;
 
         default: break;
@@ -85,7 +86,8 @@ const router = async () => {
         { path: "/settings/myposts", view: MyPosts },
         { path: "/authorposts/:id", view: AuthorPosts},
         { path: "/adminpanel", view: AdminPanel},
-        { path: "/adminpanel/users", view: AdminPanelUsers}
+        { path: "/adminpanel/users", view: AdminPanelUsers},
+        { path: "/adminpanel/banners", view: AdminPanelBanners}
     ];
 
     const potentialMatches = routes.map(route => {
@@ -154,7 +156,7 @@ const router = async () => {
         eventService.DeleteAccountListener();
     }
 
-    if (view instanceof AdminPanel){
+    if (view instanceof AdminPanel || view instanceof AdminPanelBanners){
         eventService.isScrollActive = false;
         let contentPartDiv = document.getElementById("contentPartDiv");
         let contentPart = document.getElementById("contentPart");
@@ -163,6 +165,16 @@ const router = async () => {
         contentPart.classList.remove("contentPart");
         contentPart.classList.add("settingsStyle");
         contentPart.classList.add("col-md-10");
+    }
+    if(view instanceof AdminPanelBanners){
+        // Call eventService listener here
+        eventService.UploadAdBannerModalListener();
+        let imageContainerDiv = document.querySelector("#adBannersContainerDiv");
+        let imageContainer = document.querySelector("#adBannersContainer");
+        imageContainerDiv.classList.add("row");
+        imageContainerDiv.classList.add("justify-content-md-center");
+        imageContainer.classList.add("contentPart");
+        eventService.DeleteAdBannerListener();
     }
 
     if(view instanceof AdminPanelUsers){

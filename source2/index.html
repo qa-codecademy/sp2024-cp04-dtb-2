@@ -258,6 +258,21 @@
             </form>
         </div>
     </div>
+    <div id="uploadAdBanner" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeUploadAdBanner">&times;</span>
+            <h2>Upload Ad Image</h2>
+            <form id="uploadAdBannerForm">
+                <div class="form-group">
+                    <div id = "banner-drop-area">
+                        <input type="file" class="form-control-file btn btn-secondary" id="uploadAdBannerInput">
+                    </div>
+                    <div id="banner-drop-preview"></div>
+                </div>
+                <button type="submit" id="uploadAdBannerBtn">Upload Image</button>
+            </form>
+        </div>
+    </div>
     <!-- aria-hidden="true" -->
     <!-- design for creating post modal -->
     <div class="modal fade" id="createPostModal" tabindex="-1" role="dialog" aria-labelledby="createPostModalLabel" style="display: none ;" >
@@ -346,7 +361,6 @@
                         <output id="rangeValue"></output>
                         <input type="range" class="form-control-range" min="1" max="30" value="15" id="imgRange" oninput="rangeValue.value=imgRange.value" >
                         <div class="form-group" >
-                            <!-- <label for="uploadImage">Upload image - <small>Coming soon...</small></label> -->
                             <div id = "drop-area">
                                 <input type="file" class="form-control-file btn btn-secondary" id="uploadImage">
                             </div>

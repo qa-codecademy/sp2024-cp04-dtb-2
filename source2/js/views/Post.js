@@ -40,6 +40,13 @@ export default class Post extends AbstractView {
     if( token && token.token.isAdmin === "True"){
       isAdmin = true;
     }
+    
+    let randomAdSrc = '';
+    
+    const randomAd = await apiCaller.fetchFromDB('https://localhost:7073/api/Image/randomimage/114', "GET");
+    if(randomAd.data !== null){
+      randomAdSrc = `data:image/png;base64,${randomAd.data}`;
+    }
 
     const imgSrc = `data:image/png;base64,${post.image}`;
     const postTags = post.tags.map(tag => `#${tag}`).join(' ');
@@ -105,6 +112,7 @@ export default class Post extends AbstractView {
                         </div>
                       </div>
                       <div id="ads">
+                        <img class="img-fluid rounded-start" src="${randomAdSrc}">
                       </div>
                     </div>
                     <div id="comments">

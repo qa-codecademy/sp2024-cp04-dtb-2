@@ -19,8 +19,10 @@ export default class AdminPanel extends AbstractView{
         const found = sessionService.Get();
         let result ="";
         if(found){
-            result = `<h1>You're inside Admin Panel!</h1>
-            <a class="btn btn-primary" href="/adminpanel/users" data-link>Users</a>
+            result = `<h1>Welcome to the Admin Panel!</h1>
+            User dashboard: <a class="btn btn-primary" href="/adminpanel/users" data-link>View</a>
+            <br>
+            Advertisement banners: <a class="btn btn-primary" href="/adminpanel/banners" data-link>View</a>
             `;
 
         } else {

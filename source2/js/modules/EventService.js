@@ -6,9 +6,11 @@ import ModalService from "./ModalService.js";
 import SessionService from "./SessionService.js";
 import NavbarService from "./NavbarService.js";
 import themeService from "./ThemeService.js";
-import uploadImageService from "./UploadImgService.js";
+import UploadImgService from "./UploadImgService.js";
 import loadingSpinnerService from "./loadingSpinnerService.js";
 
+const uploadImageService = new UploadImgService("drop-area", "drop-preview", "uploadImage");
+const uploadBannerService = new UploadImgService("banner-drop-area", "banner-drop-preview", "uploadAdBannerInput");
 const navbarService = new NavbarService();
 const sessionService = new SessionService();
 const buttonService = new ButtonService();
@@ -1119,6 +1121,111 @@ class EventService {
                 }
                 this.alert(this.warningAlert, `You didnt successfully subscribe`);
         });
+    }
+
+    UploadAdBannerModalListener(){
+        document.querySelector("#uploadAdminBannerModalBtn").addEventListener('click', (e) => {
+            e.preventDefault();
+            modalService.showModal("uploadAdBanner");
+        })
+        document.querySelector("#closeUploadAdBanner").addEventListener('click', (e)=>{
+            e.preventDefault();
+            modalService.hideModal("uploadAdBanner");
+        })
+        this.UploadAdBannerListener();
+    }
+    UploadAdBannerListener(){
+        document.querySelector("#uploadAdBannerBtn").addEventListener('click', async (e) => {
+            e.preventDefault();
+            if(this.isSubmitting) return;
+            this.isSubmitting = true;
+            console.log("Ad banner submit button clicked!");
+            const user = sessionService.Get();
+            if(!user){
+                this.alert(this.warningAlert,`You must be logged in first`)
+                modalService.showModal("loginModal");
+                this.loginModalListener();
+                this.isSubmitting = false;
+                return;
+            }
+            const fetchedImage = uploadBannerService.uploadedImage;
+            if(!fetchedImage){
+                this.alert(this.warningAlert, 'Please provide an image first!');
+                this.isSubmitting = false;
+                return;
+            }
+            try{
+                console.log(fetchedImage);
+                const url = `https://localhost:7073/api/Image`;
+                const body = {
+                    userId: user.id,
+                    imageFile: fetchedImage
+                }
+                const result = await apiCaller.fetchFromDB(url, "POST", body, user.token);
+                if(result.status === 201){
+                    const temporaryDataHolder = result.data;
+                    const ImgSrc = `data:image/png;base64,${temporaryDataHolder}`;
+                    document.querySelector("#adBannersContainer").innerHTML += `
+                    <div class="card" style="width: 25vw" id="${result.id}">
+                    <img class="card-img-top img-fluid imgLink" src="${ImgSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here">
+                    <div class="card-body icons">
+                    <button class="btn btn-outline-danger deleteBannerBtn">DELETE</button>
+                    </div>
+                    </div>
+                    `
+                    this.alert(this.successAlert, "The image was successfully uploaded!");
+                    this.DeleteAdBannerListener();
+                    modalService.hideModal("uploadAdBanner");
+                    return;
+                }
+                this.alert(this.warningAlert, "The image wasn't successfully uploaded!");
+            }catch(error){
+                console.error(error);
+            }finally{
+                this.isSubmitting = false;
+            }
+            
+        })
+    }
+    DeleteAdBannerListener(){
+        const deleteAdBannerBtns = document.getElementsByClassName("deleteBannerBtn");
+        if(deleteAdBannerBtns && deleteAdBannerBtns.length > 0){
+
+            Array.from(deleteAdBannerBtns).forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    if(this.isSubmitting) return;
+                    this.isSubmitting = true;
+
+                    let card = btn.closest('.card');
+                    let id = card.id;
+                    console.log(`Delete button with id ${id} was clicked!`);
+                    
+                    const user = sessionService.Get();
+                    if(!user){
+                        this.alert(this.warningAlert,`You must be logged in first`)
+                        modalService.showModal("loginModal");
+                        this.loginModalListener();
+                        this.isSubmitting = false;
+                        return;
+                    }
+                    try{
+                        const url = `https://localhost:7073/api/Image/${id}`;
+                        let result = await apiCaller.fetchFromDB(url, "DELETE", null, user.token);
+                        if(result.status === 200){
+                            card.remove();
+                            this.alert(this.successAlert, "Successfully deleted the banner!");
+                            return;
+                        }
+                        this.alert(this.warningAlert, "The banner wasn't deleted successfully!");
+                    }catch(error){
+                        console.error(error);
+                    } finally{
+                        this.isSubmitting = false;
+                    }
+                })
+            })
+        }
     }
 }
 
