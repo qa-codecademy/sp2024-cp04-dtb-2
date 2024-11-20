@@ -583,34 +583,68 @@ a:hover {
     justify-self: center;
     font-size: x-large;
 }
+/* #holder {
+    /* padding: 1rem; */
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap; */
+    /* justify-content: space-between; */
+/* } */
 #holder {
-    padding: 1rem;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    width: 100%; /* Optional: Make sure it spans full width */
 }
 #postText{
-    width: 74%;
-    padding-left: 10rem;
+    
+    width: 80%;
+    /* padding-left: 10rem; */
 }
+/* #ads {
+    display: flex;
+    justify-content: center;
+
+    height: fit-content;
+} */
 #ads {
-    width: 24%;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center ads within the div */
+    height: auto; /* Let the height adapt */
+}
+
+#ads img {
+    max-height: 400px; /* Limit height of ads */
+    width: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Ensure the image scales proportionally */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Add shadow for styling */
 }
 @media (max-width: 768px) {
     #holder {
         justify-content: center;
     }
     #postText {
-        width: 100%;
+        width: 90%;
         padding-left: 0px;
     }
     #ads {
         
         width: 80%;
-        height: 100px;
+        /* height: 100px; */
     }
-    
+    .comment-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center vertically */
+        align-items: center; /* Center horizontally */
+    }
+    #commentForm {
+        width: 90%;
+    }
 }
 .input-group .btn {
     position: relative;
