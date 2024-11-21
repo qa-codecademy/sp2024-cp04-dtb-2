@@ -121,6 +121,7 @@ const router = async () => {
         if (view instanceof Post) {
             let contentPart = document.getElementById("contentPart");
             let contentPartDiv = document.getElementById("contentPartDiv");
+            contentPart.style.height = "";
             buttonService.fetchAllButtons();
             eventService.addStarEventListeners();
             eventService.paintStars(eventService.currentRating);
@@ -150,6 +151,7 @@ const router = async () => {
     if (view instanceof Settings) {
         let contentPartDiv = document.getElementById("contentPartDiv");
         let contentPart = document.getElementById("contentPart");
+        contentPart.style.height = "";
         contentPartDiv.classList.add("row");
         contentPartDiv.classList.add("justify-content-md-center");
         contentPart.classList.remove("contentPart");
@@ -163,6 +165,7 @@ const router = async () => {
         eventService.isScrollActive = false;
         let contentPartDiv = document.getElementById("contentPartDiv");
         let contentPart = document.getElementById("contentPart");
+        contentPart.style.height = "";
         contentPartDiv.classList.add("row");
         contentPartDiv.classList.add("justify-content-md-center");
         contentPart.classList.remove("contentPart");
@@ -174,6 +177,7 @@ const router = async () => {
         eventService.UploadAdBannerModalListener();
         let imageContainerDiv = document.querySelector("#adBannersContainerDiv");
         let imageContainer = document.querySelector("#adBannersContainer");
+        contentPart.style.height = "";
         imageContainerDiv.classList.add("row");
         imageContainerDiv.classList.add("justify-content-md-center");
         imageContainer.classList.add("contentPart");
@@ -182,12 +186,14 @@ const router = async () => {
 
     if(view instanceof AdminPanelUsers){
         eventService.isScrollActive = false;
+        contentPart.style.height = "";
         eventService.DeleteUsersListener();
     }
 
     if (view instanceof Posts) {
         let contentPartDiv = document.getElementById("contentPartDiv");
         let contentPart = document.getElementById("contentPart");
+        contentPart.style.height = "";
         contentPartDiv.classList.add("row");
         contentPartDiv.classList.add("justify-content-md-center");
         contentPart.classList.remove("col-md-10");
@@ -199,11 +205,13 @@ const router = async () => {
     
     if (view instanceof MyPosts) {
         eventService.MyPostsListener();
+        contentPart.style.height = "";
     }
     
     if (view instanceof AuthorPosts) {
         let contentPartDiv = document.getElementById("contentPartDiv");
         let contentPart = document.getElementById("contentPart");
+        contentPart.style.height = "";
         contentPartDiv.classList.add("row");
         contentPartDiv.classList.add("justify-content-md-center");
         contentPart.classList.remove("col-md-10");

@@ -15,7 +15,7 @@ export default class SearchPosts extends AbstractView {
     }
     async getHtml() {
         
-        buttonService.filterBtn.style.display = "none";
+        buttonService.filterBtn.style.display = "block";
         buttonService.loadMoreBtn.style.display = "none";
         document.querySelector("#searchInput").value = '';
         document.querySelector("#contentPart").innerHTML = '';
@@ -58,9 +58,11 @@ export default class SearchPosts extends AbstractView {
                         `;
             });
             if(result.length < 1){
+                document.querySelector('#contentPart').style.height = "500px";
                 resultHtml = '<h3>There\'s no results!</h3>'
             }
         } else{
+            document.querySelector('#contentPart').style.height = "500px";
             resultHtml = '<h3>There\'s no results!</h3>'
         }
         return resultHtml;
