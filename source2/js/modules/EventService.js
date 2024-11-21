@@ -447,6 +447,7 @@ class EventService {
         document.getElementById("closeCreatePostModal").addEventListener('click', async(e) =>{
             e.preventDefault();
             modalService.hideModal("createPostModal");
+            this.ResetAllModals();
         })
     }
 
@@ -503,6 +504,7 @@ class EventService {
                 console.log("API response:", result);
                 this.alert(this.successAlert, "Successfully created post!");
                 modalService.hideModal("createPostModal");
+                this.ResetAllModals();
             } catch (error) {
                 console.error("Error creating post:", error);
                 this.alert(this.warningAlert, "Post wasn't created successfully!");
@@ -515,6 +517,7 @@ class EventService {
         buttonService.closeCreatePostModal.addEventListener("click", (e) => {
             e.preventDefault();
             modalService.hideModal("createPostModal");
+            this.ResetAllModals();
         });
     }
     
@@ -553,6 +556,7 @@ class EventService {
                 document.querySelector('.card-title').innerText = titleValue;
                 document.querySelector('.singleCard-text').innerText = textValue;
                 modalService.hideModal('editPostModal');
+                this.ResetAllModals();
                 return;
             }
             this.alert(this.warningAlert, "Post wasn't updated successfully!");
@@ -563,6 +567,7 @@ class EventService {
             console.log("close clicked");
             
             modalService.hideModal("editPostModal");
+            this.ResetAllModals();
         })
     }
 
@@ -918,6 +923,7 @@ class EventService {
                 modal.querySelector('#editPostDescription').value = fetchedPost.description;
 
                 modalService.showModal("editPostModal");
+                this.ResetAllModals();
             });
         }
     }
@@ -1006,6 +1012,7 @@ class EventService {
             e.preventDefault();
             try {
                 modalService.hideModal("monthModal");
+                this.ResetAllModals();
             } catch (error){
                 console.log(error);
                 
@@ -1176,6 +1183,7 @@ class EventService {
                     this.alert(this.successAlert, "The image was successfully uploaded!");
                     this.DeleteAdBannerListener();
                     modalService.hideModal("uploadAdBanner");
+                    this.ResetAllModals();
                     return;
                 }
                 this.alert(this.warningAlert, "The image wasn't successfully uploaded!");
@@ -1215,6 +1223,7 @@ class EventService {
                         if(result.status === 200){
                             card.remove();
                             this.alert(this.successAlert, "Successfully deleted the banner!");
+                            this.ResetAllModals();
                             return;
                         }
                         this.alert(this.warningAlert, "The banner wasn't deleted successfully!");
@@ -1225,6 +1234,30 @@ class EventService {
                     }
                 })
             })
+        }
+    }
+
+    ResetAllModals(){
+        const modals = document.querySelectorAll('.modal');
+    
+        modals.forEach(modal => {
+            const inputs = modal.querySelectorAll('input');
+            
+            inputs.forEach(input => {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    input.checked = false;
+                } else {
+                    input.value = '';
+                }
+            });
+    
+            const textareas = modal.querySelectorAll('textarea');
+            textareas.forEach(textarea => textarea.value = '');
+        });
+    
+        const dropPreview = document.getElementById('drop-preview');
+        if (dropPreview) {
+            dropPreview.innerHTML = '';
         }
     }
 }

@@ -20,9 +20,9 @@ export default class AdminPanel extends AbstractView{
         let result ="";
         if(found){
             result = `<h1>Welcome to the Admin Panel!</h1>
-            User dashboard: <a class="btn btn-primary" href="/adminpanel/users" data-link>View</a>
-            <br>
-            Advertisement banners: <a class="btn btn-primary" href="/adminpanel/banners" data-link>View</a>
+            User dashboard: <a class="btn btn-outline-primary" href="/adminpanel/users" data-link>View</a>
+            <br><br>
+            Advertisement banners: <a class="btn btn-outline-primary" href="/adminpanel/banners" data-link>View</a>
             `;
 
         } else {

@@ -42,6 +42,9 @@ const naviageteTo = url => {
 
 const router = async () => {
     switch (location.pathname) {
+        case "/":
+            postFilterService.updateFilter({pageIndex: 1, sortBy: "new", year: 0, month: 0, tags: []})
+            break;
         case "/filterbytags":
             const urlParams = new URLSearchParams(window.location.search);
             const tagsParam = urlParams.get('tags');

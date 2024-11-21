@@ -25,17 +25,25 @@ export default class SearchPosts extends AbstractView {
                 result.forEach(post => {
                     const tags = post.tags.map(tag => `#${tag}`).join(' ');
                     const imgSrc = `data:image/png;base64,${post.image}`;
+                    const date = new Date(post.postingTime);
+                    post.postingTime = date.toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",  // Ex: Sep, Oct, Nov
+                        year: "numeric"
+                    });
                 resultHtml += `
                 
                 <div class="card" style="width: 25vw" id="card-${post.id}">
                     <img class="card-img-top img-fluid imgLink" src="${imgSrc}" style="object-fit: fill; height: 20vw;" alt="Image should be here" value="${post.id}">
                     <div class="card-body title">
-                        <a class="post-link" href="/posts/${post.id}" data-link><h5 class="card-title">${post.title}</h5></a>
+                        <a class="post-link" href="posts/${post.id}" data-link><h5 class="card-title">${post.title}</h5></a>
+                        <h6>By ${post.user.fullname} - <small>${post.postingTime}</small></h6>
+                        
                         <p class="card-text">${post.description}</p>
                     </div>
                     <div class="card-body icons">
                         <div> 
-                            <p>${post.rating} <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon"></p>
+                            <p>${post.rating} <img src="/data/icons/star.svg" alt="Star Icon" class="starsIcon"> ${post.rating !== 0 ? `(${post.ratings !== 1 ? `${post.ratings} ratings` : `${post.ratings} rating`})` : ''}</p>
                         </div>
                         <div>
                             <p>${post.comments} <img src="/data/icons/chat-right.svg" alt="Comment Icon" class="commentsIcon"></p>

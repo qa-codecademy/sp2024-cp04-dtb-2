@@ -82,7 +82,7 @@ export default class Post extends AbstractView {
                         <hr>
                         <p class="singleCard-text">${post.text}</p>
                         <div id="addStarContainer">
-                          <p>Did you like this post? Current rating: <span id="postRating">${post.rating}</span>
+                          <p>Post rating: <span id="postRating">${post.rating}</span>
                             <span id="addStartOnPost"> 
                               <div class="star-rating" id ="starsRating">
                                   <input type="radio" id="star5" name="rating" value="5" />
