@@ -1,0 +1,17 @@
+// Ova e dizajn za karticka kade sto slikata se naogja na desnata strana i textot na levata, edinstveno se menuvaat width & height za da ne zazema cel ekran(i bojata)
+
+<div class="card mb-3 text-bg-dark border-warning" style="width: 80rem; max-height: 50rem;">
+  <div class="row g-0">
+    <div class="col-md-4 dark" style="padding: 3rem;">
+      <img src="img" alt="Image" class="img-fluid rounded-start" style="max-height: 30rem;">
+    </div>
+    <div class="col-md-8" style="padding: 1rem;">
+      <div class="card-body">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+add to navbar class = "fixed-top"  - for improvement
